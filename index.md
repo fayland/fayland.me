@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Fayland and Programming
-tagline: Perl, Javascript
+tagline: /usr/bin/
 ---
 {% include JB/setup %}
 
