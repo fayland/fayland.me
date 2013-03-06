@@ -1,0 +1,15 @@
+---
+category: perl
+layout: post
+tags:
+  - JE
+  - JavaScript
+  - Scrape
+  - perl
+title: Don't let JS block your scrape
+---
+{% include JB/setup %}
+
+well, sometimes you're use LWP::UserAgent or WWW::Mechanize to scrape webpages, and in those webpages, there is some javascript code to set js cookies and the site will use those cookie to continue.<br /><br />for example, one site has some js code like:<br /><br /><blockquote><pre id="line1">&lt;<span class="start-tag">script</span><span class="attribute-name"> type</span>=<span class="attribute-value">"text/javascript"</span>&gt;function test(){<br />// complicated js code to generate different code each time<br />document.cookie = "TS884e96_75=" + "b0f056f808cab30029f1dfed8117af84:"<br />&nbsp;+ chlg + ":" + slt + ":" + crc + ";Max-Age=3600;path=/";<br />document.forms[0].submit();}&lt;/<span class="end-tag">script</span>&gt;<br />&lt;<span class="start-tag">body</span><span class="attribute-name"> onload</span>=<span class="attribute-value">"test()"</span>&gt;<br /><br /></pre></blockquote>OK, now you're totally blocked out.<br /><br />lucky we have <a href="http://search.cpan.org/perldoc?JE">JE</a>, which I talked in my PerlChina Advent last year: <a href="http://advent.perlchina.org/2010/JE.html">http://advent.perlchina.org/2010/JE.html</a><br />it's pretty amazing and the solution is very simple:<br /><br /><blockquote># cookie_jar will build memory cookie for UA<br />my $ua = WWW::Mechanize-&gt;new(<br />&nbsp;&nbsp;&nbsp; agent =&gt; 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13',<br />&nbsp;&nbsp;&nbsp; stack_depth =&gt; 1,<br />&nbsp;&nbsp;&nbsp; autocheck&nbsp; =&gt; 0,<br />&nbsp;&nbsp;&nbsp; cookie_jar =&gt; {},<br />);<br />my $resp = $ua-&gt;get($url);<br /><br /># get the js code<br />my ($js) = ($ua-&gt;content =~ /\&lt;script type=\"text\/javascript\"\&gt;(.*?)\&lt;\/script\&gt;/s);<br />$js =~ s/document.cookie \=/return/s;<br />$js .= "\ntest();"; ## use return and run it for JE<br />## get js and set cookie<br />my $j = JE-&gt;new;<br />my $v = $j-&gt;eval($js);<br /><br />$resp-&gt;header('Set-Cookie', $v-&gt;value);<br />$ua-&gt;cookie_jar-&gt;extract_cookies($resp);<br /><br />$ua-&gt;submit_form();<br /></blockquote>
+
+<br />pretty simple and that's almost all what you need to write. a little explanation:<br />1. cookie_jar =&gt; {} will build memory cookie and read <a href="http://search.perl.org/perldoc?HTTP::Cookies">HTTP::Cookies</a> for more details.<br />2. we convert the document.cookie = to return in javascript code so that we can get the value by eval the js.<br />3. in the HTTP::Response, we set the header Set-Cookie to do the job what js does for us<br />4. cookie_jar (HTTP::Cookies) extract_cookies will add that cookie into WWW::Mechanzie UA.<br /><br />fun and Enjoy!<br /><br />Thanks<br />

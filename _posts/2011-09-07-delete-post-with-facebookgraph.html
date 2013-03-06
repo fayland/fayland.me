@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - Facebook
+  - Perl
+title: DELETE post with Facebook::Graph
+---
+{% include JB/setup %}
+
+<a href="http://search.cpan.org/perldoc?Facebook::Graph">Facebook::Graph</a>&nbsp;doesn't provide DELETE method by default. but we can do it for sure. below is one sample code:<div><br /></div><blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><div>use Facebook::Graph;</div><div><div>use LWP::UserAgent;</div><div>use HTTP::Request::Common ();</div></div><div><br /></div><div><div>my $fb = Facebook::Graph-&gt;new(</div><div>&nbsp; &nbsp; app_id &nbsp; &nbsp; =&gt; $app_id,</div><div>&nbsp; &nbsp; secret &nbsp; &nbsp; =&gt; $app_sec,</div><div>&nbsp; &nbsp; postback &nbsp; =&gt; $postback_url,</div><div>);</div></div><div><br /></div><div><div>my $uri = $fb-&gt;query-&gt;find($post_id)-&gt;uri_as_string;</div><div>my $req = HTTP::Request::Common::DELETE($uri);</div><div>$req-&gt;header('Content-Length', 0);</div><div>my $response = LWP::UserAgent-&gt;new-&gt;request($req);</div></div><div><br /></div></blockquote>Note we have to set Content-Length to 0. or we'll get 400 Bad Request.<div><br /></div><div>Thanks</div>

@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - CPAN
+title: WebService::IPRental
+---
+{% include JB/setup %}
+
+I got a new module uploaded to CPAN: <a href="http://search.cpan.org/dist/WebService-IPRental/lib/WebService/IPRental.pm">WebService::IPRental</a><br /><br />it's basically a Perl port for IP Rental API: <a href="http://www.iprental.com/apidoc/">http://www.iprental.com/apidoc/</a><br /><br />well, I really admire that php has a nice WSDL soap client that sometimes SOAP::WSDL wsdl2perl sucks. anyway, we can always request the same stuff with SOAP::Lite by checking the php<br /><br /><blockquote>$client-&gt;__getLastRequestHeaders()<br />$client-&gt;__getLastRequest()<br /><br /></blockquote>and the simple map is:<br /><br />1. -&gt;on_action( sub { 'urn:IPRentalSoapAPIAction' } ) is for SOAPAction in header<br />2. -&gt;ns( 'urn:IPRentalSoapAPI', 'ns1' ) can register a new namespace<br />3. simply do -&gt;outputxml(1) b/c that's more reliable (I prefer)<br /><br />maybe not so much people use the IP Rental service, but people will feel that CPAN is great when he searches a module like this.<br /><br />Thanks<br /><br /><br /> 

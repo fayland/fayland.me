@@ -1,0 +1,12 @@
+---
+category: perl
+layout: post
+tags:
+  - Dancer
+  - findmjob
+  - perl
+title: better pagination url design in Dancer
+---
+{% include JB/setup %}
+
+usually People do param for pager like ?page=1 or ?p=1, it maybe not that good for search engine because they may not go scrape inside. so we may come out a solution with /page=1/ or /p=1/ or even /p.1/ etc.<div><br /></div><div>in <a href="http://search.cpan.org/perldoc?Dancer">Dancer</a>, it's very tricky to do add pagination regex in all URLs. and thank God, we have 'forward' and with code like below, it becomes very simple and easy to use.</div><div><br /></div><div>Perl code:</div><div><blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><div><div>get qr'.*?/p\.(\d+).*?' =&gt; sub {</div><div>&nbsp; &nbsp; my $uri = request-&gt;uri;</div><div>&nbsp; &nbsp; $uri =~ s'/p\.(\d+)'';</div><div>&nbsp; &nbsp; var page =&gt; $1;</div><div>&nbsp; &nbsp; $uri =~ s/\/$//;</div><div>&nbsp; &nbsp; forward $uri;</div><div>};</div></div><div><br /></div><div><div>get '/' =&gt; sub {</div><div>&nbsp; &nbsp; my $p = vars-&gt;{page} || 1; $p = 1 unless $p =~ /^\d+$/;</div></div></blockquote><br /></div><div>we use regex to get the page stuff, then remove it from the request uri then using <b>forward</b>&nbsp;to do a internal request.</div><div><br /></div><div>the TT2 pager code can check at&nbsp;<a href="https://github.com/fayland/findmjob.com/blob/master/templates/pager.tt">https://github.com/fayland/findmjob.com/blob/master/templates/pager.tt</a></div><div><br /></div><div>live demo as:&nbsp;<a href="http://findmjob.com/tag/perl/">http://findmjob.com/tag/perl</a>/ and&nbsp;<a href="http://findmjob.com/tag/perl/p.2/">http://findmjob.com/tag/perl/p.2/</a></div><div><br /></div><div>have fun.</div>

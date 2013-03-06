@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - CPAN
+  - perl
+title: tips for snaked
+---
+{% include JB/setup %}
+
+I'm giving <a href="http://search.cpan.org/perldoc?snaked">snaked</a> a try today. it's my first time to try it. and I heard it from last year's CN Perl Advent:&nbsp;<a href="http://advent.perlchina.org/2010/snaked.html">http://advent.perlchina.org/2010/snaked.html</a><div><br /></div><div>for those people who don't know what snaked is, snaked is like crontab and written in Perl.<br /><div><br /></div><div>so far so good. here are two cents.</div><div><br /></div><div>1. if you put your configuration files under /home/fayland/snaked, please don't put the log there.</div><div>it you have /home/fayland/snaked/log which contains /home/fayland/snaked/snaked.log</div><div>as soon as you run snaked --configure, you'll find your snaked.log expands very fast soon with some weird log like</div><div>'new value for option snaked.log'.</div><div><br /></div><div>that's because in snaked.pm, it will try to read all files under the snaked configure directory and load them as options.</div><div>snaked.log is a file, so the content is loaded as the value, and append to the snaked.log</div><div>so if you run 'snaked --configure' many times, you'll find the snaked.log becomes quite large with all log repeated again and again.</div><div><br /></div><div>the fixes is to move snaked.log into another directory instead of /home/fayland/snaked</div><div><br /></div><div>2. another tip should be simple but useful</div><div>export PS_SNAKED_CFG=/home/fayland/snaked/</div><div><br /></div><div>then you don't need put --cfg again and again when you run snaked command.</div><div><br /></div><div>Thanks.</div></div>

@@ -1,0 +1,14 @@
+---
+category: perl
+layout: post
+tags:
+  - API
+  - Android
+  - Perl
+  - coffeescript
+  - findmjob
+title: api and android app
+---
+{% include JB/setup %}
+
+I'm a fan of Android. even I like my iPad and MBP very much too.<div><br /></div><div>I'd like to write an App for Android. and here is all the story.</div><div><br /></div><div>first of all, I need write an API which supports JSONP. since it would be very simple, I don't want to mix it up with Dancer. at last, I wrote something based on <a href="https://github.com/stevan/webmachine-perl">webmachine-perl</a>. I like the idea behind the webmachine. the chain design looks pretty nice. even I don't use that too much.</div><div><br /></div><div>the code is at</div><div><br /></div><div><a href="https://github.com/fayland/findmjob.com/blob/master/api/app.psgi">https://github.com/fayland/findmjob.com/blob/master/api/app.psgi</a></div><div><a href="https://github.com/fayland/findmjob.com/blob/master/api/lib/FindmJob/Resource.pm">https://github.com/fayland/findmjob.com/blob/master/api/lib/FindmJob/Resource.pm</a></div><div><br /></div><div>and live demo as</div><div><br /></div><div><a href="http://api.findmjob.com/search?callback=jQuery171016797792096622288_1334322201618&amp;q=perl&amp;loc=&amp;_=1334322214418">http://api.findmjob.com/search?callback=jQuery171016797792096622288_1334322201618&amp;q=perl&amp;loc=&amp;_=1334322214418</a></div><div><br /></div><div>after API is done. now comes the android app part. Sorry that I don't know much about Java. and I failed to download appmobi/jqmobi (the download never ends here). so at last I picked up&nbsp;<a href="http://phonegap.com/">phonegap</a>.</div><div><br /></div><div>the progress went pretty smooth. mixed with jQuery Mobile, I have it out after few hours.</div><div><br /></div><div>you can download it for fun from&nbsp;<a href="http://static.findmjob.com/FindmJob.apk">http://static.findmjob.com/FindmJob.apk</a></div><div>it's pretty simple, just with one JSONP request and not much different than the demo.</div><div><br /></div><div>even there, I'd like to share the code with you:</div><div><br /></div><div><a href="https://github.com/fayland/findmjob.com/blob/master/mobile/android/assets/www/index.html">https://github.com/fayland/findmjob.com/blob/master/mobile/android/assets/www/index.html</a></div><div><a href="https://github.com/fayland/findmjob.com/blob/master/mobile/android/assets/www/mobile.coffee">https://github.com/fayland/findmjob.com/blob/master/mobile/android/assets/www/mobile.coffee</a></div><div><br /></div><div>it's very cool and I'm excited! (badly Google costs 25$ for submitting it and I don't want to do it for now)</div><div><br /></div><div>Thanks.</div><div><br /></div><div><br /></div><div><br /></div>

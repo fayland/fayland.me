@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - findmjob
+  - sphinx
+title: sphinx search with varchar primary key
+---
+{% include JB/setup %}
+
+usually when you index the mysql data into sphinx, you'll use id int/bigint for the primary key. but it's broken for me on <a href="http://findmjob.com/">http://findmjob.com/</a>, we use uuid everywhere for the primary key.<div><br /></div><div>here is the solution for it. use&nbsp;@id := @id + 1 for the indexer, and use&nbsp;sql_field_string to get the real id when matched. <a href="https://github.com/fayland/findmjob.com/blob/master/etc/sphinx.conf">sample code</a> below:</div><div><br /></div><div><blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><div><div>sql_query_pre = SET NAMES utf8</div><div>sql_query_pre = SET @id := 1;</div></div><div>sql_query<span class="Apple-tab-span" style="white-space: pre; ">		</span>= \</div><div>&nbsp; &nbsp; SELECT @id := @id + 1 AS tid, id, title, description, location, contact, inserted_at FROM job ORDER BY inserted_at DESC LIMIT 10000</div><div><br /></div><div>sql_field_string = id</div></blockquote><div><br /></div>it requires latest sphinx to support&nbsp;sql_field_string. and the latest CPAN module too.</div><div><br /></div><div>and Perl code for it will be normal like before. and instead you use -&gt;{doc}, you need use the attribtues -&gt;{id} like</div><div><br /></div><div><blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><div>my @jobids = map { $_-&gt;{id} } @{$ret-&gt;{matches}};</div></blockquote><br /></div><div>so now we have sphinx search supports in my new site, eg:&nbsp;<a href="http://findmjob.com/search/Perl.html?q=Perl">http://findmjob.com/search/Perl.html?q=Perl</a></div><div><br /></div><div>Thanks.</div>

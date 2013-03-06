@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - KinderGarden
+  - git
+title: git submodule
+---
+{% include JB/setup %}
+
+When you include another open source in your own project, it's usually pretty hard to keep it up to date. it becomes even more harder if you have some modification on it.<div><br /></div><div>recently I have <a href="https://github.com/twitter/bootstrap">bootstrap</a>&nbsp;in my <a href="https://github.com/PerlChina/kindergarden">KinderGarden</a>&nbsp;project, it's very easy to use git submodule to handle it.</div><div><br /></div><div><blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><div><div>kindergarden&gt; git submodule add https://github.com/twitter/bootstrap.git static/bootstrap</div></div><div>kindergarden&gt; git add .gitmodules static/bootstrap</div><div>kindergarden&gt; git commit -a -m "remote bootstrap"</div><div>kindergarden&gt; git push</div><div><div>kindergarden&gt; git submodule init</div></div></blockquote><br /></div><div>in delopy or other machine:</div><div><br /></div><div><blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><div><div>kindergarden$ git submodule init</div><div>kindergarden$ git submodule update</div></div></blockquote><div><br /></div>pretty easy and simple, and the logic behind is simple too. reference as <a href="http://help.github.com/submodules/">http://help.github.com/submodules/</a>&nbsp;or&nbsp;<a href="http://progit.org/book/ch6-6.html">http://progit.org/book/ch6-6.html</a></div><div><br /></div><div>BTW, I added Live.com OAuth2 supports to KinderGarden.</div><div><br /></div><div>Enjoy. Thanks</div>

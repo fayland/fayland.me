@@ -1,0 +1,12 @@
+---
+category: perl
+layout: post
+tags:
+  - CPAN
+  - github
+  - perl
+title: Net-GitHub-0.43_01
+---
+{% include JB/setup %}
+
+Github is <a href="https://github.com/blog/1090-github-api-moving-on">moving on with their API</a> that "We will terminate API v1 and API v2 in 1 month on May 1st, 2012.".<div><br /></div><div>I know lots of people are preferring that they want token instead of writing user/pass in the config or code.</div><div>and now we have the choice with create access_token with code instead of web flow.</div><div><br /></div><div>it's time to kick Net::GitHub default to V3 now. so here comes the beta release. and tests/patches are welcome.</div><div><br /></div><div><a href="http://fayland.org/CPAN/Net-GitHub-0.43_01.tar.gz">http://fayland.org/CPAN/Net-GitHub-0.43_01.tar.gz</a>&nbsp;(it will be on CPAN soon too)</div><div><br /></div><div>Tips to create access_token with script:</div><div><br /></div><div><blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><div><div>use Net::GitHub;</div><div>my $gh = Net::GitHub-&gt;new( login =&gt; 'fayland', pass =&gt; 'secret' );</div><div>my $oauth = $gh-&gt;oauth;</div><div>my $o = $oauth-&gt;create_authorization( {</div><div>&nbsp; &nbsp; scopes =&gt; ['user', 'public_repo', 'repo', 'gist'], # just ['public_repo']</div><div>&nbsp; &nbsp; note &nbsp; =&gt; 'test purpose',</div><div>} );</div><div>print $o-&gt;{token};</div></div></blockquote></div><div><br /></div><div>record the token down, and later on we can always use that token without writing down user/pass.</div><div><br /></div><div><blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><div><div>my $github = Net::GitHub-&gt;new(</div><div>&nbsp; &nbsp; access_token =&gt; $token, # from above</div><div>);</div></div><div><br /></div></blockquote>Thanks.</div>

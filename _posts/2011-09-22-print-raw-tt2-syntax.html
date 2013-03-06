@@ -1,0 +1,21 @@
+---
+category: perl
+layout: post
+tags:
+  - TT2
+  - perl
+title: print raw TT2 syntax
+---
+{% include JB/setup %}
+
+The tricky is TAGS:&nbsp;<a href="http://search.cpan.org/perldoc?Template#TAGS">http://search.cpan.org/perldoc?Template#TAGS<br /></a><br /><blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><div>[% a = 1 %]
+<br />
+<br />var [% a %] blabla;
+<br />
+<br />[% TAGS &lt;$ $&gt; %]
+<br />var [% a %] blabla
+<br />
+<br />&lt;$ TAGS [% %] $&gt;
+<br />var [% a %] blabla;</div></blockquote><br /><div>it will print out stuff like:</div><div><br /></div><blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><div>var 1 blabla;
+<br />var [% a %] blabla
+<br />var 1 blabla;</div></blockquote><br /><div>simple, set tags to &lt;$ $&gt; and get it back to [% %]. &lt;$ $&gt; can be anything you like.</div><div><br /></div><div>Thanks</div>

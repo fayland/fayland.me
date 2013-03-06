@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - MacOSx
+  - postgresql
+title: MacOSx homebrew postgresql issue note
+---
+{% include JB/setup %}
+
+after brew install postgresql<div><br /></div><div>then run "initdb /usr/local/var/postgres -E utf8", may got:</div><div><br /></div><div><blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><div><div>selecting default shared_buffers ... 400kB</div><div>creating configuration files ... ok</div><div>creating template1 database in /usr/local/var/postgres/base/1 ... FATAL: &nbsp;could not create shared memory segment: Cannot allocate memory</div><div>DETAIL: &nbsp;Failed system call was shmget(key=1, size=2138112, 03600).</div><div>HINT: &nbsp;This error usually means that PostgreSQL's request for a shared memory segment exceeded available memory or swap space, or exceeded your kernel's SHMALL parameter. &nbsp;You can either reduce the request size or reconfigure the kernel with larger SHMALL. &nbsp;To reduce the request size (currently 2138112 bytes), reduce PostgreSQL's shared memory usage, perhaps by reducing shared_buffers or max_connections.</div><div><span class="Apple-tab-span" style="white-space:pre">	</span>The PostgreSQL documentation contains more information about shared memory configuration.</div><div>child process exited with exit code 1</div><div>initdb: removing data directory "/usr/local/var/postgres"</div></div></blockquote><br /></div><div>fixes as:</div><div><br /></div><div><div>&nbsp;~ &nbsp;sudo sysctl -w kern.sysv.shmall=1024000</div><div>kern.sysv.shmall:&nbsp;8192&nbsp;-&gt; 1024000</div><div>&nbsp;~ &nbsp;initdb /usr/local/var/postgres -E utf8&nbsp;</div></div><div><br /></div><div>then everything will move smoothly.</div><div><br /></div><div>just for note.</div><div><br /></div>

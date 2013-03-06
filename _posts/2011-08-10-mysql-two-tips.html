@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - MySQL
+title: MySQL two tips
+---
+{% include JB/setup %}
+
+<span class="Apple-style-span" style="color: rgb(0, 0, 0); font-family: 'Times New Roman'; font-size: medium; "><div style="margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; height: 90%; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-style: initial; border-color: initial; background-image: initial; background-attachment: initial; background-origin: initial; background-clip: initial; background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font: normal normal normal 13px/normal arial, helvetica, hirakakupro-w3, osaka, 'ms pgothic', sans-serif; background-position: initial initial; background-repeat: initial initial; ">that's not new and many people may already know it. but it's really very helpful when some SQL locked.<div><br /></div><div>tip 1. use -A to start faster</div><div><br /></div><div>if mysql somedatabase command didn't return mysql&gt; for you. you really can try it with -A. that loads faster.</div><div><br /></div><div>tip 2: set pager for large result.</div><div><br /></div><div>mysql&gt; pager less;</div><div><br /></div><div>so that if you do 'SHOW FULL PROCESSLIST' that you can find the exact one you want without scrolling back or missing anything.</div><div><br /></div><div>for sure it can be configured into ~/.my.cnf like</div><div><br /></div><blockquote class="webkit-indent-blockquote" style="margin-bottom: 0px; margin-left: 40px; border-style: initial; border-color: initial; border-width: initial; border-color: initial; "><div><div>[mysql]</div><div>pager=less -inFX</div><div>prompt='(\u@\h) [\d]&gt; '</div></div></blockquote><br /><div>Thanks for Alex who sharing it.</div></div></span>

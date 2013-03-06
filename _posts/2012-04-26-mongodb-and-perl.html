@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - MongoDB
+  - perl
+title: MongoDB and Perl
+---
+{% include JB/setup %}
+
+it's really a pain to work with MongoDB in Perl. Perl has no 'type' so when you get INT value from DBI, it might be really "1" instead of int 1.<div><br /></div><div>I got some data dumped from MySQL to MongoDB and found all the 'time' field is wrapped as "1335350669" instead of&nbsp;1335350669.</div><div><br /></div><div>and when you insert it from code like { time =&gt; time() }, you really have&nbsp;1335350670 instead of "1335350670". it breaks the sort. it breaks the deletion. it breaks everything.</div><div><br /></div><div>blabla, to fix that, we just need update it in mongodb like below.</div><div><br /></div><div><blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><div><div>PRIMARY&gt; db.jobs.find().forEach(</div><div>&nbsp; &nbsp; function(job) {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; job.time = parseInt(job.time);</div><div>&nbsp; &nbsp; &nbsp; &nbsp; db.jobs.save(job);</div><div>&nbsp; &nbsp; });</div></div><div><br /></div></blockquote></div><div>but it's still a pain. I didn't check MongoDBx::Class or&nbsp;Mongoose yet, but Moose's type should be able to fix it I think.</div><div><br /></div><div>Thanks</div>

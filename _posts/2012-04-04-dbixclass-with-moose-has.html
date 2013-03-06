@@ -1,0 +1,13 @@
+---
+category: perl
+layout: post
+tags:
+  - DBIx::Class
+  - Moose
+  - findmjob
+  - perl
+title: DBIx::Class with Moose has
+---
+{% include JB/setup %}
+
+well, I don't know how to name it.<div><br /></div><div><a href="https://metacpan.org/release/DBIx-Class">DBIx::Class</a> is one of my&nbsp;favorite modules. for its structure, with DBIx::Class you can make all your code very well&nbsp;organized and clean. writing code with DBIx::Class means you can use it in framework like Catalyst or Mojo or Dancer, and you can use it in any perl script (cron usually). for me, DBIx::Class is the right model, TT2 is the right template, and framework is just for URL dispatch.</div><div><br /></div><div><a href="https://metacpan.org/release/Moose">Moose</a> is another module I like. Role, and clean OO.</div><div><br /></div><div>by using&nbsp;DBIx::Class::Schema::Loader&nbsp;make_schema_at, with&nbsp;use_moose =&gt; 1 on (eg:&nbsp;<a href="https://github.com/fayland/findmjob.com/blob/master/script/make_schema_at.pl">https://github.com/fayland/findmjob.com/blob/master/script/make_schema_at.pl</a>), we can generate very clean Result module with Moose.</div><div><br /></div><div>sometimes you want make assessor based on the table column. like for each job in table, we all have a URL which is based on the id and title in the table, it's so related to those two fields, so we'd better to put it in the Result.</div><div>with DBIx::Class, it's very simple. (<a href="https://github.com/fayland/findmjob.com/blob/master/lib/FindmJob/Schema/Result/Job.pm">sample code</a>)</div><div><br /></div><div><blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><div><div>package FindmJob::Schema::Result::Job;</div><div><br /></div><div>....</div><div><br /></div><div>use FindmJob::Utils 'seo_title';</div><div>has 'url' =&gt; ( is =&gt; 'ro', isa =&gt; 'Str', lazy_build =&gt; 1 );</div><div>sub _build_url {</div><div>&nbsp; &nbsp; my ($self) = @_;</div><div><br /></div><div>&nbsp; &nbsp; return "/job/" . $self-&gt;id . "/" . seo_title($self-&gt;title) . ".html";</div><div>}</div></div></blockquote></div><div><br /></div><div>after that, we can always call $job-&gt;url after we -&gt;search for -&gt;find it. very neat. live demo like:&nbsp;</div><div><br /></div><div><a href="http://findmjob.com/job/Il2bUdB74RGuDaqxKQ5yzw/Senior-Perl-Developer.html">http://findmjob.com/job/Il2bUdB74RGuDaqxKQ5yzw/Senior-Perl-Developer.html</a></div><div><br /></div><div>have fun. Thanks</div>

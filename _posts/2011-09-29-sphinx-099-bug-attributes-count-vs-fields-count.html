@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - sphinx
+title: sphinx 0.99 bug (attributes count vs fields count)
+---
+{% include JB/setup %}
+
+when you have 4 columns in sql_query, and you want 3 columns as attributes. you'll get a failure. 0 size sphinx files.<div><br /></div><div>it's quite annoying, and it cost me almost 4 hours to figure it out. I'm so dumb and so are you, SPHINX.</div><div><br /></div><div>a simple solution is to add a dumb col in the SELECT of sql_query like</div><div><br /></div><blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;"><div>SELECT id,&nbsp;radians(longitude) as long_radians, radians(latitude) as lat_radians, 'dumb' FROM table</div><div><br /></div></blockquote>OK. actually 'dumb' is dumb because it takes more disk than 'a'.<div><br /></div><div>for a detailed issue description, please check&nbsp;<a href="http://sphinxsearch.com/forum/view.html?id=8345">http://sphinxsearch.com/forum/view.html?id=8345</a></div><div><br /></div><div>Thanks.</div>
