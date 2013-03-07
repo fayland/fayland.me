@@ -1,0 +1,50 @@
+---
+category: perl
+layout: post
+tags: []
+title: $Perl6 = $class.bless(:Example&lt;12&gt;);
+---
+{% include JB/setup %}
+
+<h3>Pause</h3>
+I'm sorry. pugs 还有很多没有实现，所以我也不知道写下来的是否正确，所以就先等等了。<br />
+本章只是占个地方。可以略过不看。等 pugs 实现了 bless 等我会慢慢加进来。
+
+<h3>构建和初始化</h3>
+所有的类都从 Object 类继承了一个构建函数 new. 它能将传递进来的参数（只能是带名参数）分别初始化对应的属性。
+<pre><code>Class Dog {
+    has $.name;
+    ...
+
+my $pet = Dog.new(:name&lt;Eric>); # 这里的 new 继承自 Object, 而传递进来的 :name&lt;Eirc> 将初始化 $.name
+</code></pre>
+你可以自己写 new 来覆盖 Object 的 new. <br />
+或者写你喜欢名字的构建器。与 Perl 5 中一样，一个构件器就是调用了 bless 的例程，不同的是类中调用的是方法。<br />
+因为 pugs 还没实现 bless, 所以我也试不出来。只能暂时缓缓。
+
+<h3>submethod BUILD</h3>
+<pre><code>class Dog {
+    has $.name;
+    has $.mum;
+    has $:age;
+
+    submethod BUILD ($.name) {
+        $.name ~= ' Lam';
+    }
+}
+my $pet = Dog.new( :name&lt;Snoopy>, :mum&lt;Kitty>, :age&lt;2> );
+say $pet.name; # Snoopy Lam</code></pre>
+前面讲过 submethod 与 method 不同的是 submethod 是不会被继承的。<br />
+这里的 BUILD 方法覆盖了 Object 里的方法。函数 bless 会通过调用 BUILDALL 来自动调用合适的 BUILD<br />
+
+<h3>clone</h3>
+<pre><code>class Dog {
+    has $.name;
+    has $.mum;
+    has $:age;
+    ...
+}
+my $pet = Dog.new( :name&lt;Snoopy>, :mum&lt;Kitty>, :age&lt;2> );
+...
+my $pet2 = $pet.clone(:name&lt;Lily>);
+# 除了名字改为 Lily, 其 mum, age 都跟 $pet 一样，而且可以调用 $pet 能调用的东西</code></pre>

@@ -1,0 +1,120 @@
+---
+category: perl
+layout: post
+tags: []
+title: 用 Ajax 技术添加预览功能
+---
+{% include JB/setup %}
+
+<h2>简单介绍</h2>
+Preview/预览功能在BBS, CMS中是个常用的功能，如果没有 Ajax, 一般就得弹出窗口或提交页面，挺麻烦的。<br>
+而有 Ajax 后自然不同，写完了直接在本页显示结果。<p>
+
+我给自己的 Eplanet 添加了用 Ajax 写就的预览功能。代码如下，仅供参考。
+
+<h2>Update</h2>
+2005/4/21 将 GET 改为 POST 方法，这样能支持大于 512K 的参数。
+
+<h2>代码分析</h2>
+<ul>
+<li>js 分析<br>
+loadXMLDoc 为创建一个 XMLHttpRequest 对象，可以提交 URL <br />
+PreviewMe 为预览函数，没有回复时提交，提交后得到的回复显示出来<br>
+form 区块为填写预览内容区块，而且有一按钮用以交互<br>
+<div id="preview" 为显示区域<br>
+<pre><code>
+&lt;script language="javascript" type="text/javascript">
+var req;
+
+function loadXMLDoc(url, parameters) 
+{
+    // branch for native XMLHttpRequest object
+    if (window.XMLHttpRequest) {
+        req = new XMLHttpRequest();
+        req.onreadystatechange = processReqChange;
+        req.open("POST", url, true);
+        req.setRequestHeader('Connection', 'close');
+        req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        req.send(parameters);
+    // branch for IE/Windows ActiveX version
+    } else if (window.ActiveXObject) {
+        req = new ActiveXObject("Microsoft.XMLHTTP");
+        if (req) {
+            req.onreadystatechange = processReqChange;
+            req.open("POST", url, true);
+            req.setRequestHeader('Connection', 'close');
+            req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            req.send(parameters);
+        }
+    }
+}
+
+function PreviewMe(input, response)
+{
+  if (response != ''){ 
+    // Response mode
+    message = document.getElementById('preview');
+    message.innerHTML = response;
+  }else{
+    // Input mode
+    url  = 
+      '[% base %]/preview/';
+    loadXMLDoc(url,'body=' + encodeURIComponent(input));
+  }
+}
+
+function processReqChange() 
+{
+    // only if req shows "complete"
+    if (req.readyState == 4) {
+        // only if "OK"
+        if (req.status == 200) {
+
+      response  = req.responseText;
+     
+      PreviewMe('', response);
+
+        } else {
+            alert("There was a problem retrieving the XML data:\n" + req.statusText);
+        }
+    }
+}
+&lt;/script>
+
+&lt;form>&lt;textarea name="editor" name="cms_text" rows="15" cols="100" wrap="virtual">&lt;/textarea>
+&lt;input type='button' onclick="PreviewMe(this.form.editor.value,'');" value='Preview Me'>
+&lt;/form>
+
+&lt;div style='margin:2em; border: 1px solid #888888;background: #000; color:#FFF;'>Preview:&lt;br>
+&lt;div id="preview" style='background: #FFF; color:#000;padding: 1em'>&lt;/div>
+&lt;/div>
+</code></pre>
+<li>[% base %]/preview/?body= 文件<br>
+此代码块主要是用一个 CGI 接收 body 参数，经过变换打印出来。如下是我的 Eplanet 代码（片断）：
+<pre><code>
+package Eplanet::C::Preview;
+
+use base 'Catalyst::Base';
+
+sub preview : Global {
+    my ( $self, $c, $submit ) = @_;
+    
+    my $text = $c->req->params->{'body'};
+    
+    #damn it, why i should add this
+    $c->res->headers->header( 'Content-Type' => 'text/html;charset=utf-8' );
+    
+    $c->res->output("$text");
+
+}
+
+1;
+</code></pre>
+</ul>
+
+<h2>特殊说明</h2>
+这是个不完整也不完美的代码。<br>
+Catalyst 有个 Plugin::Ajax. 但是不太完美，不符合我的要求。<br>
+已经把它加到自己的 BBS 中，如果有时间给 LeoBBSx 等写个修改。<br>
+如下为一截图：<br>
+<img src='img/Ajax_preview.jpg' border='1' />

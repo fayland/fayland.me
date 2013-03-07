@@ -1,0 +1,59 @@
+---
+category: perl
+layout: post
+tags: []
+title: 'my enum Example17 &lt;&gt;'
+---
+{% include JB/setup %}
+
+<p>Enum, enumerate 的缩写，可翻译为枚举。<br />
+在 Larry Wall's A12 中，Enum 用于简化类似下面这样的声明：
+<pre>my subtype DayOfWeek of Int where 0..6;
+my subtype DayOfWeek::Sunday    of DayOfWeek where 0;
+my subtype DayOfWeek::Monday    of DayOfWeek where 1;
+my subtype DayOfWeek::Tuesday   of DayOfWeek where 2;
+my subtype DayOfWeek::Wednesday of DayOfWeek where 3;
+my subtype DayOfWeek::Thursday  of DayOfWeek where 4;
+my subtype DayOfWeek::Friday    of DayOfWeek where 5;
+my subtype DayOfWeek::Saturday  of DayOfWeek where 6;</pre>
+这是一种很常见的结构。一个类只允许几个已知的值，这就是枚举的大概意思。上面的代码可以简化为：
+<pre>my enum DayOfWeek of int
+        «Sunday Monday Tuesday Wednesday Thursday Friday Saturday»;</pre>
+如果你想把 Sunday 为 7，且采用缩写的话，可以这么做：
+<pre>my enum DayOfWeek <<:Mon(1) Tue Wed Thu Fri Sat Sun>>;</pre>
+<p>枚举这种结构是很常见的，比如罗马数字或十六进制等：</p>
+<pre>my enum roman [i => 1,   v => 5,
+                x => 10,  l => 50,
+                c => 100, d => 500,
+                m => 1000];</pre>
+<pre>my Scalar hex «:zero(0) one two three four five six seven eight nine
+                   :ten<a> eleven twelve thirteen fourteen fifteen»;</pre>
+
+<h3>Usage</h3>
+enum 可以表现为一个 role 或 property, 而 enum 的值可以表现为一个子类型，方法或者一个普通值（不带参数的 sub）。<br />
+我们以 enum day <code>&lt;Sun Mon Tue Wed Thu Fri Sat></code> 为例：
+<pre><code>my $x does Tue; # Tue 做为 role
+$x does day&lt;Tue>; # 上一句其实等同于这一句
+say $x.day; # 3， enum 定义了 day::Tue 为 3
+$x ~~ day; $x ~~ Tue; $x ~~ day::Tue; # 都返回 ture
+$x ~~ Wed; # 返回 false</code></pre>
+前面的 <a href='Perl6_ES13.html'>role Example13 { # Perl6 }</a> 里补充的 but 是 enum 最好的使用方法。
+<pre><code>$x = "Today" but Tue; ＃ 等同与 $x = "Today" but day::Tue; 或 $x = "Today" but day&lt;Tue>;</code></pre>
+用前面 but 的解释就是：
+<pre>$x = "Today";
+$x does day;
+$x.day = &day::('Tue');</pre>
+下面这些都将返回 true
+<pre>$x.does(Tue)
+$x.does(day)
+$x.day == Tue
+day($x) == Tue
+Tue($x)
+$x.Tue</pre>
+
+<p>我们有两个内建的 enum:</p>
+<pre><code>our bit enum *bool &lt;false true>;
+our bit enum *taint &lt;untainted tainted>;</code></pre>
+
+<h3>Others</h3>
+关于冲突与覆盖，请参考 <a href='http://search.cpan.org/perldoc?Perl6::Bible::A12'>Perl6::Bible::A12</a> 和 <a href='http://search.cpan.org/perldoc?Perl6::Bile::S12'>Perl6::Bile::S12</a>.

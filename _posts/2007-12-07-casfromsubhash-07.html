@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Catalyst
+title: C::A::S::FromSub::Hash
+---
+{% include JB/setup %}
+
+I just release a new CPAN module for Catalyst - <a href="http://search.cpan.org/perldoc?Catalyst::Authentication::Store::FromSub::Hash">Catalyst::Authentication::Store::FromSub::Hash</a>.<br /><br />Generally I always hate one situation that <a href="http://search.cpan.org/perldoc?Catalyst::Authentication::Store::DBIx::Class">http://search.cpan.org/perldoc?Catalyst::Authentication::Store::DBIx::Class</a> hits database every request. to ease database, I create one cache layout between Authentication and database.<br /><br />In my <a href="http://code.google.com/p/fayland">Foorum</a>,<br />Foorum.pm<pre><code>use Catalyst qw/Authentication ../;</code></pre><br />foorum.yml<pre><code>authentication:<br />  default_realm: 'members'<br />  realms:<br />    members:<br />      credential:<br />        class: 'Password'<br />        password_field: 'password'<br />        password_type: "hashed"<br />        password_hash_type: "SHA-1"<br />      store:<br />        class: 'FromSub::Hash'<br />        model_class: "UserAuth"</code></pre><br />In this config, we use store "FromSub::Hash" and model_class "UserAuth". so we need create a Foorum::Model::UserAuth:<pre><code>package Foorum::Model::UserAuth;<br />use base 'Catalyst::Model';<br /><br />sub auth {<br />    my ($self, $c, $userinfo) = @_;<br />    <br />    my $where;<br />    if (exists $userinfo->{user_id}) {<br />        $where = { user_id => $userinfo->{user_id} };<br />    } elsif (exists $userinfo->{username}) {<br />        $where = { username => $userinfo->{username} };<br />    } else { return; }<br /><br />    my $user = $c->model('User')->get( $c, $where );<br />    return $user;<br />}</code></pre><br />$c->model('User')->get($c, $where); has built-in cache layout. and it return hash from/to cache.<br /><br />I guess I would create another module - Catalyst::Authentication::Store::FromSub::Object later.<br />but since I don't use it, I'm not sure when will it kick out.<br /><br />@Enjoy!

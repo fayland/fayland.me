@@ -1,0 +1,44 @@
+---
+category: perl
+layout: post
+tags: []
+title: Catalyst Authenticate
+---
+{% include JB/setup %}
+
+<p>针对不同的情况，Catalyst 提供了十几种验证用户的方法（详细的 svn catalyst）。<br />
+一般来说，我们都将用户名和密码存进一个 table 中（如表 users, 字段 usr/pwd 例子 fayland/123456）。<br />
+这次我使用 <a href='http://search.cpan.org/perldoc?Catalyst::Plugin::Authenticate::CDBI'>Catalyst::Plugin::Authenticate::CDBI</a> 来验证用户。这个 plugin 非常简单。很容易就看懂源代码。<br />
+<a href='http://search.cpan.org'>CPAN</a> 中可能没有，不过 <a href='http://dev.catalyst.perl.org'>Catalyst</a> 的 <a href='http://maypole.perl.org/repos/Catalyst/trunk'>svn 目录</a>中有。</p>
+
+<p>假设我有一个 catalyst FForum 工程。根据 <a href='http://search.cpan.org/perldoc?Catalyst::Plugin::Authenticate::CDBI'>Catalyst::Plugin::Authenticate::CDBI</a> 的指导，我们先在 FForum.pm 中的 config 下（或里） setup 上加进
+<pre># Authenticate::CDBI
+FForum->config->{authenticate}->{cdbi} = {
+    class    => 'FForum::M::CDBI::Users',
+    username => 'usr',
+    password => 'pwd'
+};</pre>
+<p>这里我们得生成一个 model CDBI::Users.<br />
+然后我们生成一个 perl script/fforum_server.pl controller Login, 然后在 Login.pm 中：</p>
+<pre>sub in : Local {
+    my ( $self, $c ) = @_;
+    
+    # Retrieve params of username/password
+    my $username = $c->req->param('username');
+    my $password = $c->req->param('password');
+    
+    if ( $c->authenticate_cdbi($username, $password) ) {
+        # successful authentication
+        $c->res->output('Login!');
+    } else {
+        $c->res->output('Failed!');
+    }
+}</pre>
+<p>这样当我们访问 http://fayland:3000/login/in?username=fayland&password=123456 时就会显示 Login!<br />
+而 http://fayland:3000/login/in?username=fayland&password=12345 时就会显示 Failed!<br />
+在我们的命令行调式器中会显示错误的原因。比如这次为 User 'fayland' credentials is invalid'.</p>
+
+<p>这里只是用最简单的直接调用 URL, 一般要详细添加用户登陆界面。<br />
+写本文并无其他用意，只是告诉各位如果碰到这种情况还可以考虑这种方法。</p>
+
+<p>如果有时间我会介绍下 Session, 这个或许更有趣一些。</p>

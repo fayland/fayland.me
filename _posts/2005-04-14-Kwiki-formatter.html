@@ -1,0 +1,69 @@
+---
+category: perl
+layout: post
+tags: []
+title: Kwiki Formatter
+---
+{% include JB/setup %}
+
+<p>
+数几个小时前写了个 textile, 现在想写个 <a href="//www.kwiki.org/">Kwiki</a> 格式。
+</p>
+
+
+<p>
+CPAN 中没有现成的 Kwiki 直接格式模块，但是有个实现了所有功能的模块 CGI::Kwiki::Formatter ，于是我就写了个继承这模块的子模块。
+</p>
+
+
+<p>
+模块代码如下：
+
+</p>
+<blockquote><pre>package Text::KwikiFormatter;
+
+use strict;
+
+use vars qw( $VERSION );
+$VERSION = '0.01';
+
+use base qw(CGI::Kwiki::Formatter);
+
+sub new {
+   my $class = shift;
+   my $self = { @_ };
+   bless $self, $class;
+   return $self;
+}
+
+sub wiki_link_format {
+   my ($self, $text) = @_;
+   my $wiki_link = qq{&lt;a href='$text.html'&gt;$text&lt;/a&gt;};
+   return $wiki_link;
+}
+
+1;
+</pre></blockquote>
+<p>
+代码很简单，除了要置换 wiki_link_format 这个格式是针对 wiki 内部词汇转换，我把它改为我自己所需要的 Eplanet 内部转换。
+</p>
+
+
+<p>
+运用代码如下：
+
+</p>
+<blockquote><pre>use Text::KwikiFormatter;
+my $formatter = Text::KwikiFormatter-&gt;new();
+
+print $formatter-&gt;process($text);
+
+</pre></blockquote>
+<p>
+Have fun! Enjoy!
+
+</p>
+<h2>Refer</h2>
+<p>
+<a href="//www.kwiki.org/index.cgi?KwikiFormattingRules">http://www.kwiki.org/index.cgi?KwikiFormattingRules</a>
+</p>

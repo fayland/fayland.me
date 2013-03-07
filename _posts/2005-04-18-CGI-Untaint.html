@@ -1,0 +1,85 @@
+---
+category: perl
+layout: post
+tags: []
+title: 用 CGI::Untaint 检测 params
+---
+{% include JB/setup %}
+
+<h2>描述</h2>
+在网上用户注册是个很平常的东西，而注册后的用户资料修改也很平常。<br>
+记得有本书里写着“所有的用户都是贼。”<br>
+对用户表单输入的东西都要进行检查，每个网页脚本编写者都必须知道的事。<p>
+
+用 <a href='http://search.cpan.org/perldoc?CGI::Untaint'>CGI::Untaint</a> 的好处是减少代码编写和代码重用。<br>
+如果使用 <a href='http://search.cpan.org/perldoc?Class::DBI'>Class::DBI</a> 的话，强烈建议使用 <a href='http://search.cpan.org/perldoc?Class::DBI::FromCGI'>Class::DBI::FromCGI</a>
+
+<h2>Example hooray</h2>
+假设有个注册表单（还有个编辑表单，代码类似）：
+<pre><code>
+&lt;form action='http://localhost/cgi-bin/register.pl' method='post'>
+UserName: &lt;input type='text' name='user'>&lt;br>
+Password: &lt;input type='password' name='pwd'>&lt;br>
+Email: &lt;input type='text' name='email'>&lt;br>
+HomePage: &lt;input type='text' name='homepage'>&lt;br>
+ICQ: &lt;input type='text' name='icq'>&lt;br>
+QQ: &lt;input type='text' name='qq'>&lt;br>
+&lt;input type='submit'>&lt;/form>
+</code></pre>
+还有些东西可以自己加进去。<p>
+
+register.pl 的代码如下，edit.pl 的代码可以复用此代码。
+<pre><code>
+#!/usr/bin/perl
+use strict;
+use warnings;
+use CGI qw/:cgi/;
+use CGI::Carp qw(fatalsToBrowser);
+use CGI::Untaint;
+use lib 'E:/Fayland/cgi-bin/'; # where My::Untaint place
+
+my $q = new CGI;
+
+print $q->header;
+
+my $handler = CGI::Untaint->new( {
+        INCLUDE_PATH => 'My::Untaint',
+    }, $q->Vars );
+
+my $username = $handler->extract(-as_abc => 'user');
+my $pwd = $handler->extract(-as_pwd => 'pwd');
+my $email = $handler->extract(-as_email => 'email');
+my $homepage = $handler->extract(-as_url => 'homepage');
+my $icq = $handler->extract(-as_number => 'icq');
+my $qq = $handler->extract(-as_number => 'qq');
+</code></pre>
+<pre><code>
+package My::Untaint::abc;
+
+use strict;
+use base 'CGI::Untaint::object';
+
+sub _untaint_re { qr/^([-\w]{4,10})$/ }
+
+1;
+
+package My::Untaint::pwd;
+
+use strict;
+use base 'CGI::Untaint::object';
+
+sub _untaint_re { qr/^(\w+)$/ }
+
+1;
+
+package My::Untaint::number;
+
+use strict;
+use base 'CGI::Untaint::object';
+
+sub _untaint_re { qr/^(\d+)$/ }
+
+1;
+</code></pre>
+如果满足则 $homepage 等为其值，不满足条件则为空。<br>
+这是最原始的 CGI::Untaint, 写起来并不是很简单或很有用途。但可以如 <a href='http://search.cpan.org/perldoc?Class::DBI::FromCGI'>Class::DBI::FromCGI</a> 那样使用 CGI::Untaint 模块或它的思路。

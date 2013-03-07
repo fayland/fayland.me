@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: 关于怎么创建新模块简单的纪录
+---
+{% include JB/setup %}
+
+以下只是简单的纪录。详细的怎么弄有空会写。<p /><pre>module-starter --module=Lingua::Han::Cantonese --author="Fayland Lam" --email=fayland@gmail.com --mb<br />cd Lingua-Han-Cantonese<br /># 写代码和测试文件<br />prove -l t/*<br />perl Build.pl<br />perl Build<br /># 删除 MANIFEST<br />perl Build manifest<br />perl Build dist<br />perl Build realclean<br /></pre><h3>tips</h3><ul><li>如果 lib 目录下有不是 pm 文件而是什么 data 文件的话，比如 Cantonese.dat, <a href="http://search.cpan.org/perldoc?Module::Build">Module::Build</a> 默认不会包括。你可以这么在 Build.PL 里加进这句：<br /><pre>$builder->add_build_element('dat');</pre></ul>
