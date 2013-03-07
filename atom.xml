@@ -4,7 +4,7 @@ title : Atom Feed
 ---
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
- 
+
  <title>{{ site.title }}</title>
  <link href="{{ site.production_url }}/{{ site.atom_path }}" rel="self"/>
  <link href="{{ site.production_url }}"/>
@@ -16,6 +16,7 @@ title : Atom Feed
  </author>
 
  {% for post in site.posts %}
+    {% if forloop.index < 20 %}
  <entry>
    <title>{{ post.title }}</title>
    <link href="{{ site.production_url }}{{ post.url }}"/>
@@ -23,6 +24,7 @@ title : Atom Feed
    <id>{{ site.production_url }}{{ post.id }}</id>
    <content type="html">{{ post.content | xml_escape }}</content>
  </entry>
+    {% endif %}
  {% endfor %}
- 
+
 </feed>
