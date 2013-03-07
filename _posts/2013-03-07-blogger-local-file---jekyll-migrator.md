@@ -3,7 +3,7 @@ layout: post
 title: "Blogger local file  > Jekyll migrator"
 description: ""
 category: perl
-tags: ['perl', 'jekyll']
+tags: ['perl', 'Jekyll']
 ---
 {% include JB/setup %}
 
