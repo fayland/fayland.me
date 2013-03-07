@@ -1,0 +1,10 @@
+---
+category: javascript
+layout: post
+tags:
+  - javascript
+title: XML.ObjTree and force_array
+---
+{% include JB/setup %}
+
+在以前的 blog 里提过 JSAN 的 XML.ObjTree. See <a href="http://www.fayland.org/blog/2006/04/javascript-xml-parser.html">javascript XML parser</a><br />今天发现一点新东西。所以要做一下修正。<br />最主要是 force_array 这个以前被我忽略了但非常有用的参数。<pre>&lt;xml>&lt;message>OK&lt;/message>&lt;/xml></pre><pre>&lt;xml>&lt;message>OK&lt;/message>&lt;message>DEL&lt;/message>&lt;/xml></pre><br />以前写起来比较麻烦，要用 if (tree.xml.message) { 来判断是不是一个。<br />现在发现有了 force_array, 就非常简单了。:)<pre><br />JSAN.use('XML.ObjTree');<br />var xotree = new XML.ObjTree();<br /><span style="color:red;">xotree.force_array = [ "message" ];</span><br />var tree = xotree.parseXML( response );</pre>for (i = 0; i <>不管有多少个 messages, 一律强制使用 array<br />以前的我真是有点笨。<br /><br />any way, JSAN 和 <a href="http://openjsan.org/doc/k/ka/kawasaki/XML/ObjTree/0.24/">XML.ObjTree</a> 都非常好用。:)

@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - CPAN
+  - Google
+title: Google::Code::Upload
+---
+{% include JB/setup %}
+
+Google::Code::Upload - uploading files to a Google Code project.<br /><br />see you have a google code project like <a href="http://code.google.com/p/fayland/">http://code.google.com/p/fayland/</a><br />then you want to upload some files to Downloads section.<br />it's OK to upload through web interface, and if you want to upload through command line, there is a python script: <a href="http://support.googlecode.com/svn/trunk/scripts/googlecode_upload.py">http://support.googlecode.com/svn/trunk/scripts/googlecode_upload.py</a><br /><br />I'm a Perl guy, so I decided to port it to Perl. then there comes out <a href="http://search.cpan.org/dist/Google-Code-Upload/">http://search.cpan.org/dist/Google-Code-Upload/</a>.<br />mainly there is a Perl script <a href="http://search.cpan.org/dist/Google-Code-Upload/script/googlecode_upload.pl">http://search.cpan.org/dist/Google-Code-Upload/script/googlecode_upload.pl</a> which you can just simply type:<br />$> googlecode_upload.pl Google-Code-Upload-0.02.tar.gz<br />then type project:fayland, username:fayland, password:lovekitty, summary:xxx<br /><br />just Enjoy!

@@ -1,0 +1,11 @@
+---
+category: sphinx
+layout: post
+tags:
+  - search
+  - Sphinx
+title: something about Sphinx indexer
+---
+{% include JB/setup %}
+
+<a href="http://www.sphinxsearch.com/doc.html#indexing">Sphinx</a> is just another search engine. something like Xapian.<br /><br />I'm rebuilding the search function for <a href="http://www.zorpia.com/">Zorpia</a> these days. the user table is somehow 9,000,000+, it's pretty slow to query SQL directly. so we guess we need use a search engine to rebuild our search function.<br /><br />Xapian and Sphinx is coming into our eyes. frankly we don't know much about them. I just spend some hours on Sphinx (haven't do Xapian index yet. but both are installed) and find the indexer part in Sphinx is pretty easy to understand and configured. u just need write a conf and Sphinx indexer will take care of the left. I'm pretty happy with this. anyway, someone will say that's not controllable. but it's OK when it meets our demand.<br /><br />I think I'll do Xapian indexer later and do search part of both. But basically the idea behind search engine is somehow the same.<br /><br />That's it, I'll write more when I'm free.

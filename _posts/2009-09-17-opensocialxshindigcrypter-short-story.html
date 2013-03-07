@@ -1,0 +1,56 @@
+---
+category: perl
+layout: post
+tags:
+  - CPAN
+  - OpenSocial
+  - Shindig
+title: OpenSocialX::Shindig::Crypter short story
+---
+{% include JB/setup %}
+
+the short story is that I released the <a href="http://search.cpan.org/dist/OpenSocialX-Shindig-Crypter/">OpenSocialX::Shindig::Crypter</a> yesterday.<br />
+<br />
+the short story is if you want to find a way that encrypt data by Perl and decrypt the encrypted data by PHP, you come to the right place.<br />
+<br />
+Perl: <a href="http://github.com/fayland/opensocialx-shindig-crypter/raw/master/sample/crypt.pl">crypt.pl</a><br />
+<pre><code>my $str = 'o=1&v=3&p=5';
+my $cipher = Crypt::CBC->new( {
+    'key' => 'length16length16',
+    'cipher'=> 'Rijndael',
+    'iv' => '1234567890abcdef',
+    'literal_key' => 1,
+    'padding' => 'null',
+    'header' => 'none',
+    keysize => 128/8
+} );
+my $encrypted = $cipher->encrypt($str);
+print "encrypted: ".encode_base64($encrypted)."\n";
+print "decrypted: ".$cipher->decrypt($encrypted)."\n";
+
+my $hmac = Digest::SHA::hmac_sha1($encrypted, 'hmackey');
+print "hmac: " . encode_base64($hmac) . "\n";
+print "total: " . encode_base64($encrypted . $hmac) . "\n";</code></pre>PHP: <a href="http://github.com/fayland/opensocialx-shindig-crypter/raw/master/sample/crypt.php">crypt.php</a><br />
+<pre><code>$str = 'o=1&v=3&p=5';
+$encrypted = mcrypt_cbc(MCRYPT_RIJNDAEL_128, 'length16length16', $str, MCRYPT_ENCRYPT, '1234567890abcdef');
+$decrypted = mcrypt_cbc(MCRYPT_RIJNDAEL_128, 'length16length16', $encrypted, MCRYPT_DECRYPT, '1234567890abcdef');
+echo "encrypted: ".base64_encode($encrypted)."\n"; 
+echo "decrypted: ".$decrypted."\n"; 
+
+$blabla = hash_hmac('sha1', $encrypted, 'hmackey', 1);
+echo "hmac: " . base64_encode($blabla) . "\n";
+echo "total: " . base64_encode($encrypted . $blabla) . "\n";</code></pre><br />
+both of them show the same output:<br />
+<pre><code># perl crypt.pl
+encrypted: rgPZe6swWb3t3yIoIZFQaQ==
+decrypted: o=1&v=3&p=5
+hmac: WLTGeyesYTUhwg6fjVqDudrKRz0=
+total: rgPZe6swWb3t3yIoIZFQaVi0xnsnrGE1IcIOn41ag7naykc9
+# php crypt.php
+encrypted: rgPZe6swWb3t3yIoIZFQaQ==
+decrypted: o=1&v=3&p=5
+hmac: WLTGeyesYTUhwg6fjVqDudrKRz0=
+total: rgPZe6swWb3t3yIoIZFQaVi0xnsnrGE1IcIOn41ag7naykc9</code></pre><br />
+I'll post a <a href="http://www.fayland.org/blog/2009/09/opensocialxshindigcrypter-long-story.html">long story</a> later today.<br />
+<br />
+Thanks.

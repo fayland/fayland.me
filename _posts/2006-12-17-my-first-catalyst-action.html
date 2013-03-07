@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Catalyst
+title: my first Catalyst Action
+---
+{% include JB/setup %}
+
+<a href='http://search.cpan.org/%7Ejrockway/Catalyst-Manual-5.700501/lib/Catalyst/Manual/Actions.pod'>Catalyst::Action</a> 是 Catalyst 里的另一种代码复用技术。<br /><br />我写的一个功能是记录一些 path 信息：比如 get, post, 还有页面载入的时长。<br />这个页面载入的时长是在 begin 时用 Time::HiRes 记录一个 gettimeofday, 然<br />后在 end 结束后再用 tv_interval 来获取时长。<br />“记录 path 信息”要写的地方在 return 之前。比如有 $c->res->body 或<br />$c->res->location 的时候直接返回了，否则在 $c->view 后返回。这是常见的一<br />个 sub end 的写法。<br />如果不用 Catalyst::Action 的话，可以有一些弊端如，sub end 里要写两次（两<br />个 return 之前），还有如果有很多个 end 代码就可能会写到很多地方。<br />第二个好处是 Catalyst::Action 所谓的真正的复用。只要是 sub end 在后面加<br />上 :ActionClass 就会复用之个 Action 的代码。<br />第一个好处只是 NEXT 所带来的。<br /><br />可能的代码：<br />Before:<pre># Root.pm<br />sub begin : Private { my ($self, $c) = @_; $c->stash->{start_t0} =<br />[gettimeofday]; }<br />sub end : Private { my ($self, $c) = @_;<br />   if ($c->res->body || $c->res->location) {<br />       $c->model('Log')->log_path($c, tv_interval(<br />$c->stash->{start_t0}, [gettimeofday] ) ); # log path<br />       return;<br />   }<br />   # code here<br />   $c->forward($c->view('TT'));<br />   $c->model('Log')->log_path($c, tv_interval( $c->stash->{start_t0},<br />[gettimeofday] ) ); # log path<br />}</pre>如果有其他 pm 的 sub end 覆盖了 Root.pm 的 end 的话，那还要在那个<br />sub end 里加上 log_path.<br /><br />而 Catalyst::Action 的复用会很方便：<br />After:<pre>package <a href='http://fayland.googlecode.com/svn/trunk/Foorum/lib/Catalyst/Action/PathLogger.pm'>Catalyst::Action::PathLogger</a>;<br /><br />use strict;use warnings;<br />use base 'Catalyst::Action';<br />use Time::HiRes qw( gettimeofday tv_interval );<br /><br />sub execute {<br />   my $self = shift;<br />   my ( $controller, $c ) = @_;<br /><br />   $self->NEXT::execute( @_ );<br /><br />   $c->model('Log')->log_path($c, tv_interval( $c->stash->{start_t0},<br />[gettimeofday] ) );<br />}</pre>而 Root.pm 的 sub end 将不在用 :Private 而是 sub end :<br />ActionClass('PathLogger') 其他 pm 如果有 sub end 也可以这么写。<br /><br />quite easy and reusable. have fun! :)

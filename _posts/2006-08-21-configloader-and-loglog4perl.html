@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: ConfigLoader and Log::Log4perl
+---
+{% include JB/setup %}
+
+it seems that ConfigLoader and Log::Log4perl in Catalyst are not such perfect.<br /><br />ConfigLoader cann't load more than 2 yaml files like "a.yml", "b.yml", "c.yml".(Am I missing something?) but <a href='http://search.cpan.org/perldoc?Catalyst::Plugin::Config::YAML'>Config::YAML</a> does.<pre>use Catalyst qw/ .. Config::YAML ../;<br />__PACKAGE__->config('config_file' => ['a.yml', 'b.yml', 'c.yml']);<br />__PACKAGE__->setup;</pre><br /><br />and when I setup the Catalyst::Log::Log4perl up, but it sucks. the log conf is something like:<pre>log4perl.logger.Foorum=DEBUG, Log<br /><br />log4perl.appender.Log=Log::Dispatch::File<br />log4perl.appender.Log.filename=../log/foorum.log<br />log4perl.appender.Log.mode=append<br />log4perl.appender.Log.layout=PatternLayout<br />log4perl.appender.Log.layout.ConversionPattern=%d %p> %F{1}:%L %M - %m%n</pre> and script like:<pre># Log4perl<br />use Catalyst::Log::Log4perl;<br />__PACKAGE__->log(Catalyst::Log::Log4perl->new('../logger.conf'));<br />__PACKAGE__->setup;</pre>but the foorum.log shows:<pre>2006/08/21 19:10:55 DEBUG> Catalyst.pm:1457 Catalyst::handle_request - debug<br />2006/08/21 19:10:55 INFO> Catalyst.pm:1457 Catalyst::handle_request - info</pre> the "Catalyst.pm 1457 Catalyst::handle_request" is useless. mm, Am I missing something too?

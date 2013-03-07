@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: HTML::BBCode
+---
+{% include JB/setup %}
+
+很多 Forum 都用 BBCode, 我也打算用这个。这样比较好控制。<br />CPAN 上有一个 <a href='http://search.cpan.org/perldoc?HTML::BBCode'>HTML::BBCode</a> 但是跟我要求的有一点点差别。我需要 flash, music, font, align 的支持。所以就对 HTML::BBCode 做了一点点修改。（BBCode::Parser 这模块太复杂了，HTML::BBCode 就比较简单。）<br />这个修改非常简单，因为原来的 HTML::BBCode 写的就非常棒。<br /><br />附上一个我的 patch 地址：<a href='http://fayland.googlecode.com/svn/trunk/MISC/patches/BBCode.patch'>http://fayland.googlecode.com/svn/trunk/MISC/patches/BBCode.patch</a><br />可以支持 <br />[font=宋体]文字[/font]<br />[flash]http://somewhere.com/some.swf[/flash]<br />[align=center]place it in center[/algin]<br />[music]http://somewhere.com/anymusic.(mp3|wma|rm|ra|..)[/music]

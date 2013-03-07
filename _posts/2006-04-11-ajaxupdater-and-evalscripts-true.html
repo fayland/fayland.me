@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: 'Ajax.Updater and evalScripts: true'
+---
+{% include JB/setup %}
+
+OK, 我昨天说 Catalyst 的 redirect 和 Ajax 的那个不合拍。后来得到那边的提示。用这样的代码解决了。<br />Controller:<pre>sub vote : Global {<br />    my ( $self, $c ) = @_;<br /><br />    unless ($c->user_exists) {<br />        #$c->res->redirect('/login');<br />        $c->res->body(<&lt;HTML);<br />&lt;script><br />     top.location = '/login';<br />&lt;/script><br />HTML<br />        return 1;<br />    }</pre>TT files:<pre>var myAjax = new Ajax.Updater('vote_result', url, {method: 'get', parameters: pars, evalScripts: true});</pre><br /><br />这里多了个 evalScripts: true 这样可以在 div 里运行返回的 javascript.<br />Yup, It's OK now. 但是我想 prototype.js 应该能自动处理 redirect 这样的 Location header.

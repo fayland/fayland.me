@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: Authentication and DBIC
+---
+{% include JB/setup %}
+
+因为正在搞的项目使用了多个数据源（说过好多次了。:) 所以只能在运行时指定 <a href='http://search.cpan.org/perldoc?Catalyst::Plugin::Authentication::Store::DBIC'>Catalyst::Plugin::Authentication::Store::DBIC</a> 所采用的表所在的数据源。将这个 config 放到 Root.pm 下总是会报错。怎么改也改不好，大致原因是 Catalyst 一运行就载入所有的插件 Plugins, 而载入插件时插件就会读取它自己的 config ，所以在 __PACKAGE__->setup; 后修改插件的 config 是不起作用的。而我们获取表所在的数据源需要知道 $c->req->address 类似东西，所以一定会是在 setup 以后。<br />最后迫不得已到 <a href='http://lists.rawmode.org/mailman/listinfo/catalyst'>Catalyst mailing list</a> 发了个 <a href='http://lists.rawmode.org/pipermail/catalyst/2006-March/006111.html'>[Catalyst] Catalyst::Plugin::Authentication::Store::DBIC and config in auto</a><br />邮件组里的人倒没给我解决，可能是时差关系。因为这是 $work, 所以就只好自己看源码了。最后的报错总是 Can't call method "search" on an undefined value at，研究了个把小时，总算搞定了。<br /><br />写一个 Module 专门用于 Authentication:<pre>package MyApp::Model::UserAuth;<br /><br />use strict;<br />use warnings;<br />use base 'Catalyst::Model';<br /><br />sub search {<br />   my $self = shift;<br />     my $user = MyApp->config->{dbic}{geo}->resultset('User')->search(@_);<br />     return $user;<br />}<br /><br />1; </pre>这里的 search 方法是专门给 DBIC::User 用的。因为这是一个 Model, 所以可以得到存到 config 里的数据源所在的表的。最后设置 yml 文件。<pre>authentication:<br /> dbic:<br />   user_class: "MyApp::Model::UserAuth"<br />   user_field: "username"<br />   password_field: "password" </pre><br />:) I like $$$$$.

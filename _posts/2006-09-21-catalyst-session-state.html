@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: Catalyst Session State
+---
+{% include JB/setup %}
+
+我们一般使用 cookie 来保存 sessionid, 如果 cookie 失效的话就用 url 来传递 sessionid.<br />这个在 Catalyst 里非常简单。我们能同时使用 State::URI 和 State::Cookie 模块。<pre>use Catalyst qw/<br /> -Debug<br /> Dumper<br /> Config::ConfigLoader<br /> Static::Simple<br /> Authentication<br /> Authentication::Store::DBIC<br /> Authentication::Credential::Password<br /> Session<br /> Session::Store::DBIC<br /> Session::State::URI<br /> Session::State::Cookie<br />/;</pre>将 URI 放在 Cookie 的前面。Session::State::URI 会判断有没有 load State::Cookie 而且 cookie 有没有效。如果 cookie 有效就使用 cookie, 无效就使用 uri.<br /><br />perfect solution!

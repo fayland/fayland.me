@@ -1,0 +1,32 @@
+---
+category: perl
+layout: post
+tags:
+  - Plack
+title: PSGI and Plack
+---
+{% include JB/setup %}
+
+The most exciting thing in Perl world today is <a href="http://search.cpan.org/perldoc?PSGI::FAQ">PSGI</a><br />
+<br />
+The homepage is <a href='http://plackperl.org/'>http://plackperl.org/</a><br />
+<br />
+I tried that today. there are some tips for Win32 user.<br />
+* Don't try to run under Standalone server, the alarm is not supported in Win32<br />
+* after install <a href="http://search.cpan.org/dist/Plack/">Plack</a> (maybe notest install Plack), try install <a href="http://search.cpan.org/perldoc?Plack::Server::AnyEvent">Plack::Server::AnyEvent</a> or <a href="http://search.cpan.org/perldoc?Plack::Server::ServerSimple">Plack::Server::ServerSimple</a><br />
+* at last, to know a bit of the Plack, cd the cpan build dir or download the tar.gz<br />
+<pre><code>C:\strawberry\cpan\build\Plack-0.9006-ZEaDbK\eg\dot-psgi>plackup -a Hello.psgi -s AnyEvent
+Accepting requests at http://0.0.0.0:5000/</code></pre>OR<pre><code>C:\strawberry\cpan\build\Plack-0.9006-ZEaDbK\eg\dot-psgi>plackup -a Hello.psgi -s ServerSimple
+Plack::Server::ServerSimple: You can connect to your server at http://localhost:5000/
+127.0.0.1 - - [23/十月/2009 22:19:15] "GET / HTTP/1.1" 200 11 "-" "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.1.3) Gecko/20090824 Firefox/3.5.3 GTB5"
+127.0.0.1 - - [23/十月/2009 22:19:15] "GET /favicon.ico HTTP/1.1" 200 11 "-" "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.1.3) Gecko/20090824 Firefox/3.5.3 GTB5"</code></pre>try visit http://127.0.0.1:5000/ then you'll get the access_log like above.<br />
+<br />
+well, I think the <a href="http://search.cpan.org/perldoc?Plack::Middleware::AccessLog">Plack::Middleware::AccessLog</a> should use &POSIX::setlocale(&POSIX::LC_ALL); on qw( .ISO8859-1 .ISO_8859-15 .US-ASCII .UTF-8 ) to avoid 十月 the Chinese.<br />
+<br />
+you can try more with the all the .psgi files under eg/dot-psgi, and you might have some ideas to write a Middleware. :)<br />
+<br />
+Thanks<br />
+<br />
+(Updates on Oct 24th)<br />
+<a href='http://search.cpan.org/~miyagawa/'>miyagawa</a> applied the <a href='http://github.com/miyagawa/Plack/commit/202aba6c850f802e834ac18ab3927285e745e667'>patch</a> with <a href='http://github.com/miyagawa/Plack/commit/9b64c5b52766706b48f09d2c268fc9315535f7b0'>some changes</a> and it works pretty well now. <br />
+Thanks very much. :)

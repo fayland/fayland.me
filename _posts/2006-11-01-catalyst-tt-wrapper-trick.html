@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - Catalyst
+  - TT
+title: Catalyst TT WRAPPER trick
+---
+{% include JB/setup %}
+
+Catalyst::View::TT has two different ways:<br />one is set a $c->stash->{template} then $c->forward($c->view)<br />the other is using $c->view('TT')->render<br />so if u want to have a hack on View::TT. better hack on 'sub render' since 'sub process' is calling 'sub render' indeed.<br /><br />assuimg that we have a very common situation. we have a wrapper.html for whole site. but we don't want to apply the wrapper.html in email body templates and /admin pages.<br />according to this, we might have two solution.<br />one is to create two view modulues like TT.pm and NoWrapperTT.pm. config the WRAPPER.<br />the other is to do some trick on 'sub render' as what I did today.<pre>sub render {<br />  my $self  = shift;<br />  my ( $c, $template, $args ) = @_;<br /><br />  # view Catalyst::View::TT for more details<br />  my $vars = {<br />      (ref $args eq 'HASH' ? %$args : %{ $c->stash() }),<br />  };<br /><br />  if ($vars->{no_wrapper}) {<br />      $self->template->service->{WRAPPER} = [];<br />  } else {<br />      $self->template->service->{WRAPPER} = ['wrapper.html'];<br />  }<br /><br />  $self->NEXT::render(@_);<br />}</pre>so that u can use something like:<pre>my $email_body= $c->view('TT')->render($c, 'email/example.html', {<br />  no_wrapper => 1,<br />  another_var => $another_var,<br />} );</pre>or set $c->stash->{no_wrapper} = 1 in Admin.pm<br /><br />have fun.<br />Refer: <a href="http://fayland.googlecode.com/svn/trunk/Foorum/lib/Foorum/View/TT.pm">Code in GoogleCode</a>

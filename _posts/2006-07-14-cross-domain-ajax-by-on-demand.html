@@ -1,0 +1,9 @@
+---
+category: javascript
+layout: post
+tags: []
+title: cross-domain "ajax" by On-Demand Javascript
+---
+{% include JB/setup %}
+
+Ajax 不能调用跨域名的脚本，mm, XML.com 介绍了三种解决方案，两种 <a href='http://www.xml.com/pub/a/2005/11/09/fixing-ajax-xmlhttprequest-considered-harmful.html?page=1'>proxy</a> 方案，比较容易设置。另一种就是 <a href='http://ajaxpatterns.org/On-Demand_Javascript'>On-Demand Javascript</a> 方案。<br /><br />On-Demand Javascript 讲起来比较简单，但是写起来比较复杂。<br />简单的讲是，在当前的 page 里用 javascript 制造一个 script 标签，然后给一个 src （可以是 cross-domain 的）。然后在这个远程的 src 地址中输出 text/javascript 的东西。比如定义 var response = 'test'; 什么的。最后在 page 的 div 里显示这个 var respose<br />在 XML 的 <a href='http://www.xml.com/pub/a/2005/11/09/fixing-ajax-xmlhttprequest-considered-harmful.html?page=2'>Fixing AJAX: XMLHttpRequest Considered Harmful</a> 中给出的例子里，在 Firefox 我测试的时候是有点错误的：<pre>    if (BROWSER_IS_IE) {<br />        if  (oScript.readyState == "loaded") {<br />        eval(callback);<br />        oScript.onreadystatechange = null;<br />       } else {<br />        oScript.onreadystatechange = CheckAgain;<br />       }<br />    // All other web browsers just do the callback function<br />    } else {<br />       eval(callback);<br />    }</pre> 这里的 eval(callback) 要调用 src 文件传来的变量如 var response, 但问题是这个 src 传递的很慢（服务端的程序总比客户端的慢）时，Firefox 会报错，response not defined 这样的错误。然后过一会儿传过来了就不会错了。 IE 上因为用了 if  (oScript.readyState == "loaded") 这样在确定了 script 被载入后才 eval(callback) 就不会出错了。<br /><br />我解决的方案是在这个 src 的文件中，比如 perl 文件中写点类似 $('divname').innerHTML = $result_value_from_perl;这样的 javascript 代码，而不用定义一个 var response 然后用 javascript 更新 divname.innerHTML. 在 Perl 代码中直接写能避免不同步的问题。<br /><br />好象说的比较乱。但目前人的状态也很乱。整天忙得不得了。

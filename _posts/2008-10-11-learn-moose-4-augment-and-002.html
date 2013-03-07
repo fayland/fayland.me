@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - IRC
+  - Moose
+title: 'Learn Moose 4: augment and 0.02 IRC::Bot::Log::Extended'
+---
+{% include JB/setup %}
+
+augment can be used as trigger in sub, to let user do something he wants.<br /><br />for example, I want to let user custom $message before insert into $file in <a href="http://search.cpan.org/perldoc?IRC::Bot::Log::Extended">IRC::Bot::Log::Extended</a>.<br />so that he can skip some lines or URI::Find some URLs.<br /><br />full code are:<br /><a href="http://fayland.googlecode.com/svn/trunk/CPAN/IRC-Bot-Log-Extended/examples/02b_with_filter.pl">http://fayland.googlecode.com/svn/trunk/CPAN/IRC-Bot-Log-Extended/examples/02b_with_filter.pl</a><br /><a href="http://fayland.googlecode.com/svn/trunk/CPAN/IRC-Bot-Log-Extended/examples/03advanced.pl">http://fayland.googlecode.com/svn/trunk/CPAN/IRC-Bot-Log-Extended/examples/03advanced.pl</a><br /><br />I also write a simple test script:<br /><a href="http://fayland.googlecode.com/svn/trunk/script/learn_moose/008_augment.pl">http://fayland.googlecode.com/svn/trunk/script/learn_moose/008_augment.pl</a><br /><br />hmm, that's simple. just think about u defined a virtual sub in parent pm, then user can override it in child pm.<br />nothing special.<br /><br />Thanks.

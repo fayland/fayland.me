@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Foorum
+title: 3 day 3 release
+---
+{% include JB/setup %}
+
+CPAN generally means responsibility. I released 3 Foorum distribution in the last 3 days.<br /><br />CPAN means better document. so I tried to use <a href="http://search.cpan.org/perldoc?DBICx::Autodoc">DBICx::AutoDoc</a> to create docs for Foorum::Schema. it's a bit different from the original method in DBICx::AutoDoc. I changed a bit to write pod into Schema files directly.<br /><br />code are:(briefly)<pre>my $ad = DBICx::AutoDoc->new(<br />    schema => 'Foorum::Schema',<br />    output => File::Spec->catdir($Bin, '..', '..', 'docs'),<br />);<br /><br /># rewrite the Schema pm POD<br />use Template;<br /><br />my $tt2 = Template->new( { INCLUDE_PATH => $ad->include_path, POST_CHOMP => 0, PRE_CHOMP => 0 } );<br />my $vars = $ad->get_vars;<br /><br /># first get the lists of all Foorum::Schema pm files<br />my @sources = @{ $vars->{sources} };<br />foreach my $source (@sources) {<br />    my $class = $source->{class}; # Foorum::Schema::User<br />    <br />    # make file dir<br />    my @parts_of_modules = split('::', $class);<br />    $parts_of_modules[-1] .= '.pm';<br />    my $file_dir = File::Spec->catfile( $Bin, '..', '..', 'lib', @parts_of_modules );<br />    <br />    my $output;<br />    $tt2->process('pod.html', { source => $source }, \$output)<br />        || die $tt2->error(), "\n";<br />    <br />    # replace POD in real module<br />    open(my $fh, '<', $file_dir);<br />    local $/ = undef;<br />    my $in = <$fh>;<br />    close($fh);<br />    <br />    my ($code, $pod) = split(/\n1;\n/, $in);<br />    open(my $fh2, '>', $file_dir);<br />    print $fh2 "$code\n1;\n__END__\n\n$output\n";<br />    close($fh2);<br />    <br />    print "working on $class\n";<br />}</pre> Full code can be found in <a href="http://foorum.googlecode.com/svn/trunk/bin/misc/dbicx_autodoc.pl">http://foorum.googlecode.com/svn/trunk/bin/misc/dbicx_autodoc.pl</a><br /><br />Thanks.

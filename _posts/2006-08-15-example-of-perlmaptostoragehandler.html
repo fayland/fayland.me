@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: an example of PerlMapToStorageHandler
+---
+{% include JB/setup %}
+
+<a href="http://perl.apache.org/docs/2.0/user/handlers/http.html#PerlMapToStorageHandler">PerlMapToStorageHandler </a> 是个新的东西。在 2.0.2 才从 PerlTransHandler 里剥离出来，做了一些性能方面的提升。<br />大致的用途就是改变 uri 所对应的文件。<br /><br />比如我们的 DocumentRoot 是 E:/Fayland, 然后 http://localhost/test.txt 本该访问的是 E:/Fayland/test.txt 但是我们想根据某一条件或者什么乱七八糟的事让这个 url 实际上对应的文件是个 E:/Fayland/Perl/fayland.txt 就可以用 MapToStorage 里的 filename 这函数。最最简单的例子（没有任何判断条件）：<pre>package Apache2My::FileMapping;<br /><br />use strict;<br />use warnings;<br />use Apache2::RequestRec ();<br />use Apache2::Const -compile => qw(OK DECLINED);<br /><br />sub handler {<br /> my $r = shift;<br /><br /> my $uri = $r->uri;<br /><br /> if ($uri =~ /test\.txt/) {<br />     $r->filename('E:\Fayland\Perl\fayland.txt');<br />     return Apache2::Const::DECLINED;<br /> }<br /><br /> return Apache2::Const::DECLINED;<br />}<br /><br />1;</pre> <a href='http://fayland.googlecode.com/svn/trunk/script/Apache2My/FileMapping.pm'>Download it</a><br />这样的代码写后，即使 E:/Fayland/test.txt 是存在的，但是这 url 实际上出来的内容还是 Perl/fayland.txt 里的内容。<br /><br />conf 里的：<pre>&lt;Perl><br />   use lib 'E:/Fayland/';<br />&lt;/Perl><br />PerlMapToStorageHandler Apache2My::FileMapping</pre><br />至于有什么用途，仁者见仁，智者见智了。总是有点用处的。

@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: 'Perl tip: can returns coderef'
+---
+{% include JB/setup %}
+
+well, I just released the <a href="http://search.cpan.org/perldoc?MooseX::Dumper">MooseX::Dumper</a> today.<br /><br /><a href="http://search.cpan.org/~miyagawa/">miyagawa</a> on irc.perl.org #moose just told me that ->can() returns the coderef, so that I don't need to do follows:<pre><code>        if ( $self->dumper_class->can($meth) ) {<br />            my $class = $self->dumper_class;<br />            my $val = eval "${class}::${meth}(\@_)"; # no critic<br />            return $val;<br />        }</code></pre>Instead, just do:<pre><code>        if ( my $dump_code = $self->dumper_class->can($meth) ) {<br />            return $dump_code->(@_);<br />        }</code></pre>Yup, much more simpler and cleaner.<br /><br />Thanks, miyagawa. 0.02 is on the way. :)

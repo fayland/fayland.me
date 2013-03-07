@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Catalyst
+title: two ways to write test cases for Catalyst App
+---
+{% include JB/setup %}
+
+one is using <a href='http://search.cpan.org/perldoc?Test::WWW::Mechanize::Catalyst'>Test::WWW::Mechanize::Catalyst</a>. as recommended in <a href='http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::Testing#ADDING_YOUR_OWN_TEST_SCRIPT'>Catalyst::Manual::Tutorial::Testing</a>.<br /><br />the other way is using MyApp to get $c. like here:<br /><a href='http://lists.scsys.co.uk/pipermail/catalyst/2007-April/012926.html'>http://lists.scsys.co.uk/pipermail/catalyst/2007-April/012926.html</a><br /><br /><pre>my $controller = MyApp->controller('MyController');<br />my $c = MyApp->prepare();<br /><br /># Monkey with $c to set up a fake context (set req->uri, or params)<br /><br />my $result = $controller->method_to_test($c, @args);</pre><br /><br />Enjoy!

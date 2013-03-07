@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - DBIx-Class
+title: 'search->first, find, and single'
+---
+{% include JB/setup %}
+
+DBIx::Class 简单地读取一条数据的时候有三种方法。<br /><br />一是用 ->search( { author_id => 1 } )->first;<br />二是用 ->find( { author_id => 1 } );<br />三是用 ->single( { author_id => 1 } );<br /><br />我用 Data::Compare 比较过。三者的数据是一样的。<br />但是原理上来说，最下面的是最快的。因为没有创建一个 Cursor.<br /><br /><a href='http://search.cpan.org/~jrobinson/DBIx-Class-0.07001/lib/DBIx/Class/ResultSet.pm#single'>http://search.cpan.org/~jrobinson/DBIx-Class-0.07001/lib/DBIx/Class/ResultSet.pm#single</a>

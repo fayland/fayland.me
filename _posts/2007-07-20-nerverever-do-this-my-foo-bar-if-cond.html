@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: 'Nerver/Ever do this: my $foo = $bar if ($cond);'
+---
+{% include JB/setup %}
+
+well, I met this a few days ago.<br />my $foo = $bar if ($cond);<br />makes a lot of trouble for me.<br /><br />I view that this is talked in Catalyst maillist.<br /><a href="http://lists.scsys.co.uk/pipermail/catalyst/2007-July/thread.html#14484">http://lists.scsys.co.uk/pipermail/catalyst/2007-July/thread.html#14484</a><br /><br />And just for your attention, be careful!<br /><br />example from mst:<pre>sub foo { my $foo if 0; $foo++; }<br />print foo(), foo(), foo();</pre><br /><br />guess what it is?<br /><br />DO NEVER try code like this, instead try my $foo = ($cond) ? $bar : undef;<br /><br />@Enjoy;

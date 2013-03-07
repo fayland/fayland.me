@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - CPAN
+  - Padre
+title: Padre committer
+---
+{% include JB/setup %}
+
+if you are <a href="http://szabgab.com/blog/2008/11/1225946474.html">following</a> padre, you may find that I'm a committer now.<br /><br />[fayland@alpha padre]$ svn  log | perl -MData::Dumper -n -e'if (/^r\d+\s*\|\s*(\w+)\s*\|/) {$c{$1}++} END {print Dumper \%c}'<br />$VAR1 = {<br />          'tsee' => 19,<br />          'adamk' => 90,<br />          'fayland' => 12,<br />          'patspam' => 6,<br />          'bricas' => 2,<br />          'szabgab' => 538<br />        };<br /><br />mainly I'm contributing something like follows:<br />* Wx::Choice ->SetSelection(0);<br />* add test 82-plugin-manager.t and cleanup _load_plugin in PluginManager.pm<br />* highlight with PPI for Perl5<br />* remove "no output" in ack<br />* Limit the search_terms/replace_terms<br />* add main_files_pos to goto last pos for those left files.<br /><br />some are trivial and some are important. I feel proud with those commit.<br /><br />and I update the plugins list a lot. now I have <a href="http://search.cpan.org/~fayland/">7 plugins</a> for padre.<br />Padre-Plugin-AcmePlayCode-0.02  Acme::PlayCode Plugin for Padre<br />Padre-Plugin-CPAN-0.01          CPAN in Padre<br />Padre-Plugin-PluginHelper-0.02  make building Padre plugin easy<br />Padre-Plugin-TabAndSpace-0.05  convert between space and tab within Padre<br />Padre-Plugin-Validator-0.02  validate HTML/CSS in Padre<br />Padre-Plugin-ViewInBrowser-0.01 view selected doc in browser for Padre<br />Padre-Plugin-WordStats-0.02  Word stats for Padre<br /><br />Padre-Plugin-PluginHelper is useful to develop a new plugin, it loads plugin from a local dir, and it can be reloaded after change.<br /><br />so start to play with padre, and tell us what you think. :)<br /><br />Thanks.

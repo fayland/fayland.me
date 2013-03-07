@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - DBIx-Class
+  - Foorum
+title: be careful
+---
+{% include JB/setup %}
+
+<pre>my @a = ( 'a', $c->req->param('a'), 'b', $c->req->param('b'), 'c', undef , 'd',, 'f' );$c->res->body(Dumper(\@a));</pre>when we try "?b=1", output:<pre>$VAR1 = [<br />          'a',<br />          'b',<br />          '1',<br />          'c',<br />          undef,<br />          'd',<br />          'f'<br />        ];</pre><br />see? $c->req->param('a') is <b>NOT</b> undef.<br />so when u try something like<br /><pre>$rs->update( {<br />    column1 => $c->req->param('column1'),<br />    column2 => $c->req->param('column2')<br />} );</pre> then if column1 param is not specified, this would raise error because $rs try to update column1, column2, $c->req->param('column2'). we want 4 but u give me 3.<br /><br />so man, be careful of that. :)

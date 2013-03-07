@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Xapian
+title: notes for Xapian and Search::Xapian
+---
+{% include JB/setup %}
+
+When after u installed <a href="http://www.xapian.org/">Xapian</a>, and when go to install <a href="http://search.cpan.org/perldoc?Search::Xapian">Search::Xapian</a>, u may meet problem like:<br /><pre>Error:  Can't load '/usr/lib/perl5/site_perl/5.8.6/i386-linux-thread-multi/auto/Search/Xapian/Xapian.so' for module Search::Xapian: libxapian.so.15: cannot open shared object file: No such file or directory at /usr/lib/perl5/5.8.6/i386-linux-thread-multi/DynaLoader.pm line 230.</pre><br />Then I think u need have a check of <a href="http://lists.tartarus.org/pipermail/xapian-discuss/2007-September/004414.html">http://lists.tartarus.org/pipermail/xapian-discuss/2007-September/004414.html</a><br />basically I do export LD_LIBRARY_PATH=/usr/local/lib and everything would be fine then.<br /><br />Thanks.

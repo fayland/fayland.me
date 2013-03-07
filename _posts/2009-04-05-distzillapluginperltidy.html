@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - CPAN
+  - Dist-Zilla
+title: Dist::Zilla::Plugin::PerlTidy
+---
+{% include JB/setup %}
+
+I just uploaded the <a href="http://search.cpan.org/dist/Dist-Zilla-Plugin-PerlTidy/">Dist-Zilla-Plugin-PerlTidy</a> to CPAN today.<br /><br /><a href="http://search.cpan.org/dist/Dist-Zilla/">Dist::Zilla</a> is a distribution builder. with it, you can write less, maintain less files. which means less bugs.<br />for more information, you can check the slides: <a href="http://www.slideshare.net/rjbs/distzilla-presentation">http://www.slideshare.net/rjbs/distzilla-presentation</a><br /><br />Dist-Zilla-Plugin-PerlTidy contains two parts.<br />one is the App Command, <a href="http://search.cpan.org/dist/Dist-Zilla-Plugin-PerlTidy/lib/Dist/Zilla/App/Command/perltidy.pm">Dist::Zilla::App::Command::perltidy</a>, which let you perltidy your real code.<br />the other one is the Plugin, <a href="http://search.cpan.org/dist/Dist-Zilla-Plugin-PerlTidy/lib/Dist/Zilla/Plugin/PerlTidy.pm">Dist::Zilla::Plugin::PerlTidy</a>. it doesn't affect your working code, it just perltidy the code for release (which means included in the tar.gz)<br /><br />the code is simple, but it's useful.<br /><br />Have fun!

@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Padre
+title: Padre
+---
+{% include JB/setup %}
+
+<a href="http://search.cpan.org/dist/Padre/">Padre</a> is Perl Application Development and Refactoring Environment.<br /><br />install Padre with Perl 5.10 with Win32 is a bit painful.<br />the ppm in wxperl <a href="http://www.wxperl.co.uk/repository/">http://www.wxperl.co.uk/repository/</a> is fine with Perl 5.8 while broken with 5.10<br /><br />while it would be OK if you follows the instruction in <a href="http://padre.perlide.org/wiki/Download">http://padre.perlide.org/wiki/Download</a><br />  cpan> look Alien::wxWidgets<br />  $ perl Makefile.PL<br />  $ dmake<br />  $ dmake test<br />  $ dmake install<br />  $ exit<br />  cpan> look Wx<br />  $ perl Makefile.PL<br />  $ dmake<br />  $ dmake test<br />  $ dmake install<br />  $ exit<br />  cpan> install Padre<br /><br />while install the Alien::wxWidgets it needs download wxWidgets-2.8.8.tar.gz from sourceforge. it's better to download it with your download tool instead of the Perl command.<br />it takes much more longer than what I thought. but finally it works.<br /><br />Padre is good. it's pure Perl with Wx.<br />features:<br />- highlight for Perl<br />- open from last<br />- bookmark<br />- subs in right<br />and others. it's really good.<br /><br />while it has bugs. like<br />- can open many instance of one file<br />- no highlight for HTML<br />and others.<br /><br />OK, it's still worthing to try. and I'm reading the source code now to see if I can fix a bug or contribute a plugin.<br /><br />Thanks.

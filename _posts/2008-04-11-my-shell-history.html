@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: my shell history
+---
+{% include JB/setup %}
+
+-bash-3.00$ history|awk '{a[$2]++ } END{for(i in a){print a[i] " " i}}' |sort -rn|head<br />290 perl<br />235 svn<br />67 ls<br />60 screen<br />46 vim<br />27 mysql<br />25 cp<br />23 rm<br />22 ps<br />22 exit

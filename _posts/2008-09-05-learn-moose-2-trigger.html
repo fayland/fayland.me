@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Moose
+title: 'Learn Moose 2: trigger'
+---
+{% include JB/setup %}
+
+I want a scoreboard on MooseX::TheSchwartz.<br />so I defined one like "has 'scoreboard'  => ( is => 'rw', isa => 'Str' );", but that's not what I want for all, I want more.<br />I want it to be a temp file related to $$ when I set it as 1 or 'on'.<br />I want I can custom a temp file for it.<br /><br />I know I can write a method like the one in TheSchwartz. but with Moose, it's much more elegant as what u want!<pre><code>has 'scoreboard'  => (<br />    is => 'rw',<br />    isa => 'Str',<br />    trigger => sub {<br />        my ($self, $dir) = @_;<br />        <br />        return unless $dir;<br />        # no endless loop when it's a file<br />        if ($dir =~ /\/theschwartz\/scoreboard\./is) {<br />            # get the real dir from $dir regardless a file<br />            my (undef, $dir) = File::Spec->splitpath( $dir );<br />            unless (-e $dir) {<br />                mkdir($dir, 0755) or die "Can't create scoreboard directory '$dir': $!";<br />            }<br />            return;<br />        }<br /><br />        # They want the scoreboard but don't care where it goes<br />        if (($dir eq '1') or ($dir eq 'on')) {<br />            $dir = File::Spec->tmpdir();<br />        }<br />    <br />        $dir .= '/theschwartz';<br />        unless (-e $dir) {<br />            mkdir($dir, 0755) or die "Can't create scoreboard directory '$dir': $!";<br />        }<br />        <br />        $self->{scoreboard} = $dir."/scoreboard.$$";<br />    }<br />);</code></pre>now I have all I want.<br /><br />just be careful, when u want to change itself in trigger like "$self->{scoreboard} = 'xxx'" or "$self->scoreboard('xxx');", u must make sure there isn't a endless loop since change itself will call trigger again.<br /><br />test code can be found here: <a href="http://fayland.googlecode.com/svn/trunk/script/learn_moose/001_attribute_trigger.pl">http://fayland.googlecode.com/svn/trunk/script/learn_moose/001_attribute_trigger.pl</a><br /><br />Thanks.

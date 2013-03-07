@@ -1,0 +1,25 @@
+---
+category: perl
+layout: post
+tags:
+  - CPAN
+  - OpenSocial
+  - Shindig
+title: OpenSocialX::Shindig::Crypter long story
+---
+{% include JB/setup %}
+
+The long story is<br />
+<br />
+we (<a href='http://www.zorpia.cn'>Zorpia</a>) were developing <a href="http://wiki.opensocial.org/">OpenSocial</a> in last days. The first choice to build a opensocial container is <a href="http://incubator.apache.org/shindig/">Shindig</a>.<br />
+<br />
+unlucky, it ONLY has PHP and Java version. yeah, I do all my code in Perl, I know nothing about PHP or Java. (well, I know a little PHP now because I was writing Service package with PHP in last days, and I must say, PHP sucks.)<br />
+<br />
+lucky, the Shindig author points me to an URL: <a href="http://www.chabotc.com/generic/using-shindig-in-a-non-php-or-java-envirionment/">Using Shindig in a non PHP or Java environment</a><br />
+that I can write the 'Application' section in Perl. It IS great, really very great.<br />
+<br />
+so at last, I google around and wrote my last solution: <a href="http://search.cpan.org/dist/OpenSocialX-Shindig-Crypter/lib/OpenSocialX/Shindig/Crypter.pm">OpenSocialX::Shindig::Crypter</a> and the php lib <a href="http://github.com/fayland/opensocialx-shindig-crypter/raw/master/php/BasicBlobCrypter.php">BasicBlobCrypter.php</a><br />
+<br />
+and now I'm happy to share it with your guys. if you have the same situation with me, you can try that module and tell me your feeling. :)<br />
+<br />
+Thanks. (OK, it's not so long.)

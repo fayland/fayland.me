@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Padre
+title: manage Task::Padre::Plugins with ORDB::CPANTS
+---
+{% include JB/setup %}
+
+To update a Task:: module is not so hard but trivial. you need find out the new version of existing modules, and those haven't added yet.<br />well, do it manually is not so Perl-ish. we have Perl, we should do it automatically by running a script.<br /><br />it's pretty good we have <a href="http://search.cpan.org/perldoc?ORDB::CPANTS">ORDB::CPANTS</a> from <a href="http://ali.as/">Alias</a>.<br />1, we get all plugins by ORDB::CPANTS through used_by<br />2, split them into requires and feature.<br />3, get the META info through YAML::LoadURI<br />4, generate the main part of Makefile.PL and Plugins.pm<br /><br />you can find the code here: <a href="http://svn.perlide.org/padre/trunk/Task-Padre-Plugins/auto_generate.pl">http://svn.perlide.org/padre/trunk/Task-Padre-Plugins/auto_generate.pl</a><br /><br />I know I can generate Makefile.PL and Plugins.pm directly, but it's good enough for now.<br /><br />Enjoy.

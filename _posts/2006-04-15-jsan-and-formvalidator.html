@@ -1,0 +1,9 @@
+---
+category: javascript
+layout: post
+tags: []
+title: JSAN and Form.Validator
+---
+{% include JB/setup %}
+
+大致上是我第一次用 <a href='http://www.openjsan.org/'>JSAN</a>. JSAN 的意思是 "CPAN".replace(/CP/, "JS") 它的目标是成为类似 <a href='http://www.cpan.org/'>CPAN</a> 一样的 JS 库。 CPAN 是每个 Perl hacker 的骄傲。不过 JSAN 目前的东西不是很多。<br /><br />我用的是 Form.Validator, 检验 form 输入的东西。不过 JSAN 这个模块的命令似乎在 Win32 下跑不起来。只好一个个去下。<br /><a href='http://www.openjsan.org/doc/c/cw/cwest/JSAN/0.10/'>http://www.openjsan.org/doc/c/cw/cwest/JSAN/0.10/</a><br /><a href='http://www.openjsan.org/doc/b/be/beppu/Form/Validator/0.33/index.html'>http://www.openjsan.org/doc/b/be/beppu/Form/Validator/0.33/index.html</a><br /><br />下回来。目录的结果大致为：<pre>JSAN.js<br />Form/Validator.js<br />Form/Validator/*</pre>根据 <a href='http://www.openjsan.org/doc/b/be/beppu/Form/Validator/0.33/lib/Form/Validator.html'>http://www.openjsan.org/doc/b/be/beppu/Form/Validator/0.33/lib/Form/Validator.html</a> 这里的说法写 HTML 文件。大致为：<pre>&lt;script src='/js/JSAN.js'>&lt;/script><br />&lt;form name="stuff" ... <br />&lt;script><br />    JSAN.use('Form.Validator');<br />    JSAN.use('Form.Validator.Report.AlertAll');<br />    fv = new Form.Validator(document.stuff);<br />    fv.reporter('AlertAll');    // show a pop-up with all errors<br />    fv.set('title',        'notBlank',           "Title is required.");<br />    fv.set('text',        fv.makeValueMin(5),   "Text must be 5 or greater.");<br />&lt;/script></pre><br />have fun.

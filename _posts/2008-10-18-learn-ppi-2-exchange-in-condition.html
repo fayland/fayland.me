@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - PPI
+title: 'Learn PPI 2: exchange in condition'
+---
+{% include JB/setup %}
+
+as what I posted <a href="http://www.fayland.org/blog/2008/10/learn-ppi-1-double-to-single.html">before</a>, I want to convert<br />if ( $a eq 'a' ) {<br />to<br />if ( 'a' eq $a ) {<br /><br />PBP encourages it because it's less buggy.<br /><br />I wrote another script today to fulfill the above request.<br /><a href="http://fayland.googlecode.com/svn/trunk/script/learn_ppi/02ExchangeCondition.pl">http://fayland.googlecode.com/svn/trunk/script/learn_ppi/02ExchangeCondition.pl</a><br /><br />things like<pre><code>my $a = "a";<br />my $b = "'b'";<br />my $c = 'c';<br />my $d = qq~d~;<br />if ( $a eq "a" ) {<br />    print "1";<br />} elsif ( $b eq 'b') {<br />    print "2";<br />} elsif ( $c ne qq~c~) {<br />    print "3"; <br />} elsif ( $c eq q~d~) {<br />    print '4';<br />} else {<br />    print '5';<br />}<br />if ( $a eq $b ) {<br />    print '6';<br />}<br />if ( $c eq '$d' ) {<br />    print 7;<br />}<br />if ( $a =~ /$b/ ) {<br />    print 8;<br />}<br />if ( $a == '$b' or $c == '$d' ) {<br />    print 9;<br />}</code></pre> will be converted into<pre><code>my $a = "a";<br />my $b = "'b'";<br />my $c = 'c';<br />my $d = qq~d~;<br />if ( "a" eq $a ) {<br />    print "1";<br />} elsif ( 'b' eq $b ) {<br />    print "2";<br />} elsif ( $c ne qq~c~) {<br />    print "3";<br />} elsif ( q~d~ eq $c ) {<br />    print '4';<br />} else {<br />    print '5';<br />}<br />if ( $a eq $b ) {<br />    print '6';<br />}<br />if ( '$d' eq $c ) {<br />    print 7;<br />}<br />if ( $a =~ /$b/ ) {<br />    print 8;<br />}<br />if ( '$b' == $a or '$d' == $c ) {<br />    print 9;<br />}</code></pre><br />I know it's not perfect. it's just a start.<br /><br />hmm, I'm thinking about packaging the two scripts into modules then uploading to CPAN.<br />but I can't find a good name(or namespace) for them.<br /><br />I'll try later.<br /><br />Thanks and Enjoy!

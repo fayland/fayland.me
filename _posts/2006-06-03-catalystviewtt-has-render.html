@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: Catalyst::View::TT has a render
+---
+{% include JB/setup %}
+
+<a href='http://search.cpan.org/perldoc?Catalyst::View::TT'>Catalyst::View::TT</a> 从 0.23 起将多了一个函数叫做 render. 一个最常见的用法是：<pre>   $c->email(<br />      header => [<br />        To      => 'me@localhost',<br />        Subject => 'A TT Email',<br />      ],<br />      body => $c->view('TT')->render($c, 'email.tt', {<br />        additional_template_paths => [ $c->config->{root} . '/email_templates'],<br />        email_tmpl_param1 => 'foo'<br />        }<br />      ),<br />    );</pre> 以前我们经常得用 SubRequest 来做这事。<br />可看起来 render 似乎更干净一些。:)

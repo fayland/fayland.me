@@ -1,0 +1,9 @@
+---
+category: note
+layout: post
+tags: []
+title: mozilla url('') bug
+---
+{% include JB/setup %}
+
+try something like:<br />background-image:url('')<br />in mozilla Firefox.<br /><br />that would make your browser visit the page twice.<br /><br />Firefox 好象就是有这样的 bug, 对于 url('') 这样会再访问一次该页面。mm, 看 access_log 就会知道了。<br /><br />这应该算个 Mozilla 的 bug 吧。

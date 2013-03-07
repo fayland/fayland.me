@@ -1,0 +1,10 @@
+---
+category: mysql
+layout: post
+tags:
+  - MySQL
+title: MySQL tip TIMESTAMPDIFF
+---
+{% include JB/setup %}
+
+Thanks for my college CY.<br /><br />UNIX_TIMESTAMP(birthday) is not working when birthday is before 1970.<br />I should use TIMESTAMPDIFF(DAY, '1900-01-01', birthday) to get the DAY or SECOND<br /><pre><code>mysql> select TIMESTAMPDIFF(DAY, '1900-01-01', '1998-05-01');<br />+------------------------------------------------+<br />| TIMESTAMPDIFF(DAY, '1900-01-01', '1998-05-01') |<br />+------------------------------------------------+<br />|                                          35914 |<br />+------------------------------------------------+</code></pre><br /><br /><a href="http://dev.mysql.com/doc/refman/5.0/en/date-and-time-functions.html#function_timestampdiff">http://dev.mysql.com/doc/refman/5.0/en/date-and-time-functions.html#function_timestampdiff</a><br /><br />in Perl, we can do:<br /><pre><code>use Date::Calc qw/Delta_Days/;<br />print Delta_Days(1900,1,1, 1998,5,1);<br />^Z<br />35914</code></pre>

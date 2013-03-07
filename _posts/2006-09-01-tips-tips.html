@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: tips tips
+---
+{% include JB/setup %}
+
+as perfaq9, 我们可以通过如下代码得到本机的 IP 地址：<pre>use Sys::Hostname;<br />use Socket;<br />my $host = hostname();<br />my $address = inet_ntoa( scalar gethostbyname( $host || 'localhost' ) );<br />print $address</pre><br />PS, the previous post, the <a href='http://www.fayland.org/blog/2006/08/search-first-find-and-single.html'>"single and find"</a> one shows that ->single don't support order_by attribute, but ->find support it. :)<br /><br />Want to get a session data by sessionid in Catalyst?<br />u can insert a seesion_id in TT by [% c.sessionid %]<br />code like: <pre>my $sid = $c->req->param('sid');<br />$c->log->debug("sid is $sid");<br />my $session_data = $c->get_session_data("session:$sid");<br />return $c->res->body(Dumper($session_data));</pre><br />don't forget the "seesion:" before $sid.<br /><br />Good luck.

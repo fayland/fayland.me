@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Catalyst
+title: easy example for Catalyst::Plugin::Captcha
+---
+{% include JB/setup %}
+
+<a href='http://search.cpan.org/perldoc?Catalyst::Plugin::Captcha'>Catalyst::Plugin::Captcha</a>  在 CPAN 的文档不是很明了。我在 <a href='http://fayland.googlecode.com/svn/trunk/Foorum/'>Foorum</a> 中用了一下。把经过简单的写一下。<br /><br />功能要求是“密码错误”的登录次数超过三次以后就显示出验证码。这样可以防止 script 暴力破解 user 密码。把登录错误次数可以放到 session 里，但是 script 可以通过删除 cookie 来伪造 sessionid, 所以我就把登录错误次数放到了 memcached 里。<br /><br />首先当然是 cpan 安装模块，然后在 <a href='http://fayland.googlecode.com/svn/trunk/Foorum/foorum.yml'>yml</a> 中配置：<pre>captcha:<br />  session_name: captcha_string<br />  new:<br />    width: 80<br />    height: 30<br />    lines: 1<br />    gd_font: giant<br />  create:<br />    - normal<br />    - rect<br />  particle:<br />    - 100<br />  out:<br />    force: jpeg</pre>然后弄一个 captcha 的 Global 函数。<pre>sub captcha : Global {<br />    my ($self, $c) = @_;<br />    $c->create_captcha();<br />}</pre>create_captcha 返回的是一个 img 的 source, 也就是验证码那个图片的内容。<br />所以如果你要显示出验证码来的话，<a href='http://fayland.googlecode.com/svn/trunk/Foorum/templates/en/user/login.html'>代码</a>大致上是这样的：<pre>&lt;input type='text' name='captcha' size='12' />&lt;img src='/captcha' /></pre> img 的地址就是刚才的 Global 所弄的函数。插件将这个图片实际上的字符串内容放到了当前的 session 里。<pre>$c->session->{ $c->config->{captcha}->{session_name} } = $random_string;</pre>然后它提供的 validate_captcha method 就是比较 user 输入的东西跟这个 session 的内容。看看<a href='http://search.cpan.org/src/KAZEBURO/Catalyst-Plugin-Captcha-0.03/lib/Catalyst/Plugin/Captcha.pm'>源代码</a>就觉得非常清晰。<br />我最后的 <a href='http://fayland.googlecode.com/svn/trunk/Foorum/lib/Foorum/Controller/Logon.pm'>Logon.pm</a><br />还是自己点过去看看吧。:)

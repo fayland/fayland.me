@@ -1,0 +1,9 @@
+---
+category: mysql
+layout: post
+tags: []
+title: MySQL SELECT condition
+---
+{% include JB/setup %}
+
+昨天写代码的时候发现 MySQL 的 SELECT 条件多反而比条件少要快很多。<br />其实我可以用<pre>SELECT * FROM comment WHERE reply_to = ?</pre>来得到我想要的结果。但是我用<pre>SELECT * FROM comment WHERE reply_to = ? AND object_id = ? AND object_type = ?</pre>时，结果是一样的，但是速度从 7-9s 提高到 0.07-0.09, 速度提升了百倍。这东西可能在表的 rows 比较少的时候效果不明显。但在 rows 是 4,530,000 时就有百倍的提升。<br /><br />又学会一手。

@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: Catalyst and $c->res->redirect
+---
+{% include JB/setup %}
+
+今天发现关于 $c->res->redirect 的一件事。post 在这 <a href='http://lists.rawmode.org/pipermail/catalyst/2006-April/006758.html'>http://lists.rawmode.org/pipermail/catalyst/2006-April/006758.html</a><br /><pre>sub test : Global {<br />    my ( $self, $c ) = @_;<br />    unless ($c->user_exists) {<br />        $c->res->redirect('/login');<br />#        return 1;<br />    }<br />    $c->res->body($c->user->user_id);<br />}</pre>注意这里的 $c->res->redirect, 它不是马上一碰到就执行的，而是全部执行完整个 test    子程序才执行的。<br />也就是说，上面的代码是错误的。当用户没有登陆了，虽然要执行 $c->res->redirect, 但是它还要去执行 $c->res->body($c->user->user_id); 而不是一碰到 redirect 就直接跳转。所以代码会在 $c->res->body($c->user->user_id); 这句出错。因为没登陆时是不能访问 $c->user->user_id 的。把 return 1; 的注释去掉就可以了。<br /><br />写代码事要注意这件事。:)

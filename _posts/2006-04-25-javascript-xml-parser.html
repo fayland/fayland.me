@@ -1,0 +1,9 @@
+---
+category: javascript
+layout: post
+tags: []
+title: javascript XML parser
+---
+{% include JB/setup %}
+
+老板要求 Ajax 的 reponse 是 XML, 所以要找一个解析 xml 的 javascript 库。<br />因为已经用了 <a href='http://www.openjsan.org'>JSAN</a> , 所以就在那找了个 <a href='http://www.openjsan.org/doc/k/ka/kawasaki/XML/ObjTree/0.21/lib/XML/ObjTree.html'>XML.ObjTree</a><br />我用 <a href='http://search.cpan.org/perldoc?XML::Writer'>XML::Writer</a> 来构造 xml response. 比如说我们的 response 为<pre>&lt;xml>&lt;message>OK&lt;/message>&lt;/xml></pre>然后 javascript 的代码大概为：<pre>function ajax() {<br /> var myAjax = new Ajax.Request( url, {<br />     method: 'get',<br />     parameters: pars,<br />     onSuccess: showResponse,<br /> } );<br />}    <br />function showResponse(request) {<br />    response  = request.responseText;<br /><br />    JSAN.use('XML.ObjTree');<br />    var xotree = new XML.ObjTree();<br />    var tree = xotree.parseXML( response ); <br /><br />    $('message').innerHTML = tree.xml.message;<br />}<br /></pre> 这是针对回复只有一个 &lt;message> 的。如果是多个 messages, javascript 的代码可以为：<pre>for (i = 0; i < tree.xml.message.length; i++) {</pre>唯一有点麻烦的是，我们期待回复的是 message array, 但是只有回了一个 message, 那这个 for 会失败，但是有 tree.xml.message 所以在 for 后面得加个<pre>// ugly hack, for only one<br />if (tree.xml.message) {</pre><br />Have fun!

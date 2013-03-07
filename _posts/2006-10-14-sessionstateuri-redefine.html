@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Catalyst
+title: Session::State::URI redefine
+---
+{% include JB/setup %}
+
+当我们在 Catalyst 里同时用 Session::State::URI 和 Session::State::Cookie 来保持最大的 session 使用可能性的时候，有件事情可能并不是太完美。因为 Session::State::URI 会重新改写输出的结果，把 html 里的 link, a, img, script 等里的链接后面加上一个 sessionid. 但是对于 img, css 和 script 来说，一般情况下都是没必要的（浏览器会缓存 css/js/img, 但是如果后面加了 sid, 它会重新获取一次，增加了服务器的负担）。所以这时候我们可以 redefine Session::State::URI 里的一个 sub 来去掉 img/css/script 的 url 链接改写。<pre>package Catalyst::Plugin::Session::State::URI;<br /><br />no warnings 'redefine';<br /><br />sub _session_rewriting_html_tag_map {<br />   return {<br />       a      => "href",<br />       form   => "action",<br />#        link   => "href",<br />#        img    => "src",<br />#        script => "src",<br />   };<br />}</pre>将这段代码随便放到某个 Controller/Model/Plugin 的 pm 里都可以。因为在 Catalyst 里所有的模块都是一次性载入的。<br /><br />have fun.

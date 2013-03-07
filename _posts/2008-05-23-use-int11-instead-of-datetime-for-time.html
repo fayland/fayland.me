@@ -1,0 +1,10 @@
+---
+category: mysql
+layout: post
+tags:
+  - Foorum
+title: use INT(11) instead of DATETIME for time
+---
+{% include JB/setup %}
+
+well, don't use DATETIME or DATE in database for time, use INT(11) UNSIGNED instead.<br /><br />the benefits are:<br />1, u don't need care about MySQL or SQLite or others. NOW() is used by MySQL while CURRENT_TIMESTAMP is used by SQLite. that's important while u developer in MySQL and write test cases by SQLite.<br />2, compare. while in TT, if u want to compare topic.time with date.now, u need wrap date.now by String.Compare or convert topic.time to int. that's not so easy. and date.format can convert INT to any format u want.<br /><br />I spent some hours to do the upgrade for Foorum.<br />and the upgrade pl is simple: create a temp column then update as UNIX_TIMESTAMP, then drop old column and rename temp column.<br /><br />code is here: <a href="http://foorum.googlecode.com/svn/trunk/bin/upgrade/0.1.5/up.pl">http://foorum.googlecode.com/svn/trunk/bin/upgrade/0.1.5/up.pl</a><br /><br />Enjoy.

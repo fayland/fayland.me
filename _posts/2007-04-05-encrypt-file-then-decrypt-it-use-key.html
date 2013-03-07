@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - decrypt
+  - encrypt
+title: encrypt a file then decrypt it use key with Perl
+---
+{% include JB/setup %}
+
+well, computer crashes without any reason sometimes, so we need save some important data into somewhere like Email or one subversion repos. but plain text is not so security, it would be better if we use one "key" to encrypt a file, then use this "key" to decrypt it when we need.<br /><br />sure, I know winrar or something else can do that. but Perl can do that too. :)<br />just with <a href='http://search.cpan.org/perldoc?Crypt::CBC'>Crypt::CBC</a>.<br /><br />I write a simple script to do this task. that's in <a href="http://fayland.googlecode.com/svn/trunk/script/misc/dencrypt.pl">http://fayland.googlecode.com/svn/trunk/script/misc/dencrypt.pl</a><br />pretty easy but useful for me.<br /><br />try with:<br />perl dencrypt.pl encrypt mysecretkey E:/1.txt<br />then decrypt it use:<br />perl dencrypt.pl decrypt mysecretkey E:/1.txt.encrypt<br /><br />That's it, enjoy!

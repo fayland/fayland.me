@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: Ajax IE cache
+---
+{% include JB/setup %}
+
+IE 总是会 cache 不是 method='post' 的 url, 即便是以 cgi 结尾的。<br />今天做 Ajax.Request 的时候就发现 Firefox 都是很正常，IE 就是有 cache 的问题。<br />当然，解决的方法很简单。设置 cgi 的 header 为马上 expires, no-cache 的那种。<br /><br />PS, modperl 的情况下直接用 print CGI->header 的时候可能会出现这样的错误：<pre>Can't call method "send_cgi_header" on an undefined value at</pre>很简单的改为<pre>my $q = CGI->new;<br />print $q->header</pre>就可以了。

@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - Catalyst
+  - memcached
+title: Catalyst::Plugin::Session::Store::Memcached hack
+---
+{% include JB/setup %}
+
+<a href="http://search.cpan.org/perldoc?Catalyst::Plugin::Session::Store::Memcached">Catalyst::Plugin::Session::Store::Memcached</a> is much faster than DBIC. but that's not so fit our demand.<br />we have one function called "Ban a user", we remove the session of that user when he is banned. but Memcached Store don't have user_id field as key.<br /><br />Cache::Memcached::Managed has one function named "group". so I hack that pm to support delete_session_data_by_user_id.<br /><br />first when new Cache::Memcached::Managed we add:<pre>        my $storage = $cfg->{memcached_obj} || Cache::Memcached::Managed->new(<br />            data      => "localhost:11211",<br />            namespace => "catalyst_session",<br /><font color='red'>            group_names => [qw(user_id)],</font><br />            %{ $cfg->{memcached_new_args} || {} },<br />        ),</pre>so that we can set user_id when set a memcache key.<pre>    $c->_session_memcached_storage->set(<br />        @{ $c->_session_memcached_arg_fudge },<br />        (<br />            $key =~ /^(?:expires|session|flash)/<br />              ? ( expiration => $c->session_expires )<br />              : ()<br />        ),<br />        id    => $key,<br />        value => $data,<br /><font color='red'>        user_id => $user_id,</font><br />      )</pre>at end, delete_session_data_by_user_id is pretty simple.<pre>sub delete_session_data_by_user_id {<br />    my ( $c, $user_id ) = @_;<br />    <br />    return unless ($user_id > 0);<br />    $c->_session_memcached_storage->delete_group( user_id => $user_id );<br />}</pre><br />have fun!

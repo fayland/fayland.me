@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Email
+title: Email::Send::SMTP::TLS
+---
+{% include JB/setup %}
+
+I wrote a new CPAN module <a href="http://search.cpan.org/perldoc?Email::Send::SMTP::TLS">Email::Send::SMTP::TLS</a>.<br />it can use Gmail smtp.gmail.com to send email, and it runs well under Win32.<br /><br />I tried <a href="http://search.cpan.org/perldoc?Email%3A%3ASend%3A%3AGmail">Email::Send::Gmail</a>, but it's not working in my computer at all.<br /><br />example:<pre><code><br />    use Email::Send;<br />    <br />    my $mailer = Email::Send->new( {<br />        mailer => 'SMTP::TLS',<br />        mailer_args => [<br />            Host => 'smtp.gmail.com',<br />            Port => 587,<br />            User => 'username@gmail.com',<br />            Password => 'password',<br />            Hello => 'fayland.org',<br />        ]<br />    } );<br />    <br />    use Email::Simple::Creator; # or other Email::<br />    my $email = Email::Simple->create(<br />        header => [<br />            From    => 'username@gmail.com',<br />            To      => 'to@mail.com',<br />            Subject => 'Subject title',<br />        ],<br />        body => 'Content.',<br />    );<br />    <br />    eval { $mailer->send($email) };<br />    die "Error sending email: $@" if $@;</code></pre>

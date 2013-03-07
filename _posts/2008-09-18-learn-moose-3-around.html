@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Moose
+title: 'Learn Moose 3: around'
+---
+{% include JB/setup %}
+
+for example I want a shuffled list everytime when I can $t->shuffled_list;<br />I know I can use a sub to do the request. but with Moose, it's much more elegant.<br /><br />the main code is like:<pre><code>around 'shuffled_list' => sub {<br />    my $next = shift;<br />    <br />    my $ret = $next->(@_);<br />    $ret = [ shuffle( @$ret ) ];<br />    <br />    return $ret;<br />};</code></pre><br />full source code can be found in <a href="http://fayland.googlecode.com/svn/trunk/script/learn_moose/002_around.pl">http://fayland.googlecode.com/svn/trunk/script/learn_moose/002_around.pl</a><br /><br />the output looks like:<pre>1, 10, 6, 4, 2, 7, 9, 8, 3, 5<br />3, 4, 7, 2, 1, 9, 5, 6, 8, 10</pre>Here we use 'around' instead of 'before' or 'after' because 'before' doesn't work according to this FAQ: <a href="http://search.cpan.org/~drolsky/Moose-0.57/lib/Moose/Cookbook/FAQ.pod#How_can_I_affect_the_values_in_@__using_before?">http://search.cpan.org/~drolsky/Moose-0.57/lib/Moose/Cookbook/FAQ.pod#How_can_I_affect_the_values_in_@__using_before?</a><br /><br />the example above is a case of 'deflate' as <a href="http://search.cpan.org/~drolsky/Moose-0.57/lib/Moose/Cookbook/FAQ.pod#How_can_I_get_Moose_to_inflate/deflate_values_in_the_accessor?">http://search.cpan.org/~drolsky/Moose-0.57/lib/Moose/Cookbook/FAQ.pod#How_can_I_get_Moose_to_inflate/deflate_values_in_the_accessor?</a><br /><br />please read the FAQ and Cookbook for more details.<br /><br />Thanks.

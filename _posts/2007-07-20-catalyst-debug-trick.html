@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - Catalyst
+  - Foorum
+title: Catalyst debug trick
+---
+{% include JB/setup %}
+
+well, we always meet this when we develop a Catalyst application:<br />* we want -Debug and StackTrace or DBIC::Schema::Profiler when we develop the Catalyst App.<br />* we don't want -Debug like in the production server because it costs much.<br /><br />Sometimes u may want a config name like debug_mode to control whether we want or not.<br />Here comes my solution:<pre>__PACKAGE__->setup();<br /><br />__PACKAGE__->log->levels('error', 'fatal'); # for real server<br />if( __PACKAGE__->config->{debug_mode} ) {<br />    <br />    __PACKAGE__->log->enable('debug', 'info', 'warn'); # for developer server<br />    {<br />        # these code are copied from Catalyst.pm setup_log<br />        no strict 'refs';<br />        my $class = __PACKAGE__;<br />        *{"$class\::debug"} = sub { 1 };<br />    }<br />    <br />    my @extra_plugins = qw/ StackTrace DBIC::Schema::Profiler /;<br />    __PACKAGE__->setup_plugins( [ @extra_plugins ] );<br />}</pre>Full code please check <a href="http://fayland.googlecode.com/svn/trunk/Foorum/lib/Foorum.pm">Foorum.pm</a><br /><br />now u can set debug_mode: 1 in _local.yml when u develop and forget it in production server.<br /><br />Explanation:<br />* why we write code after __PACKAGE__->setup(); is because we want __PACKAGE__->config->{debug_mode}. config is setup in ->setup().<br />* *{"$class\::debug"} = sub { 1 }; means $c->debug is on. code from Catalyst.pm<br />* __PACKAGE__->setup_plugins( [ @extra_plugins ] ); will setup extra_plugins whenever u want.<br /><br />@Enjoy;

@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Email
+title: GMail and Email::Send
+---
+{% include JB/setup %}
+
+I use GMail in my daily life. and the GMail SMTP is using TSL<br /><br />The <a href='http://search.cpan.org/perldoc?Email::Send'>Email::Send</a> seems not to support TSL. and Catalyst::Plugin::Email is using Email::Send.<br /><br /><h3>Updated</h3>I haven't noticed until today that Ricardo SIGNES has applied this patch as Email::Send <a href='http://search.cpan.org/src/RJBS/Email-Send-2.182/Changes'>2.180</a>.<br />So I removed the link in fayland.googlecode.<br />------------------------<br /><br />so I create a patch to Email::Send::SMTP. <s>http://fayland.googlecode.com/svn/trunk/MISC/patches/EMail_Send_SMTP.patch</s><br />but the module Net::SMTP::TLS breaks some function of Net::SMTP (like don't return a true value of ->mail, ->to only support one scalar and no param, etc.)<br />I sent the patch to the author of Email::Send, but I'm not sure whether he will accept it because of the Net::SMTP::TLS.<br /><br />the yml config of Catalyst::Plugin::Email should something like<pre>email:<br />  - SMTP<br />  - smtp.gmail.com<br />  - tls<br />  - 1<br />  - Hello<br />  - 'www.fayland.org'<br />  - Port<br />  - 587<br />  - User<br />  - 'yourname@gmail.com'<br />  - Password<br />  - yourpassword</pre> and <pre>$c->email(<br />    header => [<br />        From    => 'yourname@gmail.com',<br />        To      => 'tosomewhere@somemailhost.com',<br />        Subject => 'Test Foorum Email'<br />    ],<br />    body => 'OK',<br />);</pre><br /><br />Have fun!

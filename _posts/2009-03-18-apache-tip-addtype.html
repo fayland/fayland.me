@@ -1,0 +1,10 @@
+---
+category: linux
+layout: post
+tags:
+  - Apache
+title: 'Apache Tip: AddType'
+---
+{% include JB/setup %}
+
+see I setup a <a href="http://code.fayland.org/">http://code.fayland.org/</a> for code review. then I want to show plain text for pl file like Makefile.PL<br />but by default, it's handled by perl. and it shows a 500 error in browser.<br /><br />with the dreamhost support, I create a .htaccess like<pre><code><br />RemoveHandler .pl .PL .t .html<br />AddType text/plain .pl .PL .t .html</code></pre><br />and it works!<br /><br />Thanks.

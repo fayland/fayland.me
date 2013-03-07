@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: use Net::SMTP_auth to auth the smtp server
+---
+{% include JB/setup %}
+
+应该说 Net::SMTP 的 auth 并不是很好，它是根据 SMTP 服务器返回的 AUTH 支持参数来进行下一步的 auth 行动。但是有时候 SMTP 会返回很多个 auth 类型如 LOGIN CRAM-MD5 PLAIN，但是你可能需要用 PLAIN 来进行验证。这时候 Net::SMTP_auth 会派上用场。<br />Net::SMTP_auth @ISA = qw(Net::SMTP); 唯一不同的是它比 Net::SMTP 的 auth 上多了一个参数。<br />Net::SMTP 的可能是这样 $smtp->auth($username, $password);<br />但是 Net::SMTP_auth 多了一个参数指定 auth 类型。$smtp->auth('PLAIN', $username, $password);<br />如果非得要用 Net::SMTP 来进行 AUTH PLAIN 的话也是可以的：<pre>use MIME::Base64;<br /># after $stmp = Net::SMTP->new<br />$smtp->command('AUTH PLAIN')->response();<br />my $userpass = encode_base64("\000$username\000$password");$userpass =~ s/\n//g;<br />$smtp->command($userpass)->response();</pre><br />好象是这样子的。Have fun!

@@ -1,0 +1,9 @@
+---
+category: javascript
+layout: post
+tags: []
+title: Powerful jQuery for SubmitOnce
+---
+{% include JB/setup %}
+
+<a href='http://www.jquery.com/'>jQuery</a> is pretty powerful. It's pretty easy to write a jquery js without change any html code.<br /><br />I just wrote a small js to finish one task: disable the "submit" button when submit the form and let Ctrl+Enter submit the form like QQ message.<br /><br />code is pretty simple:<pre><code>$(document.forms).each( function(theform) {<br />    <br />    // disabled the Submit and Reset when submit a form<br />    // to avoid duplicate submit<br />    $(theform).submit( function() {<br />        $('input:submit').attr( { disabled : 'disabled' } );<br />        $('input:reset').attr(  { disabled : 'disabled' } );<br />    } );<br />    <br />    // Press Ctrl+Enter to submit the form. like QQ.<br />    $(theform).keypress( function(evt) {<br />        var x = evt.keyCode;<br />        var q = evt.ctrlKey;<br />        <br />        if (q && ( x == 13 || x == 10)) {<br />            theform.submit();<br />        }<br />    } );<br />    <br />} );</code></pre><br /><br />If we are not using jQuery, we need change every &lt;form in html files.(add onsubmit="javascript:SubmitOnce()" like).<br /><br />jQuery operate on every form without changing any html files. that's amazing!<br /><br />enjoy();

@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Foorum
+title: Perl::Critic support on Foorum
+---
+{% include JB/setup %}
+
+<a href="http://search.cpan.org/perldoc?Perl::Critic">Perl::Critic</a> is a great CPAN module for every Perl developers.<br /><br />From <a href="http://www.foorumbbs.com/">Foorum</a> v0.1.1 on, we will support Perl::Critic<br />the pl URL is <a href="http://foorum.googlecode.com/svn/trunk/bin/misc/perlcritic.pl">http://foorum.googlecode.com/svn/trunk/bin/misc/perlcritic.pl</a><br />and the result is at <a href="http://foorum.googlecode.com/svn/trunk/bin/misc/critic.txt">http://foorum.googlecode.com/svn/trunk/bin/misc/critic.txt</a><br /><br />and here is a tip from Jeffrey Thalhammer:<br /><a href="http://mail.pm.org/pipermail/pbp-pm/2007-December/000056.html">http://mail.pm.org/pipermail/pbp-pm/2007-December/000056.html</a><br /><br />we can disable the eval "string" alerts by<br />my $has_proc_pid_file = eval "use Proc::PID::File"; ## no critic (ProhibitStringyEval)<br /><br /><br />have fun!

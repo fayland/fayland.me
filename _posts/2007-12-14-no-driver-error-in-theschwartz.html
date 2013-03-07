@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: No Driver error in TheSchwartz
+---
+{% include JB/setup %}
+
+generally that's something in Data::ObjectDriver::Driver::DBI<br /><br />u need configure your dsn as "dbi:mysql:database=theschwartz;host=mysql.foorumbbs.com;port=3306"<br />but not "DBI:mysql:database=theschwartz;host=mysql.foorumbbs.com;port=3306".<br /><br />since<pre><code>        if (my $dsn = $driver->dsn) {<br />            ($type) = $dsn =~ /^dbi:(\w*)/;</code></pre> in Data::ObjectDriver::Driver::DBI<br /><br />JFYI.

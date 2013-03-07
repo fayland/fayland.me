@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Win32
+title: 'step by step: make daydayup as a WinXP service'
+---
+{% include JB/setup %}
+
+even it's very old, it's still very useful: <a href="http://www.perlguy.com/articles/nt_service.html">http://www.perlguy.com/articles/nt_service.html</a><br /><br />step 1, download the toolkit from <a href="http://www.microsoft.com/downloads/details.aspx?familyid=9d467a69-57ff-4ae7-96ee-b18c4790cffd&displaylang=en">http://www.microsoft.com/downloads/details.aspx?familyid=9d467a69-57ff-4ae7-96ee-b18c4790cffd&displaylang=en</a><br /><br />step 2, cmd: then<pre>C:\Documents and Settings\Administrator>INSTSRV DayDayUp "C:\Program Files\Windows Resource Kits\Tools\srvany.exe"<br /><br />The service was successfuly added!<br /><br />Make sure that you go into the Control Panel and use<br />the Services applet to change the Account Name and<br />Password that this newly installed service will use<br />for its Security Context.</pre><br />step 3, cmd, regedit, then find "DayDayUp"<br />* Right click on the key and choose New, then Key. This will create what looks like a new folder. Name the new key <i>Parameters</i>.<br />* Right click on Parameters and select New, then String Value. In the space provided, type <i>Application</i>.<br />* Again, right click on Parameters and select New, then String Value. In the space provided, type <i>AppParameters</i>.<br />* Right click on <i>Application</i> and choose Modify, then type in the path to your Perl binary like <i>C:\strawberry\perl\bin\perl.exe</i><br />* Next, right click on <i>AppParameters</i> and select Modify. type <i>E:\Fayland\gsvn\CPAN\day_day_up\bin\day_day_up daemon 3001</i><br /><br />OK, everything is done now. if you go Services, you'll find DayDayUp in list, and you can start it (it will be started whenever computer gets start)<br /><br />Thanks.

@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Moose
+title: 'Learn Moose X: handles'
+---
+{% include JB/setup %}
+
+Writing Moose is really very fun and happy.<br /><br />I'm happy that <a href="http://search.cpan.org/~sunnavy/">sunnavy</a> picked up the Moose for <a href="http://code.google.com/p/net-google-code/">Net::Google::Code</a>.<br /><br />Today I'm implementing some attributes for the Net::Google::Code. the code would be something like<pre><code>    use Net::Google::Code;<br />    my $project = Net::Google::Code->new( project => 'net-google-code' );<br />    print join(', ', @{ $project->owners } );</code></pre>so in old plain Perl code, you must write code in Net/Google/Code.pm or else you need sub owners { Net::Google::Code::Home->new()->owners }, something like that.<br /><br />with Moose, with hanldes, we can simply write code like<pre><code>has 'home'  => (<br />    isa     => 'Net::Google::Code::Home',<br />    is      => 'ro',<br />    lazy    => 1,<br />    default => sub {<br />        require Net::Google::Code::Home;<br />        Net::Google::Code::Home->new( parent => $_[0] );<br />    },<br />    handles => [ 'owners', 'members' ],<br />);</code></pre><br />in this way, it makes the code really clean and small.<br /><a href="http://code.bestpractical.com/bps-public/Net-Google-Code/trunk/lib/Net/Google/Code.pm">http://code.bestpractical.com/bps-public/Net-Google-Code/trunk/lib/Net/Google/Code.pm</a><br /><a href="http://code.bestpractical.com/bps-public/Net-Google-Code/trunk/lib/Net/Google/Code/Home.pm">http://code.bestpractical.com/bps-public/Net-Google-Code/trunk/lib/Net/Google/Code/Home.pm</a><br /><br />the magic is $project->owners == $project->home->owners, more example can be found: <a href="http://search.cpan.org/src/DROLSKY/Moose-0.64/t/020_attributes/010_attribute_delegation.t">http://search.cpan.org/src/DROLSKY/Moose-0.64/t/020_attributes/010_attribute_delegation.t</a>.<br /><br />if you never use Moose before, you SHOULD use Moose today!<br /><br />Thanks.

@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: Template Plugin HtmlToText
+---
+{% include JB/setup %}
+
+It's a TT plugin for format html to text, a plugin interface to <a href='http://search.cpan.org/perldoc?HTML::FormatText'>HTML::FormatText</a>.<br /><br />将 HTML 用 HTML::FormatText 转为 Text 文本。<br /><br /><a href='http://search.cpan.org/perldoc?Template::Plugin::HtmlToText'>Template::Plugin::HtmlToText</a> is a easy plugin, all code is here:<br /><pre>package Template::Plugin::HtmlToText;<br /><br />use strict;<br />use vars qw( @ISA $VERSION );<br />use base qw( Template::Plugin );<br />use Template::Plugin;<br /><br />$VERSION = '0.01';<br /><br />sub new {<br />    my ($class, $context, $arg) = @_;<br />    $context->define_filter('html2text', [ \&html2text => 1 ]);<br />    return \&tt_wrap;<br />}<br /><br />sub html2text {<br />    my ($context, $args) = @_;<br />    return sub {<br />        my $html = shift;<br />        return $html unless ($html =~ m#(<|>)#s);<br />        <br />        require HTML::TreeBuilder;<br />        my $tree = HTML::TreeBuilder->new->parse($html);<br />        require HTML::FormatText;<br />        my $formatter = HTML::FormatText->new(%{$args});<br />        my $text = $formatter->format($tree);<br />        return $text;<br />    }<br />}<br /><br />1;</pre>

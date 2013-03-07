@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: sri left Catalyst
+---
+{% include JB/setup %}
+
+诸如通告所说，Sri 离开了 Catalyst 项目。<a href='http://lists.rawmode.org/pipermail/catalyst/2006-May/007250.html'>http://lists.rawmode.org/pipermail/catalyst/2006-May/007250.html</a><br />该项目的其他主要开发人员都没变。<br /><br />他将开始一个新的 MVC 项目。名字可能是 <a href='http://use.perl.org/~sri/journal/29516'>Mojo</a>.<br />不过 CPAN 上有个原型，叫 ReAction, 可以从这下过来看看：<a href='http://search.cpan.org/~mstrout/Reaction-0.001000_001/'>http://search.cpan.org/~mstrout/Reaction-0.001000_001/</a><br />ReAction 将严重依赖于 <a href='http://search.cpan.org/perldoc?Moose'>Moose</a>.<br />Moose 是个差不多类似于 Perl 6 OO 的 Perl 5 的实现。由 <a href='http://www.pugscode.org'>Pugs</a> 的开发人员 Stevan Little 写的。<br />在 Win32 下要安装 Moose, 得去下 ActivePerl 5.8.8，因为需要 List::Utils 1.18<br /><br />据我推测，Mojo 或者 ReAction 将不像 Catalyst 那样支持任意的 Model 而是用了 DBIx::Class. 而且将会采用 <a href='http://dojotoolkit.org/'>Dojo</a> 作为基础的 javascript 库。<br />虽然没有 Catalyst 那么容易扩展，不过我还是挺期待 sri 的作品的。<br />当然，目前基于 Catalyst 的项目我也没有打算要迁移到新的 MVC 上。<br /><br />百花争放，这是个好现象。:)

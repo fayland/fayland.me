@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: TT String Compare
+---
+{% include JB/setup %}
+
+Template-Toolkit 里是没有 gt 这样的字符串比较操作符的。<br /><br />像这样的东西，在 Perl 里是正确的。<pre>if ('2006-08-12 06:32:38' gt '2006-08-11 16:43:41') {<br />   print 'ok';<br />} else {<br />   print 'no';<br />} </pre>会输出 ok<br /><br />但在 TT 里用 > 比较是错误的：<pre>[% IF '2006-08-12 06:32:38' > '2006-08-11 16:51:08' %]<br />ok<br />[% ELSE %]<br />no<br />[% END %] </pre>输出的是 no<br /><br />正确的用法应当是用 <a href='http://search.cpan.org/perldoc?Template::Plugin::String::Compare'>Template::Plugin::String::Compare</a><pre>[% USE String.Compare %]<br />[% IF String.Compare.new('2006-08-12 06:32:38') > '2006-08-11 16:51:08' %]</pre><br />String.Compare 用 overload 重载了比较操作符：<pre>use overload (<br />    '<'      => \&_lt,<br />    '>'      => \&_gt,<br />    '<='     => \&_le,<br />    '>='     => \&_ge,<br />    fallback => 1,<br />);</pre><br />Have fun!

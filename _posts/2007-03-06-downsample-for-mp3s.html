@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - lame
+title: downsample for mp3s
+---
+{% include JB/setup %}
+
+mm, we use <a href="http://lame.sourceforge.net/">lame</a> to resample/downsample mp3 under linux. (like convert 256 kbps to 128 kbps )<br />first use <a href="http://search.cpan.org/perldoc?MP3::Info">MP3::Info</a> to get $bitrate = $info->{BITRATE}.<br />then use $s = "lame -b 128 $orig_file $tmp_file && mv -f $tmp_file $orig_file && chmod 0777 $orig_file"; for $bitrate > 128<br />then system($s);<br /><br />pretty simple but useful.

@@ -1,0 +1,9 @@
+---
+category: life
+layout: post
+tags: []
+title: Mother's Day
+---
+{% include JB/setup %}
+
+today is mother's day, please don't forget it. :)<br /><br /><pre>use Date::Holidays::CN;<br />   <br />my ($year, $month, $day) = (localtime)[ 5, 4, 3 ];<br />$year  += 1900;<br />$month += 1;<br />if (my $holidayname = is_cn_holiday( $year, $month, $day )) {<br />    print $holidayname;<br />}</pre>

@@ -1,0 +1,12 @@
+---
+category: perl
+layout: post
+tags:
+  - CPAN
+  - DBIx-Class
+  - TheSchwartz
+title: DBIx::Class::ResultSet::Void and TheSchwartz::Moosified
+---
+{% include JB/setup %}
+
+Big thanks to <a href="http://search.cpan.org/~ribasushi/">ribasushi</a>, the new <a href="http://search.cpan.org/perldoc?DBIx::Class::ResultSet::Void">DBIx::Class::ResultSet::Void 0.04</a> is using<br />    # SELECT 1 FROM item me WHERE ( me.id = ? ) LIMIT 1: '1'<br />    # INSERT INTO item ( id, name) VALUES ( ?, ? ): '1', 'A'<br />instead of COUNT(*). it's much faster now.<br /><br />Another big thanks to <a href="http://search.cpan.org/~stash/">stash</a> from <a href="http://www.socialtext.com/">socialtext</a>, <a href="http://search.cpan.org/~stash/TheSchwartz-Moosified-0.04/">TheSchwartz::Moosified</a> 0.04 with PostgreSQL support and bug fixes.<br /><br />Enjoy!

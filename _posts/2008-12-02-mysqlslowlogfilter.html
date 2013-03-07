@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - CPAN
+  - MySQL
+title: MySQL::SlowLog::Filter
+---
+{% include JB/setup %}
+
+we are using <a href="http://hackmysql.com/mysqlsla">mysqlsla</a> to parse MySQL slow.log, but we have an issue that our slow.log is pretty huge, it contains 2 years' data. somehow I just need 3 month or half a year.<br /><br />I'm searching around to find a script to do the things I want and I find <a href="http://code.google.com/p/mysql-log-filter/">http://code.google.com/p/mysql-log-filter/</a><br />it's python(php) script and I do want a Perl script. <br /><br />then <a href="http://search.cpan.org/dist/MySQL-SlowLog-Filter/">http://search.cpan.org/dist/MySQL-SlowLog-Filter/</a> is out.<br />and a script: <a href="http://search.cpan.org/dist/MySQL-SlowLog-Filter/script/mysql_slowlog_filter.pl">http://search.cpan.org/dist/MySQL-SlowLog-Filter/script/mysql_slowlog_filter.pl</a><br /><br />have fun

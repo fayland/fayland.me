@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Catalyst
+title: 'Catalyst trap: param and params'
+---
+{% include JB/setup %}
+
+well, if we write code as follows:<pre><code>sub test : Local {<br />   my ($self, $c) = @_;<br />     my $test = {<br />       a => $c->req->param('a'),<br />       b => $c->req->param('b'),<br />       c => $c->req->param('c'),<br />   };<br />   $c->res->body(Dumper(\$test));<br />} </code></pre> then try to visit test?b=1, guess what we get? that's not what we expected. <pre><code>$VAR1 = \{<br />           '1' => 'c',<br />           'a' => 'b'<br />         }; </code></pre>a weird result!<br /><br />please use follows, that's much better.<pre><code>sub test : Local {<br />    my ($self, $c) = @_;<br /><br />    my $test = {<br />        a => $c->req->params->{'a'},<br />        b => $c->req->params->{'b'},<br />        c => $c->req->params->{'c'},<br />    };<br />    $c->res->body(Dumper(\$test));<br />} </code></pre> and get what we want:<pre><code>$VAR1 = \{<br />            'a' => undef,<br />            'b' => '1',<br />            'c' => undef<br />          };</code></pre><br />so do remember that. and don't write dbix insert/update code like that.

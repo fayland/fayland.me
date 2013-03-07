@@ -1,0 +1,9 @@
+---
+category: linux
+layout: post
+tags: []
+title: 数据迁移
+---
+{% include JB/setup %}
+
+既然新买了笔记本，就将台式机退休掉。不过里面的数据可一个也丢不得。有时候仅仅用 copy+paste 是行不通的，有些软件还是有其内在的迁移方法。<br /><br /><b>Subversion</b><br />根据中文版 <a href='http://freebsd.sinica.edu.tw/~plasma/svnbook/book.html'>SVN 指南</a>，首先将老电脑里的 svn 数据导出，比如说我自己的 svn repos 在 E:/repos<br /><pre>e:<br />svnadmin dump repos > dumpfile</pre>然后将 e:/dumpfile 拷贝到新的电脑中。我还是想在 E:/repos 里放自己的 svn repos.<br />于是在新的电脑里执行：<br /><pre>e:<br />svnadmin create repos<br />svnadmin load repos < dumpfile</pre><b>Firefox</b><br />因为 Firefox 保存了我好的网页密码，有些网页密码我自己都不太记得起了。还有呢，n 多插件如果重新安装那不得累死呀。还好在 <a href='http://www.mozilla.org/support/firefox/profile'>Mozilla Firefox Support</a> 里找到自己想要的东西。<br />首先在老的电脑里，找到 C:\Documents and Settings\Administrator\Application Data\Mozilla\Firefox\Profiles （找不到就搜索） 里找到一个 kg06lpn3.default 文件夹，将这文件夹里的所有资料都拷贝到新的电脑里，比如说我就把它拷贝到 E:\Profiles\Firefox\kg06lpn3.default<br />然后在新的电脑里，找到 C:\Documents and Settings\fayland lam\Application Data\Mozilla\Firefox （找不到就搜索）下面的 profiles.ini, 编辑将两行改为：<br /><pre>IsRelative=0<br />Path=E:\Profiles\Firefox\kg06lpn3.default</pre><b>MySQL and Thunderbird</b><br />MySQL 类似于 Subversion 的做法，或者用 phpMyAdmin 来搞。<br />不过我老电脑里用的是 4.x 而新的用的是 5.x 似乎转过来 utf8 的中文显示部分是乱码部分是正常的，弄得我也搞不清了。<br />而 Thunderbird 则类似于 Firefox, 参见：<a href='http://www.mozilla.org/support/thunderbird/profile'>http://www.mozilla.org/support/thunderbird/profile</a><br />这样能将 Thunderbird 的所有邮件和新闻组，还有 filters 都会拷贝过来，啥都不会丢。<br /><br />还有一些还没弄完，只好等明天再弄了。今天太累了。病也还没好，得早点去睡了。

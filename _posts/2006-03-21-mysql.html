@@ -1,0 +1,9 @@
+---
+category: mysql
+layout: post
+tags: []
+title: MySQL 首字母大写
+---
+{% include JB/setup %}
+
+MySQL 中有个将所有字母大写的函数，UPPER<br />但是没有将首字母大写的函数，今天要用到，所以写了一个。<br /><pre>mysql > update test set text = concat(upper(left(text, 1)), mid(text, 2, length(text) - 1));</pre><br />test 是 table 表，text 为表的字段 field<br /><br />concat 是用来连接字符串的。<br />upper 是将所有的字母大写<br />left(text, 1) 是取出 text 的第一个字符<br />mid(text, 2, length(text) - 1) 是取出从第二个字符到最后一个。<br /><br />good luck<br /><br /><h4>Update</h4>OK, 这东西对 lin dao 这样的两个字段是不试用，它只能改成 Lin dao. 如果要改为 Lin Dao 的话那就比较复杂了。还好我们可以用 Perl 快速的写一段代码：<pre>#!/usr/bin/perl<br /><br />use strict;<br />use DBI;<br /><br />my $dbh = DBI->connect("DBI:mysql:fayland:localhost", <br />  'root', 'pass', { RaiseError => 1, PrintError => 1 }) or die $DBI::errstr;<br />  <br />my $sth = $dbh->prepare(<br />    qq{SELECT * FROM test}<br />);<br />$sth->execute() or die $DBI::errstr;<br /><br />my $records = $sth->fetchall_arrayref({});<br /><br />$sth = $dbh->prepare(<br />    qq{UPDATE test SET text = ? WHERE text = ?}<br />);<br /><br />foreach my $record (@$records) {<br />    my $old = $record->{text};<br />    $record->{text} =~ s/(\w+)/\u\L$1/g;<br />    $sth->execute($record->{text}, $old) or die $DBI::errstr;<br />}<br /><br />print 'ok';</pre>

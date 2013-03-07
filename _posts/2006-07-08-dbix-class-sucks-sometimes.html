@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: DBIx-Class sucks sometimes
+---
+{% include JB/setup %}
+
+mmmm, I just convert one complex SQL sentence into DBIx-Class like, but it doesn't work at all. I ask the maillist around, the answer is no way.<br /><br />see <a href='http://lists.rawmode.org/pipermail/dbix-class/2006-July/001894.html'>http://lists.rawmode.org/pipermail/dbix-class/2006-July/001894.html</a> for more details.<br /><br />I think I should use ->storage->dbh instead. mmm, I should do the pager myself.(I like the built-in pager in DBIx-Class a lot.)

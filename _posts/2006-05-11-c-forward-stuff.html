@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: $c->forward stuff
+---
+{% include JB/setup %}
+
+Catalyst 的 forward 并不如想象中的那么好。<br />第一，它不能返回 array, 它只能返回 $scalar<br />第二，当它返回 undef 的时候，它实际上返回的是一个数值 0<br /><br />第二是个很奇怪的事，然后我看了看 Catalyst 的代码，发现都是这一句的错。<br /><br />Catalyst.pm 1121<br />    eval { $c->state( &$code( $class, $c, @{ $c->req->args } ) || 0 ) };<br /><br />我给他们的 mailing list 发了个消息：<a href='http://lists.rawmode.org/pipermail/catalyst/2006-May/007418.html'>http://lists.rawmode.org/pipermail/catalyst/2006-May/007418.html</a><br /><br />Yuval Kogman 回复说原因是为了兼容以前的代码。以后会有一个新的 call 方法推出，将支持 array 和返回 undef<br />而 Perrin Harkins 和 Matt S Trout 建议不要用 forward 而是用普通的 subroutine, 只是将第一个参数 $c 传过去。这也是非常好的一个方法，我可不要钻牛角尖。:)

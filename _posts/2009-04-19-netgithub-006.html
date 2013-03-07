@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - github
+  - Net-GitHub
+title: Net::GitHub 0.06
+---
+{% include JB/setup %}
+
+github just released its <a href="http://develop.github.com/">V2 API</a> version days ago, I spent some hours to update the <a href="http://search.cpan.org/dist/Net-GitHub/">Net::GitHub</a>.<br /><br />it's really not a fun to both support V1 and V2 on the same time, I mean some code like follows:<pre><code>use Net::GitHub;<br />my $g2 = Net::GitHub->new( version => 2 ); # use Net::GitHub::V2<br />my $g2 = Net::GitHub->new( version => 1 ); # use Net::GitHub::V1</code></pre><br />after a nice sleep, I come out a solution like:<pre><code>package Net::GitHub;<br /><br />use Moose;<br /><br />our $VERSION = '0.06';<br />our $AUTHORITY = 'cpan:FAYLAND';<br /><br />sub new {<br />    my $class = shift;<br />    my $params = $class->BUILDARGS(@_);<br /><br />    my $obj;<br />    if ( $params->{version} == 1 ) {<br />        require Net::GitHub::V1;<br />        $obj = Net::GitHub::V1->new($params);<br />    } else {<br />        require Net::GitHub::V2;<br />        $obj = Net::GitHub::V2->new($params);<br />    }<br /><br />    return $class->meta->new_object(<br />        __INSTANCE__ => $obj,<br />        @_,<br />    );<br />}<br /><br />no Moose;<br />__PACKAGE__->meta->make_immutable;<br /><br />1;</pre></code><br />maybe there is a better way, but it works at least for now.<br /><br />Thanks and enjoy.

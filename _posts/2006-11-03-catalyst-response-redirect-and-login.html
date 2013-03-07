@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Catalyst
+title: Catalyst response->redirect and login trick
+---
+{% include JB/setup %}
+
+say, u have a "return $c->res->redirect('/login') unless ($c->user_exists);" in one sub(means one url like "/forum/1/topic/new"). and u tried to get "/forum/1/topic/new" as $c->req->referer; but Catalyst is somehow different, u don't get "/forum/1/topic/new" as your HTTP_REFERER. Catalyst treats $c->res->redirect inside.<br /><br />mm, maybe you will get this problem when you code in Catalyst.<br />Here comes my solution:<br />Root.pm<pre>sub end : Private {<br />   my ( $self, $c ) = @_;<br />  <br />   # for login using!<br />   if ($c->res->location and $c->res->location eq '/login') {<br />       $c->res->location('/login?referer=/' . $c->req->path);<br />   }<br />return if ($c->res->body || $c->res->redirect);</pre>Logon.pm after $c->login OK, use<pre># redirect<br />my $referer = $c->req->param('referer');<br />if ($referer) {<br />   $c->res->redirect($referer);<br />} else {<br />   $c->res->redirect('/');<br />}</pre>and in Template: try to put "&lt;input type='hidden' name='referer' value='[% c.req.param('referer') %]' /&gt;" in your action='/login' form.<br /><br />OK, maybe I forget the '$c->req->uri->query' or '$c->req->body_parameters', but you can improve it, right?<br /><br />Have fun!

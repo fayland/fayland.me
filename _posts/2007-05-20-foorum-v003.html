@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Foorum
+title: Foorum v0.03
+---
+{% include JB/setup %}
+
+I just release another version of Foorum at <a href='http://code.google.com/p/fayland'>http://code.google.com/p/fayland</a>.<br /><br />CHANGES:<br />    - remove Plugin::Email. insert into table scheduled_email and use a cron script to send. (19/5/2007)<br />    - remove Plugin::Scheduler. all cron scripts goes to /bin/cron (19/5/2007)<br />    - bug fixes (19/5/2007)<br /><br />I remove the Email Plugin and create a new table scheduled_email to contain the email content, then use /bin/cron/send_scheduled_email to send emails<br /><br />and remove the Scheduler. I think crontab is better<br /><br />and remove such files can reduce the memory usage under mod_perl I think<br /><br /><a href='http://fayland.googlecode.com/files/Foorum-0.03.tar.gz'>http://fayland.googlecode.com/files/Foorum-0.03.tar.gz</a><br /><br />Enjoy!

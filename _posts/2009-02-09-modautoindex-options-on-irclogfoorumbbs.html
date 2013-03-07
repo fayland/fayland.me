@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Apache httpd
+title: mod_autoindex Options on irclog.foorumbbs
+---
+{% include JB/setup %}
+
+well, after a bit search, I'm very happy to see <a href="http://irclog.foorumbbs.com/">http://irclog.foorumbbs.com/</a> is behaving like what I want now.<br /><br />no big magic, just read through <a href="http://httpd.apache.org/docs/2.2/mod/mod_autoindex.html">http://httpd.apache.org/docs/2.2/mod/mod_autoindex.html</a><br />then create a .htaccess in my dreamhost server.<pre>IndexOrderDefault Descending Date<br />IndexOptions +FancyIndexing +FoldersFirst +NameWidth=*</pre>just a note. :)

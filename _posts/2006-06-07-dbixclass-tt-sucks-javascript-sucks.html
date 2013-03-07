@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: 'DBIx::Class + TT sucks, javascript sucks'
+---
+{% include JB/setup %}
+
+DBIx::Class ++ TT sucks.<br /><br />ok, assuming that we get a record like this: <pre>my $topic = $c->model('DBIC')->resultset('Topic')->search( { topic_id => $topic_id } )->first;<br />$topic->{post_on} = &format_date($topic->post_on);</pre> now TT has two [% topic.post_on %], one is $topic->{post_on}, another one is $topic->post_on.<br />TT will fetch the "$topic->post_on" but ingore the $topic->{post_on}.<br />if we need TT fetch the "$topic->{post_on}", we have two ways:<br />1. $topic->{_column_data}->{post_on} = &format_date($topic->post_on);<br />2. $topic->{post_on_date} = &format_date($topic->post_on); [% topic.post_on_date %]<br /><br />javascript sucks.<br /><br />IE will complain at: <pre>var myAjax = new Ajax.Request( url, {<br />     method: 'get',<br />     parameters: pars,<br />     onSuccess: showCityResponse,<br />     onFailure: reportCityError,<br /> } );</pre><br />but Firefox will not.<br />The reason is "onFailure: reportCityError," chomp the last ","<br />"onFailure: reportCityError" will work.<br /><br />It's hard to debug under IE, and Firefox has "<a href='https://addons.mozilla.org/firefox/1843/'>FireBug</a>". Thank God.

@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - PPI
+title: 'learn PPI 1: double to single'
+---
+{% include JB/setup %}
+
+well, I'm very strict on Perl code (more than use strict;).<br />I want code like my $a = "a"; becomes my $a = 'a'; since it's better.<br />I'm not considering the speed since it's trivial for " to '. but u'd admit, 'a' is faster than "a".<br /><br /><a href="http://search.cpan.org/perldoc?PPI">PPI</a> is really amazing.<br />it breaks Perl code down into the Perl document/structure we can read and analyze.<br /><br />To do the task above. I just wrote a script based on PPI.<br /><a href="http://fayland.googlecode.com/svn/trunk/script/learn_ppi/01DoubleToSingle.pl">http://fayland.googlecode.com/svn/trunk/script/learn_ppi/01DoubleToSingle.pl</a><br />OK, it's my first time try with PPI, and it's really easy to understand and coding.<br /><br />Many thanks to <a href="http://search.cpan.org/~adamk/">Adam Kennedy</a>.<br /><br />next time, I think I'll deal with<br />if ( $a eq 'a' ) {<br />to<br />if ( 'a' eq $a ) {<br /><br />I think it's fun. and good to learn a new good thing.<br /><br />Enjoy and have fun.

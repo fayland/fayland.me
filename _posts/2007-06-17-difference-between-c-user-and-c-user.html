@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - Catalyst
+  - DBIx-Class
+title: difference between $c->user and $c->user->obj
+---
+{% include JB/setup %}
+
+when we use Catalyst::Plugin::Authentication::Store::DBIC::User, we will have $c->user and $c->user->obj. but most of people are confusing with them I guess.<br /><br />differences:<br />* $c->user is ISA Catalyst::Plugin::Authentication::Store::DBIC::User, while $c->user->obj is just something like sub obj in Catalyst::Plugin::Authentication::Store::DBIC::User. see:<pre>__PACKAGE__->mk_accessors(qw/id config obj store/);<br /># .skip<br />    bless {<br />        id     => $id,<br />        config => $config,<br />        obj    => $user_obj,<br />    }, $class;</pre><br />* why $c->user->username is the same as $c->user->obj->username is because of<pre>sub AUTOLOAD {<br />    my $self = shift;<br />    (my $method) = (our $AUTOLOAD =~ /([^:]+)$/);<br />    return if $method eq "DESTROY";<br /><br />    $self->obj->$method(@_);<br />}</pre>. when we call ->username of $c->user. it will call sub username in Catalyst::Plugin::Authentication::Store::DBIC::User. then sub AUTOLOAD works here, it call $self->obj->$method(@_) indeed. ($self is $c->user).<br /><br />so there is something interesting..<br />* because we have sub for_session in Catalyst::Plugin::Authentication::Store::DBIC::User, we will have $c->user->for_session ( but not $c->user->obj->for_session if user table don't have "for_session" column ).<br />* when I see something "*user = \&obj;" in the code. I know I can use $c->user->user->username. it's the same as $c->user->obj->username. (JOKE!)<br /><br />for most situation. I suggest use $c->user->obj->column_name because that's more direct (no AUTOLOAD involved).<br /><br />Enjoy!.

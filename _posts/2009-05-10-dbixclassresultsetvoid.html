@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - CPAN
+  - DBIx-Class
+title: DBIx::Class::ResultSet::Void
+---
+{% include JB/setup %}
+
+some time I'm really feeling sick when I use update_or_create or find_or_create, the default DBIx::Class::ResultSet return DBIx::Class::Row object by using <b>find</b>.<br />it's useful when I need the $row object, but it's dummy if I don't care.<br /><br />I wrote <a href="http://search.cpan.org/perldoc?DBIx::Class::ResultSet::Void">DBIx::Class::ResultSet::Void</a> today. It would use <b>count</b> instead of find if not defined wantarray. it means when I call<br />    $rs->find_or_create( { id => 1, name => 'A' } );<br />instead of<br />    my $row = $rs->find_or_create( { id => 1, name => 'A' } );<br />it would generate SQLs like:<br />    # SELECT COUNT( * ) FROM item me WHERE ( me.id = ? ): '1'<br />    # INSERT INTO item ( id, name) VALUES ( ?, ? ): '1', 'A'<br />it's a little better I think.<br /><br />read more on the <a href="http://search.cpan.org/perldoc?DBIx::Class::ResultSet::Void">POD</a> and Enjoy!

@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - git
+  - gitstore
+title: GitStore
+---
+{% include JB/setup %}
+
+I just released another module <a href="http://search.cpan.org/dist/GitStore/">http://search.cpan.org/dist/GitStore/</a> this morning.<br /><br />GitStore - Git as versioned data store in Perl<pre><code>use GitStore;<br /><br />my $gs = GitStore->new('/path/to/repo');<br />$gs->store( 'users/obj.txt', $obj );<br />$gs->store( ['config', 'wiki.txt'], { hash_ref => 1 } );<br />$gs->commit();<br />$gs->store( 'yyy/xxx.log', 'Log me' );<br />$gs->discard();<br /><br /># later or in another pl<br />my $val = $gs->get( 'user/obj.txt' ); # $val is the same as $obj<br />my $val = $gs->get( 'config/wiki.txt' ); # $val is { hashref => 1 } );<br />my $val = $gs->get( ['yyy', 'xxx.log' ] ); # $val is undef since discard</code></pre><br />for now, it requires the Git::PurePerl master code. you must git clone it from http://github.com/acme/git-pureperl/tree/master and install into your local dir.<br /><br />The git repo is <a href="http://github.com/fayland/perl-git-store/tree/master">http://github.com/fayland/perl-git-store/tree/master</a><br />welcome to fork it and submit any patches.<br /><br />Thanks.

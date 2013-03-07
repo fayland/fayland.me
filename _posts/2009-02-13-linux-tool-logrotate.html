@@ -1,0 +1,11 @@
+---
+category: linux
+layout: post
+tags:
+  - linux
+  - log
+title: 'linux tool: logrotate'
+---
+{% include JB/setup %}
+
+logrotate is very useful tool in linux.<br /><br />see I run sphinx searchd and it creates logs. it would become very large if I leave it alone.<br />and I have another cron script like theschwartz_worker.pl and it writes the debug info into file when I use $job->debug<br /><br />those are very common situation. and with logrotate, it becomes simple.<br />place your files into /etc/logrotate.d/<br />like /etc/logrotate.d/searchd<pre><code>/var/log/searchd/foorum.log {<br />    weekly<br />    rotate 5<br />    compress<br />    delaycompress<br />    create 640 root root<br />    postrotate<br />        killall -SIGUSR1 searchd<br />    endscript<br />}</code></pre>like /etc/logrotate.d/theschwartz<pre><code>/var/log/theschwartz.log {<br />    weekly<br />    rotate 10<br />    compress<br />    delaycompress<br />    create 640 root root<br />}</code></pre>After you write your conf, you can start test by:<br />$> logrotate -d /etc/logrotate.d/searchd<br />rotating pattern: /var/log/searchd/foorum.log  weekly (5 rotations)<br />empty log files are rotated, old logs are removed<br />considering log /var/log/searchd/foorum.log<br />  log does not need rotating<br />not running postrotate script, since no logs were rotated<br /><br />google around to find more details. or just man logrotate.<br /><br />Thanks.

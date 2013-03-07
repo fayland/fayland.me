@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: Date Manip and Template Plugin FillInForm
+---
+{% include JB/setup %}
+
+今天用 Date::Manip 的时候碰到 Date::Manip unable to determine TimeZone 这样的错误。<br />后来通过 perldoc <a href='http://search.cpan.org/perldoc?Date::Manip'>Date::Manip</a> 设置了环境变量 TZ 为 +0800 就可以了。<br /><br />另一个是用 Template::Plugin::FillInForm 的时候。<br />很多时候用户输入错误后，我们会跳转到用户输入的界面，然后填充用户输入的字段。一般来说对于 input/text 这样可以设置 value='[% c.req.param('name') %], 但是对于 radio checkbox select 这样就比较复杂了。而 HTML::FillInForm 用 HTML::Parser 分析字段并填充，很方便。用法很简单：<br /><pre>[% USE FillInForm %]<br />[% FILTER fillinform fdat => journal_date || c.req.params %]<br />&lt;form><br />&lt;input type='radio'<br />[% END %]</pre><br />啥都不用写，就前面一句 [% USE 后面一句 [% END %]<br />但是这种情况在以 DBIx::Class 情况下会失效。因为 FillInForm 用 $journal->{title} 来填充，而 DBIx::Class 是用 $journal->title 来获取的。这在 TT 下没关系，因为都可以用 [% journal.text %] 来获取的。但是对于 FillInForm Plugin 就会失效。我目前的折中方法是多添加一句：<br /><pre>[% USE FillInForm %]<br />[% IF journal;<br />      journal_date = {<br />        title => journal.title,<br />      };<br />END; %]<br />[% FILTER fillinform fdat => journal_date || c.req.params %]</pre><br />而不是用这段失效的：<br /><pre>[% USE FillInForm %]<br />[% FILTER fillinform fdat => journal || c.req.params %]</pre>

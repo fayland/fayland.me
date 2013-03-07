@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Moose
+title: 'Learn Moose 1: subtype'
+---
+{% include JB/setup %}
+
+finally I wrote my first Moose script.<br />mainly I want to write a MooseX::Schwartz if I have enough time.<br /><br /><a href="http://search.cpan.org/perldoc?Moose">Moose</a> is very powerful.<br />I want a common function like set a flag to debug, besides that, we can define debug logger sub ourself.<br />something like:<pre><code>->verbose(1);<br />->verbose(0);<br />->verbose( sub {<br />    my $msg = shift;<br />    $msg =~ s/\s+$//;<br />    print STDERR "[CUS] $msg\n";<br />} );<br /># then call ->debug depends on ->verbose.</code></pre><br />final code is here: <br /><a href="http://fayland.googlecode.com/svn/trunk/script/learn_moose/007_subtype.pl">http://fayland.googlecode.com/svn/trunk/script/learn_moose/007_subtype.pl</a><br /><br />I'm not a Moose guru, but Moose sounds pretty exciting!

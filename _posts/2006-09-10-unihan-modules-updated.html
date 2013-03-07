@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: unihan modules updated
+---
+{% include JB/setup %}
+
+抽个空把三个用 Unihan 数据库的模块给更新了。<br />Unihan 的数据太大，大概有 24 M, <a href='http://www.unicode.org/Public/UNIDATA/Unihan.txt'>http://www.unicode.org/Public/UNIDATA/Unihan.txt</a><br />太大了，然后用个 <a href='http://fayland.googlecode.com/svn/trunk/script/unihan/unihan.pl'>Perl 脚本</a>把这里面的 kCantonese|kMandarin|kTotalStrokes 抽出来。分别对应到 Cantonese PinYin Stroke 模块。<br />Unihan 里面还有些是很有用的。比如汉字翻译等。不过我个人没怎么用到，所以也就没写。<br /><br />have fun.

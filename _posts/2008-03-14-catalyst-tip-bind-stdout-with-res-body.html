@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - Catalyst
+title: 'Catalyst Tip: bind STDOUT with res->body'
+---
+{% include JB/setup %}
+
+<pre><code>sub test_body : Local {<br />    my ($self, $c) = @_;<br /><br />    $c->res->body(\*STDOUT);<br />    print "a\n";<br />    print "b\n";<br />}</code></pre><br />I think that's pretty useful when u are trying to use "Benchmark" module (or others use STDOUT).<br /><br />Have fun!

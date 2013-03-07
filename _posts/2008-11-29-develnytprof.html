@@ -1,0 +1,10 @@
+---
+category: perl
+layout: post
+tags:
+  - NYTProf
+title: Devel::NYTProf
+---
+{% include JB/setup %}
+
+<a href="http://search.cpan.org/perldoc?Devel::NYTProf">Devel::NYTProf</a> is the best dprof tool in Perl land. it's really easy to install, configure, run and read the results.<br /><br />just be careful with Catalyst Application (which use NEXT), it can't be ran under 5.8.6<br />you need 5.8.8 or 5.10.<br /><br />run under modperl 1/2 is simple with Devel::NYTProf::Apache.<br />it writes files under /tmp and you can mv it to your place and run nytprofhtml on it.<br /><br />what in result page is:<br />Calls is how many times it's called.<br />P is Number of Places sub is called from<br />F is Number of Files sub is called from<br />Exclusive Time is time in sub excluding subs it called<br />Inclusive Time is time in sub including subs it called <br /><br />it really helps me a lot. Thanks, Tim.

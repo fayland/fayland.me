@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: 'Fetch mail by Net::POP3, parser mail by MIME::Parser'
+---
+{% include JB/setup %}
+
+用 Net::POP3 去读 mail, 然后用 MIME::Parser 去解析邮件内容。这样是绝佳组合。<br />比如任务是根据 mail 过来的 sender 来建立一个档案库或者根据 subject 来建立一个档案库。这样的东西当然可以用 Thunderbird 或 Outlook 的 filter 来搞定。但是 Perl 也是可以的。<br />如果再加上 CPAN 一大堆可以用 STMP 来发送邮件的模块，我们就能写个脚本来完成普通的收件和发件功能。<br /><br />应该说网络上发送邮件的资料很多，而且模块也很多，但是收取的比较少。我自己写了一点，发现用 MIME::Parser 解析的时候看 doc 看的比较乱。就 Google 了一下，找到了一篇绝妙的文章和代码：<a href='http://hacks.oreilly.com/pub/h/965'>Saving Only POP3 Email Attachments</a><br />这是 <a href='http://hacks.oreilly.com/pub/ht/28'>Spidering Hacks</a> 里面的一小 hack, 那本书里用了很多 Perl modules 去 hack 网络资料。很值得一看。<br /><br />PS, I'm back home. Thank God.

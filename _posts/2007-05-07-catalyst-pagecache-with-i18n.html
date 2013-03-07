@@ -1,0 +1,12 @@
+---
+category: perl
+layout: post
+tags:
+  - Catalyst
+  - Foorum
+  - I18N
+title: Catalyst PageCache with I18N
+---
+{% include JB/setup %}
+
+well, I have something like as follows in the Foorum Root.pm sub auto:<pre> # internationalization<br />    $c->stash->{lang} = $c->req->cookie('pref_lang')->value if ($c->req->cookie('pref_lang'));<br />    $c->stash->{lang} ||= $c->user->lang if ($c->user_exists);<br />    $c->stash->{lang} ||= $c->config->{default_pref_lang};<br />    if (my $lang = $c->req->param('set_lang')) {<br />        $lang =~ s/\W+//isg;<br />        if (length($lang) == 2) {<br />            $c->res->cookies->{pref_lang} = { value => $lang };<br />            $c->stash->{lang} = $lang;<br />        }<br />    }<br />    $c->languages( [ $c->stash->{lang} ] );</pre><br />but the <a href='http://search.cpan.org/perldoc?Catalyst::Plugin::PageCache'>Catalyst::Plugin::PageCache</a> does NOT get along well with the I18N's languages.<br /><br />so that I patch this module for a bit. to create a new plugin based on that:<pre>package Catalyst::Plugin::PageCacheWithI18N;<br /><br />use strict;<br />use warnings;<br />use Class::C3;<br />use vars qw/$VERSION/;<br />$VERSION = '0.01';<br />use base qw/Catalyst::Plugin::PageCache/;<br /><br />sub _get_page_cache_key {<br />    my ($c) = @_;<br />    <br />    my $key = $c->next::method(@_);<br />    my $lang = $c->req->cookie('pref_lang')->value if ($c->req->cookie('pref_lang'));<br />    $lang ||= $c->user->lang if ($c->user_exists);<br />    $lang ||= $c->config->{default_pref_lang};<br />    if (my $set_lang = $c->req->param('set_lang')) {<br />        $set_lang =~ s/\W+//isg;<br />        if (length($set_lang) == 2) {<br />            $lang = $set_lang;<br />        }<br />    }<br />    $key .= '#' . $lang if ($lang);<br />    return $key;<br />}<br /><br />1;</pre><br /><br />Links: <a href="http://fayland.googlecode.com/svn/trunk/Foorum/lib/Catalyst/Plugin/PageCacheWithI18N.pm">http://fayland.googlecode.com/svn/trunk/Foorum/lib/Catalyst/Plugin/PageCacheWithI18N.pm</a>

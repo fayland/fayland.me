@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - Catalyst
+  - jQuery
+title: jQuery Flot For Daily Chart in Foorum
+---
+{% include JB/setup %}
+
+I know Google just release his <a href="http://code.google.com/apis/chart/">Chart</a> days ago. it's powerful, more than jQuery <a href="http://code.google.com/p/flot/">flot</a>.<br /><br />but I still want to use flot because it's simpler. yet badly it's not supporting day as its X. like 20071131 is next to 20071201, not far away as treated in flot.<br /><br />Foorum has a feature that it will record the count of some tables every day. we have a table named 'stat', and columns are "stat_id", "stat_key", "stat_value", "date". so somehow we would have something like<br />20071201 user_counts 510<br />20071202 user_counts 640<br />then go on.<br />we use a cron script to collect those data.<br /><br />data is not so straight for human being. we need CHART.<br />so I just make vars from stat table like:<pre><code>stats => {<br />    user_counts => {<br />        20071201 => 510,<br />        20071202 => 640,<br />        20071203 => ...</code></pre><br />then we use a TT file to create a HTML file.<pre><code>$(function () {<br /><br />    [% i = 0 %]<br />    [% FOREACH ctype IN stats.keys %]<br />    <br />    $('body').append("&lt;h2>[% ctype %]&lt;/h2>&lt;div class='placeholder' id='placeholder[% i %]' style='height:300px;'>&lt;/div>");<br />    <br />    var d[% i %] = [];<br />    <br />    [% FOREACH key IN stats.${ctype}.keys.sort %]<br />    <br />    d[% i %].push([[% key %], [% stats.${ctype}.$key %]]);<br />    <br />    [% END %]<br />    <br />    $.plot($("#placeholder[% i %]"), [<br />        {<br />            data: d[% i %],<br />            lines: { show: true },<br />            points: { show: true }<br />        }<br />    ]);<br />    [% i = i + 1 %]<br />    [% END %]<br />});</code></pre><br /><br />more details @<br /><a href="http://fayland.googlecode.com/svn/trunk/Foorum/lib/Foorum/TheSchwartz/Worker/DailyChart.pm">http://fayland.googlecode.com/svn/trunk/Foorum/lib/Foorum/TheSchwartz/Worker/DailyChart.pm</a><br /><a href="http://fayland.googlecode.com/svn/trunk/Foorum/templates/stats/chart.html">http://fayland.googlecode.com/svn/trunk/Foorum/templates/stats/chart.html</a><br /><br />@Enjoy;

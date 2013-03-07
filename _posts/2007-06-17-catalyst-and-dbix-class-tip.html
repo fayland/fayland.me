@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - Catalyst
+  - DBIx-Class
+title: Catalyst and DBIx-Class tip
+---
+{% include JB/setup %}
+
+* Catalyst Tip: use set_authenticated instead of login when password is SHA1 hashed.<br /><br />well, Foorum use SHA1 to encrypt the password. so no one knows the original password including me (db do not store original password).<br />so if u are trying $c->login($username, $password_sha1_hashed);, it will fail.<br />if u are checking the module of Catalyst::Plugin::Authentication::Credential::Password which sub login is there, we would know the solution:<br />$c->set_authenticated($user);<br /><br />that does the same as login but no password check.<br /><br />* DBIx::Class Tip: attribute offset.<br /><br />sometimes when we run a SQL, that's not something like LIMIT 0,6 LIMIT 6,6<br />it might be something like LIMIT 5,6<br />well, the attributes of "rows" and "page" does something like LIMIT 6,6. but no luck with 5,6.<br />so if u want run a SQL with LIMIT 5,6, u might can try<pre>search( {}, {<br />    rows => 6,<br />    offset => 5<br />} );</pre>that would be what u want.<br /><br />be careful, offset do no create a Data::Page object for you. I mean ->pager. u need create that yourself.<br /><br />Enjoy!

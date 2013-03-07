@@ -1,0 +1,11 @@
+---
+category: perl
+layout: post
+tags:
+  - I18N
+  - Padre
+title: Padre I18N translation
+---
+{% include JB/setup %}
+
+(updated on June 23, 2009)<br /><br />from <a href="http://padre.perlide.org/wiki/TranslationIntro">http://padre.perlide.org/wiki/TranslationIntro</a>:<br /><br />the first time:<br />* msginit -i messages.pot -o zh-cn.po -l zh_CN<br /><br />later then message.pot get updated.<br />* msgmerge -o zh-cn.po.new zh-cn.po messages.pot<br />open the file, grep 'fuzzy'. and fix them<br /><br />check the syntax<br />* msgfmt -c zh-cn.po<br /><br />check the difference<br />* msgcmp zh-cn.po messages.pot<br /><br />Thanks.
