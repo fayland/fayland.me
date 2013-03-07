@@ -1,9 +1,0 @@
----
-category: perl
-layout: post
-tags: []
-title: Lingua::Han::Utils 和 Encode::Guess
----
-{% include JB/setup %}
-
-首先介绍下 <a href="http://search.cpan.org/perldoc?Encode::Guess">Encode::Guess</a> 的用途。<br />我们知道一个文件有很多种编码，最常见的就是 ASCII 和 utf8<br />如果你从外面读入一个文件，想把它 decode 时却不知道该指定何种编码时非常有用。<br />一般的代码是：<br /><pre>use Encode;<br />use Encode::Guess qw/euc-cn/;<p />my $word = "直到";<br />my $enc = Encode::Guess->guess($word);<br />die $! unless ref($enc);<br />print $enc->name;</pre>如果该代码文件是 utf8 模式下编辑时，它输出的是 utf8; 不在 Unicode Editing 模式下很可能输出 euc-cn<br />然后你要解码的话就可以指定它的编码了：<br /><pre>$word = decode($enc->name, $word);</pre>可是今天发现 <a href="http://search.cpan.org/perldoc?Encode::Guess">Encode::Guess</a> 不太美好的地方。<br />当我测试 $word = "直到" 时，在 utf8 和非 Unicode Editing 时都解码正常。<br />但测试 $word = "直" 时，在非 Unicode Editing 时却出错，它没有猜测成功。<p />我本来在 <a href="http://search.cpan.org/perldoc?Lingua::Han::Utils">Lingua::Han::Utils</a> 里就是用 die $! unless ref($enc); 的，所以测试 Unihan_value("直") 时会出错。<br />后来想想，把它改成了：<br /><pre>my $encoding;<br />unless (ref($enc)) {<br /> &nbsp; &nbsp;$encoding = 'euc-cn'; # use 'enc-cn' by default<br />} else {<br /> &nbsp; &nbsp;$encoding = $enc->name;<br />}<br />$word = decode($encoding, $word);</pre>默认没有猜测成功的话就指定该编码为 enc-cn.<br />因为我认为猜测 utf8 总是会成功的，不成功的话就应该是 enc-cn.<br />试了下 Unihan_value("直") 一切 OK!<p />:-)

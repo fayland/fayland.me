@@ -1,9 +1,0 @@
----
-category: perl
-layout: post
-tags: []
-title: SVN::Web
----
-{% include JB/setup %}
-
-安装 <a href="http://search.cpan.org/perldoc?SVN::Web">SVN::Web</a> 之前要安装 <a href='URL http://subversion.tigris.org/'>subversion</a> 和它的 <a href='http://www.tigris.org/files/documents/15/25192/svn-win32-1.2.3_pl.zip'>pl 文件</a>。<br />将 pl 文件解压缩，拷贝里面的 site/lib 下的 SVN 和 auto 目录到你的 Perl 安装目录的 site/lib 下。<br />然后启动命令行：<br /><pre><br />C:\>cpan SVN::Web<br />C:\>cd cgi-bin\svnweb # 这个是你的 apache2 的 cgi-bin 目录下，建一个 svnweb 目录<br />C:\>svnweb-install # 这个文件在你的 Perl 安装目录的 bin 下。一般加 $Perl/bin 目录到 PATH<br /></pre>然后修改 cgi-bin\svnweb 目录下的 config.yaml 修改里面的：<br /><pre><br />repos: # 去掉前面注释<br />  test: 'E:/repos' # 你自己的 repos 目录<br /># ...<br />style: 'http://localhost/svnweb/css/common.css' # 可以访问 css 的地址<br /></pre>可以访问： http://localhost/cgi-bin/svnweb/index.cgi/test<p />最后的截图如下：<br /><img src='img/SVN_Web.jpg'>

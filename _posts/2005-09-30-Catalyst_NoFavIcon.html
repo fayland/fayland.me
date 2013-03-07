@@ -1,9 +1,0 @@
----
-category: perl
-layout: post
-tags: []
-title: Catalyst &amp;&amp; favicon.ico
----
-{% include JB/setup %}
-
-<h3>Update</h3>现在这个东西没用了。<a href="http://dev.catalyst.perl.org">Catalyst</a> 的 plugin 的 Static::Simple 会直接解决。<h3>原始文章</h3>我运行 server.pl 的时候，在 Firefox 里访问时总会碰到类如下面的东西：<br /><pre>[Fri Sep 30 00:52:22 2005] [catalyst] [debug] **********************************<br />[Fri Sep 30 00:52:22 2005] [catalyst] [debug] Arguments are "favicon.ico"<br />[Fri Sep 30 00:52:22 2005] [catalyst] [debug] "GET" request for "favicon.ico" from 172.29.13.189<br />[Fri Sep 30 00:52:22 2005] [catalyst] [info] Request took 0.009201s (108.684/s)<br />.=-----------------------------------------------------------------+----------=.<br />| Action                                                           | Time      |<br />|=-----------------------------------------------------------------+----------=|<br />| /begin                                                           | 0.000425s |<br />| /default                                                         | 0.000030s |<br />| /end                                                             | 0.000678s |<br />'=-----------------------------------------------------------------+----------='</pre>这些没什么用的。所以我就写了个模块把这个 request 去掉了。没什么大动作，就是个人要用。<p /><pre>package Catalyst::Plugin::NoFavIcon;<p />use strict;<br />use warnings;<br />use vars qw/$VERSION/;<br />use NEXT;<p />our $VERSION = '0.01';<p />sub prepare_action {<br />    my $c = shift;<br />    if ($c->req->path eq 'favicon.ico') {<br />     &nbsp; &nbsp;$c->res->status(404); # I don't know how to stop the process properly<br />     &nbsp; &nbsp;return;<br />    } else {<br />     &nbsp; &nbsp;return $c->NEXT::prepare_action(@_);<br />    }<br />}<p />1;</pre>用的时候就<br /><pre>use Catalyst qw/-Debug NoFavIcon/;</pre>与其他 plugin 没什么不同。<p />或许会将它打包到 CPAN, 等国庆回来再说吧。

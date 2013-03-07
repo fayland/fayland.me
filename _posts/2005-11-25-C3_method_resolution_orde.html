@@ -1,9 +1,0 @@
----
-category: perl
-layout: post
-tags: []
-title: C3 method resolution order
----
-{% include JB/setup %}
-
-介绍 C3 方案之前，我们先看看 Perl 5 的多重继承方案。<br /><pre>package A;<br />sub hello { 'A::hello' }<p />package B;<br />use base 'A';<p />package C;<br />use base 'A';<br />sub hello { 'C::hello' }<p />package D;<br />use base ('B', 'C');</pre>这是一个经典的多重继承，用图表表示如下：<br /><pre>    &lt;A>(hello)<br />   /   \<br /> &lt;B>   &lt;C>(hello)<br />   \   /<br />    &lt;D></pre>在 Perl 5 中当你调用 D::hello 时会比较奇怪地发现它输出的是 A::hello.<br />这是因为在 Perl 5 中继承的顺序是 D->B->A->C<br />而按照我们一般的思路顺序则应当是 D->B->C->A 输出的应当为 C::hello<p />在 Perl6 中我们就采用了 C3 这种算法，这种算法首先是在 Dylan 语言中实现。而后被应用到 CLOS 还有 Python 2.3。<br />现在我们将它应用到了 Perl6 和 parrot. Perl6 的 Perl6-MetaModel 作者 Stevan Little 用 Perl5 写了个版本，就是 <a href="http://search.cpan.org/perldoc?Class::C3">Class::C3</a><br /><ul>一些参考的资料如下：<br /><li><a href='http://www.webcom.com/~haahr/dylan/linearization-oopsla96.html'>A Monotonic Superclass Linearization for Dylan</a></li><li> <a href="http://search.cpan.org/perldoc?Class::C3">Class::C3</a> </li><li><a href="http://www.python.org/2.2.2/descrintro.html#mro">http://www.python.org/2.2.2/descrintro.html#mro</a></li><li><a href='http://www.python.org/2.3/mro.html'>The Python 2.3 Method Resolution Order</a></li><li><a href="http://use.perl.org/~autrijus/journal/25768">http://use.perl.org/~autrijus/journal/25768</a></li></ul>这种算法的思路就是父类一定在子类后面。<br />比如前面的多重继承可以这么写：D, B, A, C, A<br />在 Perl 5 中去掉后后面重复的，而 C3 算法是把前面的父类去掉。<p />详细的 C3 算法介绍等我看完那篇 <a href='http://www.webcom.com/~haahr/dylan/linearization-oopsla96.html'>Paper</a> 后，如果有不吐不快之言，再写 journal.

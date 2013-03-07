@@ -1,9 +1,0 @@
----
-category: perl
-layout: post
-tags: []
-title: Perl Tips
----
-{% include JB/setup %}
-
-<h4>查找所用模块的路径</h4><pre>use Data::Dumper;<br />print $INC{'Data/Dumper.pm'};</pre>C:/usr/lib/Data/Dumper.pm<br />use %INC;<h4>制作 ppm 专用的 ppd 文件</h4><pre>E:\Fayland\CPAN> perl Build.PL<br />E:\Fayland\CPAN> perl Build<br />E:\Fayland\CPAN> perl Build test<br />E:\Fayland\CPAN> perl Build ppmdist</pre>会升成一个类如 Lingua-Han-Stroke.ppd 和 PPM-Lingua-Han-Stroke-0.04.tar.gz 文件。<br />他人安装的话使用 ppm install Lingua-Han-Stroke.ppd 就可以了，把这两个文件给他传过去。<br />这对 Win32 下没有 nmake 的人有点用。

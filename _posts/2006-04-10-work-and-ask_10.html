@@ -1,9 +1,0 @@
----
-category: perl
-layout: post
-tags: []
-title: work and ask
----
-{% include JB/setup %}
-
-不工作的时候总是没有问题，可一工作，总是会碰到这样那样的问题。碰到问题解决问题，才算是学会点东西。<br /><br />写 Catalyst 的时候用 Ajax, 然后某一动作需要先确定用户登陆。但是 Ajax 只是更新某一个 div, 所以在 Controller 里写 $c->res->redirect('/login') unless ($c->user_exists); 是没有用的。redirect 只对整个 page 有效，而对 Ajax 的 div 是没有效果的。<br />大致的代码如下：<br />Controller:<pre>sub vote : Global {<br />    my ( $self, $c ) = @_;<br /><br />    $c->res->redirect('/login') unless ($c->user_exists);</pre>and TT files:<pre>var url = '/vote';<br />var myAjax = new Ajax.Updater('vote_result', url, {method: 'get', <br />parameters: pars});<br /><br />&lt;div id='vote_result'>&lt;/div></pre>目前没有解决方案。mailling list 的问题在这：<a href='http://lists.rawmode.org/pipermail/catalyst/2006-April/thread.html#6563'>http://lists.rawmode.org/pipermail/catalyst/2006-April/thread.html#6563</a><br /><br />另两个是 DBIx::Class 的问题。<br /><br />第一个是 debug 问题。我想在 Catalyst 开启 DBIx::Class 的 debug, 这样我用 perl server.pl 的时候能看到所有的 SQL 语句。这个其实很简单。只要设置 <pre>$ENV{DBIX_CLASS_STORAGE_DBI_DEBUG} = 1;</pre>将这个写在 Root.pm 的 sub auto 里就可以了。<br /><br />第二个是 update_or_create 的问题。因为 update_or_create 很好用。我们 new 或 edit 的时候就能采用同一的代码。new 是 create 而 edit 是 update, 但是我想知道什么时候是 create 什么时候是 update, 因为我要针对不同的 create 还是 update 写一点不同的代码。不过解决方案未知。也在问中。mailing list 的帖子在：<a href='http://lists.rawmode.org/pipermail/dbix-class/2006-April/thread.html#1192'>http://lists.rawmode.org/pipermail/dbix-class/2006-April/thread.html#1192</a>

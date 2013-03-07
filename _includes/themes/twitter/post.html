@@ -7,6 +7,12 @@
     <div class="date">
       <span>{{ page.date | date_to_long_string }}</strong>
     </div>
+
+    {% assign page_year = page.date | date: "%Y" %}
+    {% if page_year < '2010' %}
+    <div class='alert alert-info'>This post may be outdated due to it was written on {{ page_year }}. The links may be broken. The code may be not working anymore. Leave comments if needed.</div>
+    {% endif %}
+
     <div class="content">
       {{ content }}
     </div>
@@ -17,7 +23,7 @@
       {% assign categories_list = page.categories %}
       {% include JB/categories_list %}
     </ul>
-  {% endunless %}  
+  {% endunless %}
 
   {% unless page.tags == empty %}
     <ul class="tag_box inline">
@@ -25,7 +31,7 @@
       {% assign tags_list = page.tags %}
       {% include JB/tags_list %}
     </ul>
-  {% endunless %}  
+  {% endunless %}
 
     <hr>
     <div class="pagination">

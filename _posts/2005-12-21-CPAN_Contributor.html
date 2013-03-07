@@ -1,9 +1,0 @@
----
-category: perl
-layout: post
-tags: []
-title: 写模块给 CPAN 要注意的地方
----
-{% include JB/setup %}
-
-Perl 最让其他语言的人嫉妒的地方就是 CPAN. 有了 CPAN 我们几乎能找到所需要的任何东西。<br />在索取的同时，我们也应当力所能及地向 CPAN 贡献点什么。<br />如果你不知道怎么向 CPAN 写一个 module, 你可以参与让自己做为一个<a href='CPANPLUS_Tester.html'>测试者</a>.<br />如果你希望向 CPAN 贡献某个模块，那就再好不过了。<p /><ul>在贡献模块之前，或许你应该注意下面的东西：（当然，这不是权威的说法）<br /><li>写一个模块之前，永远先在 <a href="http://search.cpan.org/">http://search.cpan.org/</a> 上搜索，很有可能就有某人先你而写了这个模块。<br /><li>模块的命名。搜索该模块，先确定没有其他人使用了该名字。注意 CPAN 的命名还是有其规则的。<br />比如语言方面的一般以 Lingua:: 开头，时间方面有关日期的用 Date:: 时间的用 Time::<br />我最初写一个身份证验证模块的时候，把它命名为 'China::IdentityCard::Validate', 虽然这可能很明显。但 Adam Kennedy 告诉我，一般不以 China 这种国家开头来命名一个模块。后来在他的建议下，我才改为了 <a href="http://search.cpan.org/perldoc?Business::CN::IdentityCard">Business::CN::IdentityCard</a><br />一般你要取一个模块名的时候，先搜索类似的模块，看看它们是怎么命名的。或者去 <a href="http://groups.google.com/group/comp.lang.perl.modules">comp.lang.perl.modules</a> 新闻组上咨询意见比较妥当。<br /><li>一般向 CPAN 贡献的单模块中有两种。一种是用 new 来构建 OO 另一种是用 <a href="http://search.cpan.org/perldoc?Exporter">Exporter</a> 来导出某些函数。<br /><ul><li>写 OO 模块之前，第一件事就是必须确定下你那模块的 API 接口。因为目前的 Perl 5 不支持 use Module-0.01 这样专门指定版本号的做法（Perl 6 中将可以 use 模块+版本号+作者，这样就不会冲突了）。因为 Perl 5 的这个缺陷，所以你如果经常改变你模块的 API 的时候，别人将会怨恨你的。（比如我昨天使用你的模块可以导出 $baby->kiss('u'), 你更新的模块把 kissme 方法去掉了或者传递参数数目改变了，那当我这程序就 broken 了。）<br />所以一般牢记，先一个 OO 模块之前，定义你自己的 API 接口，然后尽量不改变它。<br /><li>如果你是用 Exporter 导入函数的话，最好使用 @EXPORT_OK 而不是 @EXPORT<br />@EXPORT 将你的函数导出后很可能会跟程序里定义的某函数冲突（当然我们可以用 use Module (); 来避免冲突）。<br />而 @EXPORT_OK 只有在指定后才导出。这样就不会有任何明显的冲突。<br /></ul><li>写模块时永远用在前面加 use strict; 或许还有 use warnings;<br />use strict; 可以让避免模块里的变量与程序里的冲突。跟这模块相邻的一般都使用 use vars qw/$VERSION @EXPORT @EXPORT_OK/;<br /></ul>上面就是我写模块过程中所碰到的误区或经历。Hope this helps. Thanks.

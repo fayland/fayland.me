@@ -1,9 +1,0 @@
----
-category: perl
-layout: post
-tags: []
-title: Catalyst 在 Win32 下的 Session
----
-{% include JB/setup %}
-
-昨天拿到 <a href="http://blog.chunzi.org">chunzi</a> 的 <a href="http://member.perlchina.org">http://member.perlchina.org</a> 代码。装了很多依赖的模块，最后就死在了 <a href="http://search.cpan.org/perldoc?Cache::FastMmap">Cache::FastMmap</a> 上面。<br />这模块打死也装不起来。说来也很凑巧， <a href="http://dev.catalyst.perl.org">Catalyst</a> 的 <a href='http://lists.rawmode.org/mailman/listinfo/catalyst'>maillist</a> 正在讨论这个问题。<br />依照那里的<a href='http://lists.rawmode.org/pipermail/catalyst/2005-June/000504.html'>指示</a>：<p /><ul><br /><li>在 <a href="http://search.cpan.org/perldoc?Catalyst::Plugin::Session::FastMmap">Catalyst::Plugin::Session::FastMmap</a> 里用 <a href="http://search.cpan.org/perldoc?Cache::FileCache">Cache::FileCache</a> 代替了 Cache::FastMmap<br /><li>打开 Catalyst/Plugin/Session/FastMmap.pm, 修改<br /><ol><li> 第六行用 use Cache::FileCache; 来替代 use Cache::FastMmap;<br /><li> 在一百二十几行 setup 函数里：（+ 的添加, - 的删除）<br /><pre>     $self->config->{session}->{rewrite} ||= 0;<br /> <br />     $self->_session(<br />-        Cache::FastMmap->new(<br />-            share_file  => $self->config->{session}->{storage},<br />-            expire_time => $self->config->{session}->{expires}<br />-        )<br />+        Cache::FileCache->new( {<br />+            default_expires_in => $self->config->{session}->{expires}<br />+        } )<br />     );</pre></ol></ul>现在 Person 代码已经正常的运行在我的电脑上。（除了邮件，注册验证只好直接打开 databse 来找 code）<br />昨晚将一些配置资料提出来生成了 YAML ，然后用 YAML::LoadFile 来导入这些配置文件。这样我修改完代码就可以直接在服务器上覆盖了。<br />打算先好好的看代码。尤其是 Model 部分。我没怎么用过 <a href="http://search.cpan.org/perldoc?Class::DBI::Loader::Relationship">Class::DBI::Loader::Relationship</a> , 得向 chunzi 兄好好学习。

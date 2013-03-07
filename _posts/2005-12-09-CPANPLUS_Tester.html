@@ -1,9 +1,0 @@
----
-category: perl
-layout: post
-tags: []
-title: be a CPANPLUS Tester
----
-{% include JB/setup %}
-
-summary:<br /><pre># Console 为控制台，Win2000 下运行 cmd<br />Console >perl -MCPAN -e shell<br /># 或者直接 cpan<p />cpan> install CPANPLUS<br />cpan> install Test::Reporter<br />cpan> q<p />Console >perl -MCPANPLUS -e shell<br /># 或者直接 cpanp<br />CPAN Terminal> s edit<br /># 修改你的配置如 hosts, base 等。测试的话最重要的将 'cpantest' => 1, 这个设置为 1<br />CPAN Terminal> s save<br />CPAN Terminal> i CPAN<br /># 安装模块<br />CPAN Terminal> q<br /></pre>将 'cpantest' => 1 后<br />如果安装模块出错（成功也会问）后会问你是否将错误报告给 CPAN <br />Would you like to send the test report? [y/N]:<br />到时候选 y 就可以了。<p /><ul>参考文章：<br /><li><a href="//www.perl.com/lpt/a/2002/03/26/cpanplus.html">CPAN PLUS</a><br /><li><a href="//www.perl.com/lpt/a/2002/04/30/cpants.html">Becoming a CPAN Tester with CPANPLUS</a><br /></ul>

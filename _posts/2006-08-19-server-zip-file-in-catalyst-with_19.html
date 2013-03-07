@@ -1,9 +1,0 @@
----
-category: perl
-layout: post
-tags: []
-title: Server zip file in Catalyst with IO::Scalar
----
-{% include JB/setup %}
-
-Thank God, Thank <a href='http://search.cpan.org/perldoc?IO::Scalar'>IO::Scalar</a>.<br /><br />u know we can transfer a filehandle to $c->res->body. and IO::Scalar is making my life easy.<br /><br />just a snippet code, have fun.<pre>sub test : Local {<br />    my ( $self, $c ) = @_;<br /><br />    use Archive::Zip qw(:ERROR_CODES :CONSTANTS);<br /><br />    my $zip = Archive::Zip->new();<br /><br />    $c->res->content_type('application/octet-stream');<br />    $c->res->headers->header( 'Content-Disposition' => "attachment; filename=\"fayland.zip" );<br />    <br />    use IO::Scalar;<br />    my $data;<br />    my $fh = new IO::Scalar \$data;<br />    <br />    $zip->addFile('E:/Fayland/index.html') or die $!;<br />    $zip->writeToFileHandle($fh);<br />    <br />    $c->res->body($data);<br />}</pre>IO::Scalar 能将一个 $scalar 作为 filehandle IO 来对待。在 Catalyst 里将是特别有用的。
