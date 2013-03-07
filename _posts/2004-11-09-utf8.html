@@ -1,0 +1,76 @@
+---
+category: perl
+layout: post
+tags: []
+title: utf8与gb2312编码
+---
+{% include JB/setup %}
+
+<ol>问题：
+<li>将gb2312数据格式的文件转为utf8格式
+<li>在utf8编码下显示gb2312数据文件
+<li>如何直接生成utf8格式的数据文件
+<li><a href='#4'>不涉及文件读取，script文件里print "中文";</a>
+</ol>
+其实最主要的一句为：
+<pre>
+use Encode qw/encode decode/;
+my $utf_data = encode("utf8", decode("gb2312", $data));
+# $data为gb2312格式, $utf_data为utf8格式
+</pre>
+等同的代码还有：
+<pre>
+use Encode qw/from_to/;
+from_to($data, "gb2312", "utf8");
+# $data从gb2312格式转为utf8格式
+</pre>
+相反从utf8转为gb2312也成。encode,decode里的参数互换下。<p>
+例子与代码：<br>
+gb.dat是gb2312数据格式的文件。在-charset=>'utf-8'时显示乱码，gb2312时正常。
+<pre><code>
+#!/usr/bin/perl
+use strict;
+use CGI::Carp qw(fatalsToBrowser);
+use CGI qw/:standard/;
+use Encode qw/encode decode from_to/;
+
+my $cgi = new CGI;
+# charset utf8
+print $cgi->header(-type=>'text/html',-charset=>'utf-8');
+
+# open the gb2312 file
+open(FH, "gb.dat");
+my $data = &lt;FH>;
+close(FH);
+
+# convert gb2312 to utf8
+my $utf_data = encode("utf8", decode("gb2312", $data));
+
+# produce the utf8 file
+open(FH, ">utf8.dat");
+print FH $utf_data;
+close(FH);
+
+my $word = "我是中国人";
+from_to($word, "gb2312", "utf8");
+
+print "$utf_data, $word";
+</code></pre>
+经过转换后，以后在-charset=>'utf-8'下直接读取utf8.dat而不用再次decode/encode.<p>
+
+<h2><a name='4'>不涉及文件读取，script文件里print "中文";</a></h2>
+在script.pl里use encoding "euc-cn", STDOUT => "utf8";
+<pre>
+use CGI qw/:standard/;
+use encoding "euc-cn", STDOUT => "utf8";
+
+my $cgi = new CGI;
+print $cgi->header(-type=>'text/html',-charset=>'utf-8');
+
+print "我是中国人，我爱野文";
+</pre>
+<h2>Refer</h2>
+<ul>
+<li>perldoc <a href='http://search.cpan.org/perldoc?Encode'>Encode</a>
+<li>perldoc <a href='http://search.cpan.org/perldoc?encoding'>encoding</a>
+</ul>

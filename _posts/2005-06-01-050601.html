@@ -1,0 +1,23 @@
+---
+category: perl
+layout: post
+tags: []
+title: module updated
+---
+{% include JB/setup %}
+
+<p>I got up at 8:10, it's a bit later since the class has begun.</p>
+
+<p>Afternoon was too short, and I devoted my evening to updating Business::CN::IdentityCard. The original code is from <a href="http://blog.chunzi.org">chunzi</a>, Thanks for his help.</p>
+
+<p>Now it can give the birthday, province, <strong>district</strong> and gender of the IdentityCard owner. it's not a toy any more.</p>
+
+<p>I uploaded it to <a href="http://search.cpan.org"><span class="caps">CPAN</span></a> ,I'll be grateful if you can help me to test this module.<br />
+Cause it needs a while to reach <span class="caps">CPAN, </span>you can install it by downloading from <a href="http://www.fayland.org/CPAN/">http://www.fayland.org/CPAN/</a></p>
+
+<p>In developing this module, I find the Class::Date's date cann't deal with date before 1970 on Win2k. I just wonder if there is another way to validate a given date. Tips are welcomed.</p>
+
+<p>I'd go sleep. Good night.</p>
+
+<h3>Update</h3>
+Date::Simple is a good choice.

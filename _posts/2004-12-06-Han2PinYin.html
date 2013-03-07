@@ -1,0 +1,44 @@
+---
+category: perl
+layout: post
+tags: []
+title: 将汉字转为拼音的模块
+---
+{% include JB/setup %}
+
+<h2>Update</h2>
+我更新了该模块，并将它改名为 Lingua::Han::PinYin <br>
+详细的过程和用法查看：<a href='Han-PinYin.html'>重新写就的 Lingua::Han::PinYin</a><br />
+<b>下面的已经不再使用了。</b>
+
+<h2>说明</h2>
+今天安装 <a href='http://search.cpan.org/perldoc?Unicode::Unihan'>Unicode::Unihan</a> 时，在其 srctxt 目录下找到个 汉字编码与拼音对照表 / Mandarin.txt 。<br>
+另外发现在 gb2312 与 utf-8 下，汉字的编码是不相同的。<br>
+所以就重写了一遍（从函数模块转为 OO ），并把 Light 版本删除掉。<br>
+按此下载 <a href='http://www.fayland.org/CPAN/Lingua-Han2PinYin-0.06.tar.gz'>Lingua-Han2PinYin-0.06.tar.gz</a>
+
+<h2>名称</h2>
+Lingua::Han2PinYin - 将汉字转为它的拼音
+
+<h2>例子</h2>
+<pre>
+use Lingua::Han2PinYin;
+  
+# 如果代码的编码为 gb2312, 默认
+my $h2p = new Lingua::Han2PinYin();
+print $h2p->han2pinyin("我");
+  
+# 如果代码编码为 utf-8
+my $h2p = new Lingua::Han2PinYin(format => 'utf8');
+print $h2p->han2pinyin("我");
+</pre>
+
+<h2>限制</h2>
+不能处理多音字。
+
+<h2>返回值</h2>
+如果是一个常用字，返回它的拼音。<br>
+如果不是，返回'XX'。
+
+<h2>应用</h2>
+查询汉字的拼音：<a href='http://www.1313s.com/cgi-bin/App.cgi?q=pinyin'>http://www.1313s.com/cgi-bin/App.cgi?q=pinyin</a>

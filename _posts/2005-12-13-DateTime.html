@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: '[DRAFT]如何处理 Perl 中的时间'
+---
+{% include JB/setup %}
+
+如果你能比较流畅地阅读英文，可以试着看：<br /><a href="http://www.perl.com/lpt/a/2003/03/13/datetime.html">http://www.perl.com/lpt/a/2003/03/13/datetime.html</a><p />我只翻译了一些我认为应该知道的内容。<h3>基础概念</h3><ul><li>UTC/GMT/Z<br />UTC 是 Coordinated Universal Time 的缩写<br />GMT 是 Greenwich Mean Time 的缩写。格林威治时间。<br />Z 是美国军方所用的。所以你如果在时间里看到里面有个 Z 字，比如 2005-12-13T14:59:37Z 就说明它是个 GMT 时间。<br />Perl 中的 gmtime 就是属于这方面的。<br /><li>与之相对的是 Local Time, Perl 中对应的是 localtime<br />为什么有 gmtime 和 localtime 这是因为地球是圆的和还有太阳的关系。在英国中午十二点在中国并不是中午十二点。<br />这就涉及到另外一个概念。Time Zone 时区。更复杂的是时区的加加减减不是固定的。<br />其中还涉及到 Daylight Saving Time，在 Daylight Saving Time 的影响下某地相对英国可能是相差五个小时，而没有这个影响的话只有四个小时。<br />当然我们不用管这个东西，我地理也学得不是很好。学得好的同学已经把这个搞定了，我直接拿来用就是了。（不要怪我不好学，实在是没兴趣再去学习一次地理了。）<br /><li>上面的是现实中的问题，接下来是电脑的问题了。英文中涉及到的 epoch 的意思经常是从某一时间开始算起的秒数。<br />比如 Unix 系统下的 epoch 就是从 1970 年一月一日的 GMT 时间开始算秒。但是并不是所有的系统都是从这个时间开始算起的。<br />Perl 中获取这个 epoch 我们用 time 函数就可以了。<br />另外我们还有个电脑问题。因为现在我们大部分人都在用 32 位的处理器，把 32 位的最大值做为秒，然后换算一下也只有 136 年。所以现在的大部分 Unix 系统都只能处理 1902-2038 这个时间段。<br />这就是所谓的 epoch 问题。有些模块是有这个问题的（比如 <a href="http://search.cpan.org/perldoc?Class::Date">Class::Date</a> ），而有些模块是没这个问题的（比如 <a href="http://search.cpan.org/perldoc?Date::Simple">Date::Simple</a> ）。如果你发现某个模块处理不了这个时间段外的年，那就说明是有这个问题的。写代码的时候要小心一点。<br />因为 epoch 有这些问题，所以一般而言最好不要用这个来保存你的时间。（除非不得已）<br /><li>日历。一般我们都使用阳历，即所谓的 The Gregorian Calendar。而作为中国人还有阴历，The Chinese Calendar。还有希伯来历等等。<br /></ul>

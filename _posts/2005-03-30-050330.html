@@ -1,0 +1,39 @@
+---
+category: perl
+layout: post
+tags: []
+title: Class::DBI 改 Primary 项
+---
+{% include JB/setup %}
+
+<h2>问题</h2>
+今天碰到的是在数据库里更改一项 primary auto_increment field.<br>
+Class::DBI 中的 move 好像失效了。在 DBI.pm 中是这么写的。
+<pre><code>sub move {
+    my ($class, $old_obj, @data) = @_;
+    $class->_carp("move() is deprecated. If you really need it, "
+            . "you should tell me quickly so I can abandon my plan to remove it.");
+    return $old_obj->_croak("Can't move to an unrelated class")
+        unless $class->isa(ref $old_obj)
+        or $old_obj->isa($class);
+    return $class->create($old_obj->_data_hash(@data));
+}</code></pre>
+而我试了下 set( 'cms_id' => $new_id); update 也不成。在 POD 文档中是这么说的。
+<pre>The update() method returns the number of rows updated, which should
+always be 1, or else -1 if no update was needed. If the record in the
+database has been deleted, or its primary key value changed, then the
+update will not affect any records and so the update() method will
+return 0.
+方法 update() 返回更新的行数，应该经常是 1, 或者没有必要的更新时返回 -1. 
+如果数据库中的纪录被删除，或者说它的主键被更改，那此后的更新不会再影响任何纪录，所以 update() 将返回 0.</pre>
+最后到 <a href='http://www.class-dbi.com/cgi-bin/wiki/index.cgi'>CDBI wiki</a> 上找了个 <a href='http://www.class-dbi.com/cgi-bin/wiki/index.cgi?DirectlyExecuteSql'>DirectlyExecuteSql</a>.<br>
+最后写了代码如下：
+<pre><code>
+my $new_id = Eplanet::M::CDBI::Cms->maximum_value_of('cms_id');
+$new_id++;
+
+my $dbh = Eplanet::M::CDBI::Cms->db_Main();
+    $dbh->do(qq|
+    UPDATE cms SET cms_id = $new_id WHERE cms_id = $id
+|);
+</code></pre>

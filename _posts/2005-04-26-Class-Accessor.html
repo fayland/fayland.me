@@ -1,0 +1,109 @@
+---
+category: perl
+layout: post
+tags: []
+title: "$Class[0] = 'Class::Accessor';"
+---
+{% include JB/setup %}
+
+<h2>prattle</h2>
+闲着不知道做什么好，就去看模块源码。顺便写些翻译和代码。<br>
+打算是打算写一个系列，就是不知道我的热情能持续多久了。<br>
+诸位若闲着无聊，看看无妨。<br>
+今天介绍下 <a href='http://search.cpan.org/perldoc?Class::Accessor'>Class::Accessor</a> 和 <a href='http://search.cpan.org/perldoc?Class::Accessor::Fast'>Class::Accessor::Fast</a>
+
+<h2>例子</h2>
+Class::Accessor - Automated accessor generation/自动化存取器<br>
+假设我们写一个 People 模块。每个人都有各自属性，比如 age, gender, birthday, occupation, location, salary etc.<br>
+经常要用的是获得他们的属性和设置新的属性。<br>
+对应的代码为：
+<pre><code>
+sub occupation {
+    my $self = shift;
+
+    if(@_ == 1) {
+        $self->{occupation} = shift;
+    } elsif (@_ > 1) {
+        $self->{occupation} = [@_];
+    }
+    return $self->{occupation};
+}
+sub age {
+    my $self = shift;
+
+    if(@_ == 1) {
+        $self->{age} = shift;
+    }
+    return $self->{occupation};
+}
+</code></pre>
+这样我们能用my $occupation = $marry->occupation;来获取marry的职业，而用$marry->occupation('doctor', 'teacher');（假设她早上当医生下午当老师）来设置它的职业。<br>
+而 gender等其他的属性也要重复这段代码，这样写下来的话代码太冗长而且不符合我们的美德懒惰了。<br>
+当然我们有进一步的写法，写一个通用的 set, get 函数：
+<pre><code>
+sub set {
+    my($self, $key) = splice(@_, 0, 2);
+
+    if(@_ == 1) {
+        $self->{$key} = $_[0];
+    }
+    elsif(@_ > 1) {
+        $self->{$key} = [@_];
+    }
+    else {
+        require Carp;
+        &Carp::confess("Wrong number of arguments received");
+    }
+}
+sub get {
+    my $self = shift;
+
+    if(@_ == 1) {
+        return $self->{$_[0]};
+    }
+    elsif( @_ > 1 ) {
+        return @{$self}{@_};
+    }
+    else {
+        require Carp;
+        &Carp::confess("Wrong number of arguments received.");
+    }
+}
+</code></pre>
+这样我们能用 $marry->get('age') 来获取她的年龄，用 $marry->set('age', '33'); 来设置它的年龄。<br>
+看上去似乎很不错了，但是 marry 的 gender 是 female, 一生下来就定死了的。而我们希望她的 salary 只能写入不能被人读取。<br>
+怎么做好呢？打个广告，不妨试试 Class::Accessor
+<pre><code>
+package People;
+use base qw(Class::Accessor);
+
+People->mk_accessors(qw(age occupation location));
+People->mk_ro_accessors(qw(gender birthday));
+People->mk_wo_accessors('salary');
+
+1;
+
+#！/usr/bin/perl
+use People;
+
+my $marry = People->new({
+    'gender' => 'female',
+    'birthday' => '2005-4-26',
+    'age' => 1,
+});
+
+print $marry->gender;
+$marry->salary('100');
+$marry->age('2');
+print $marry->age; # print 2
+# etc ...
+# as follow is wrong
+# print $marry->salary; # salary is write-only
+# $marry->gender('man'); # gender is read-only
+</code></pre>
+非常简单，就三句代码可以定义无数个函数。:)
+
+<h2>Class::Accessor && Class::Accessor::Fast</h2>
+Class::Accessor::Fast 是 Class::Accessor 的缩写版本，它舍弃了 Class::Accessor 中的 set & get （这东西的作用参见 perldoc <a href='http://search.cpan.org/perldoc?Class::Accessor'>Class::Accessor</a> ），所以速度更快。一般而言不用自己定制 set,get 的话推荐使用 Class::Accessor::Fast<br>
+<a href='http://search.cpan.org/perldoc?Class::DBI'>Class::DBI</a> 用来 Class::Accessor ,而 <a href='http://search.cpan.org/perldoc?Catalyst'>Catalyst</a> 用了Class::Accessor::Fast.<p>
+Enjoy!

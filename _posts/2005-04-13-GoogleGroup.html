@@ -1,0 +1,40 @@
+---
+category: perl
+layout: post
+tags: []
+title: WWW::Mechanize &amp;&amp; Google Group
+---
+{% include JB/setup %}
+
+觉得 Google 的 new <a href='http://groups-beta.google.com/'>新闻组</a>挺不错的，就申请了一个。<a href='http://groups-beta.google.com/group/fayland'>http://groups-beta.google.com/group/fayland</a><br>
+ 拿来做什么还不知道，呵呵。暂时就打算去发表自己的 <a href='index.html'>journal</a>.<p>
+
+如果每次都登陆然后发表就太麻烦了。于是就想着用 WWW::Mechanize 来解决，然后做个 Eplanet 的功能，一键就发表了。简单写了下，挺简单的。5分种就搞定了。（终于发现自己 Perl 水平上去了，不容易呀。）<p>
+
+简单的代码如下，具体的 Eplanet 功能还要考虑将 HTML 转换为文本形式，迟点再搞：
+<pre><code>use strict;
+use warnings;
+use WWW::Mechanize;
+
+my $mech = WWW::Mechanize->new( autocheck => 1 );
+
+# first, we should login
+$mech->get('https://www.google.com/accounts/Login?hl=en&cd=US&service=groups2&continue=http:%2F%2Fgroups-beta.google.com%2Fgroup%2Ffayland%2Fpost');
+
+$mech->submit_form(
+ &nbsp; &nbsp;fields   => {
+ &nbsp; &nbsp; &nbsp; &nbsp;Email => 'xxx@gmail.com', # your email, google account
+ &nbsp; &nbsp; &nbsp; &nbsp;Passwd => 'yyy', # your password, please not be 'yyy'
+ &nbsp; &nbsp;}
+);
+
+$mech->get('http://groups-beta.google.com/group/fayland/post');
+
+$mech->submit_form(
+ &nbsp; &nbsp;fields   => {
+ &nbsp; &nbsp; &nbsp; &nbsp;subject => 'Test from WWW::Mechanize',
+ &nbsp; &nbsp; &nbsp; &nbsp;body => 'Yap, WWW::Mechanize it',
+ &nbsp; &nbsp;},
+ &nbsp; &nbsp;button => 'Action.Post'
+);
+</code></pre>

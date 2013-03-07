@@ -1,0 +1,72 @@
+---
+category: perl
+layout: post
+tags: []
+title: LB Post Machine
+---
+{% include JB/setup %}
+
+<pre>
+#!/usr/bin/perl
+<span class="comment">#Save this code as water.pl</span>
+<span class="comment">#Usage:perl water.pl</span>
+<span class="comment">#Author: Fayland@www.1313s.com</span>
+
+<span class="comment">#use strict;</span>
+use LWP::UserAgent;
+<span class="comment">#use HTTP::Cookies;</span>
+<span class="comment">#use HTTP::Headers;</span>
+use HTTP::Request;
+<span class="comment">#use HTTP::Response;</span>
+
+<span class="comment">#my $brower = 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)';</span>
+
+my $ua = new LWP::UserAgent;
+<span class="comment">#$ua->agent($brower);</span>
+
+<span class="comment">#my $header = new HTTP::Headers;</span>
+<span class="comment">#$header->content_type('application/x-www-form-urlencoded');</span>
+
+my $count = 1;
+my $sleeptime = 1;
+
+<span class="comment">#按 Ctrl+c 退出</span>
+while (1) {
+  <span class="comment">#不重复标题内容的帖</span>
+  my $rands = rand(1000);
+  <span class="comment">#membername 注册的用户名, password 密码</span>
+  <span class="comment">#forum 论坛id号, intopictitle 标题, inpost 内容</span>
+  my $content = 
+"action=addnew&forum=1&membername=test&password=testtest&intopictitle=1313s.com-$rands&inpost=1313s.com-$rands";
+  <span class="comment">#http://192.168.0.44/*/post.cgi为目标地址</span>
+  my $request = new HTTP::Request('GET',"http://192.168.0.44/cgi-bin/lb/post.cgi?$content");
+
+  <span class="comment">#$header->content_length(length($content));</span>
+  <span class="comment">#my $request = new HTTP::Request('POST',"http://192.168.0.44/cgi-bin/lb/post.cgi",$header,$content);</span>
+
+  my $response = $ua->request($request);
+
+  <span class="comment">#连接不成功,可能目标地址错误或者其他</span>
+  if (! $response->is_success) {
+    die "failed reason: ", $response->status_line;
+  }
+
+  <span class="comment">#返回的网页内容中有“成功”</span>
+  if ($response->content=~ /成功/) {
+    print "success $count";
+    $count++;
+  }
+  <span class="comment">#查找灌水机制的时间，并调整 sleep time</span>
+  elsif ($response->content =~ /待.+?([0-9]+).+?秒/) {
+    $sleeptime = $1;
+    print "faied,reason is 灌水预防机制,and we changed the sleep time,Don't worry";
+  } else {
+    print "faied,reason unkown!";
+  }
+  <span class="comment">#For 灌水预防机制</span>
+  print ",wait $sleeptime seconds\n";
+  sleep $sleeptime;
+}
+</pre>
+<h2>Special</h2>
+此代码发布只为研究学习之用，任何人不得用于非法行为。<br>

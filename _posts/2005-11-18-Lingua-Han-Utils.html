@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: '针对汉字的 Lingua::Han::Utils'
+---
+{% include JB/setup %}
+
+这是一个我今天刚写的 module: <a href="http://search.cpan.org/perldoc?Lingua::Han::Utils">Lingua::Han::Utils</a><br />主要用于封装一些我常用的与汉字处理有关的函数。目前封装了四个函数，分别介绍如下：<h3>Unihan_value</h3>返回 Unihan.txt 的第一个字段（出去+U）。 Unihan: <a href="http://www.unicode.org/Public/UNIDATA/">http://www.unicode.org/Public/UNIDATA/</a><br />Unihan 的用处自然不用说，我写的拼音，比划还有广东化都来自这个文件。<p /><pre>use Lingua::Han::Utils qw/Unihan_value/;<br /># Unihan_value<br /># return the first field of Unihan.txt on unicode.org<br />my $word = "我";<br />my $unihan = Unihan_value($word); # return '6211'<br />my $words = "爱你";<br />my @unihan = Unihan_value($word); # return (7231, 4F60)<br />my $unihan = Unihan_value($word); # return 72314F60</pre><h3>cdecode</h3>感谢 <a href="http://www.livejournal.com/users/joe_jiang/">joe jiang</a> 的帮助， <a href="http://search.cpan.org/perldoc?Encode::Guess">Encode::Guess</a> 正好满足要求。<br />一般来说，我们写的代码都有两种情况，一种是 ASCII 编辑模式，一种是在 Unicode 编辑模式下写的。<br /><ul>而不同的模式要 decode 时是不一样的：<br /><li>在 ASCII 模式下，为 decode('euc-cn', $word) 或 decode('gb2312', $word)<br /><li>在 Unicode 编辑模式下，为 decode('utf8', $word)<br /></ul>此模块用 Guess 封装了两者，大家如果要 decode 的话直接使用 cdecode, 而不必考虑在什么模式下。<h3>csplit</h3>用于分割文字。可以是纯中文或中英文混合字。<br /><pre>use Lingua::Han::Utils qw/csplit/;<br />my $words = "我爱你";<br />my @words = csplit($words); # return ("我", "爱", "你")</pre><h3>csubstr</h3>用于截取文字。可以是纯中文或中英文混合字。<br /><pre>use Lingua::Han::Utils qw/csubstr/;<br />my $words = "我爱你啊";<br />my @words = csubstr($words, 1, 2); # return ("爱", "你")<br />my @words = csubstr($words, 1); # return ("爱", "你", "啊")<br />my $words = csubstr($words, 1, 2); # 爱你</pre><h3>clength</h3>将汉字对待成一个单词。<br /><pre>my $words = "我ya爱你";<br />print clength($words); # 5</pre><h2>结论</h2>此模块在去往 CPAN 的路上。如果急着用可以从这下： <a href="http://www.fayland.org/CPAN/">http://www.fayland.org/CPAN/</a>

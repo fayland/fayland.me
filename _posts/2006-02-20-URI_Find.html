@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: 在文本中寻找 URI 地址
+---
+{% include JB/setup %}
+
+我们经常碰到这样的任务，在一段文本中找到 URL/URI 地址，然后让这个地址变为可以点击。<br />最寻常的方法就是用正则表达式来做。不过有时候这不是很理想。<p />CPAN 中有一个 <a href="http://search.cpan.org/perldoc?URI::Find">URI::Find</a> 模块专门来做这事。实例代码如下：<br /><pre>#!/usr/bin/perl<br />use strict;<br />use warnings;<p />use URI::Find;<p />my $text = &lt;&lt;HTML;<br />hi, it's from http://www.fayland.org/ then 1313s.com?<br />HTML<p />my $finder = URI::Find->new(<br /> &nbsp; &nbsp;sub {<br /> &nbsp; &nbsp; &nbsp; &nbsp;my($uri, $orig_uri) = @_;<br /> &nbsp; &nbsp; &nbsp; &nbsp;return qq|&lt;a href="$uri">$orig_uri&lt;/a>|;<br /> &nbsp; &nbsp;});<br />$finder->find(\$text);<p />print $text;</pre>这样 $text 的输出会变为：<br /><pre>hi, it's from &lt;a href="http://www.fayland.org/">http://www.fayland.org/&lt;/a> then<br /> 1313s.com?</pre>如果想让 1313s.com 也变为可点击，则可以使用 <a href="http://search.cpan.org/perldoc?URI::Find::Schemeless">URI::Find::Schemeless</a><p /><pre>#!/usr/bin/perl<br />use strict;<br />use warnings;<p />use URI::Find::Schemeless;<p />my $text = &lt;&lt;HTML;<br />hi, it's from http://www.fayland.org/ then 1313s.com?<br />HTML<p />my $finder = URI::Find::Schemeless->new(<br /> &nbsp; &nbsp;sub {<br /> &nbsp; &nbsp; &nbsp; &nbsp;my($uri, $orig_uri) = @_;<br /> &nbsp; &nbsp; &nbsp; &nbsp;return qq|&lt;a href="$uri">$orig_uri&lt;/a>|;<br /> &nbsp; &nbsp;});<br />$finder->find(\$text);<p />print $text;</pre>Schemeless 的意思就是没有协议头（如 http ）也匹配。<br />$text 变为：<br /><pre>hi, it's from &lt;a href="http://www.fayland.org/">http://www.fayland.org/&lt;/a> the<br /> &lt;a href="http://1313s.com/">1313s.com&lt;/a>?</pre>大致如是。详细的查阅 <a href="http://search.cpan.org/perldoc?URI::Find">URI::Find</a> , have fun!

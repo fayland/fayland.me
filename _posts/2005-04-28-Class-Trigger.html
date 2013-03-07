@@ -1,0 +1,70 @@
+---
+category: perl
+layout: post
+tags: []
+title: "$Class[2] = 'Class::Trigger';"
+---
+{% include JB/setup %}
+
+<h2>bubble</h2>
+Trigger 翻译成中文可以是“扳机”，或者将它当成一个控制开关（Bloves 认为“触发器”比较妥当，我也认可。：）。<br>
+大多数据库都提供 TRIGGER, 比如 SQLite 就有类如这样的代码：
+<pre>CREATE TRIGGER insert_exam_timeEnter AFTER  INSERT ON exam
+BEGIN
+
+UPDATE exam SET timeEnter = DATETIME('NOW')
+         WHERE rowid = new.rowid;
+END;</pre>
+这样在每次插入新数据后就会自动更新 timeEnter 为现在时间。<p>
+
+<a href='http://search.cpan.org/perldoc?Class::Trigger'>Class::Trigger</a> - Mixin to add / call inheritable triggers<br>
+Class::Trigger 的作者和 <a href='http://search.cpan.org/perldoc?Class::DBI'>Class::DBI</a> 的当前维护者是同一个人，所以在 Class::DBI 中作用非常大。
+
+<h2>Example</h2>
+最简单的例子请先看 perldoc <a href='http://search.cpan.org/perldoc?Class::Trigger'>Class::Trigger</a> <br>
+而 Class::DBI 中例子请搜索 <a href='http://www.class-dbi.com'>http://www.class-dbi.com</a>。<p>
+
+这里我们举个不太有用的例子：<br>
+我们有一个模块Foo，它有一个函数 handle, handle 在程序A中调用时要把参数里的数字去掉并且输出它，而在程序B中要把参数里的字母去掉但不输出它。（不要怪我们的例子奇怪，有时候你会碰到更奇怪的要求。）<br>
+这要求的解决方案有好几种，比如
+<ol>
+<li>在 Foo 的 handle 中判断是哪个程序调用并相应修改。这方案不好，会造成代码冗长而不易扩展。
+<li>另一种方案是在程序 A|B 调用 handle 前对传递的参数做相应修改。但是这对于输不输出却无能为力。
+</ol>
+而用 Class::Trigger 来解决的话很方便，而容易扩展定制。
+<pre><code>package Foo;
+use Class::Trigger;
+
+sub new {
+    bless {} => shift;
+}
+
+sub foo {
+    my ($self, $param) = @_;
+    $self->call_trigger('validate', \$param);
+    # we use $param to do something
+}</code></pre>
+<pre><code># 程序 A
+Foo->add_trigger(validate => \&sub1); 这里将被继承
+
+my $foo = Foo->new;
+$foo->foo("aa11"); # before is aa11, after is aa
+
+sub sub1 {
+    my ($self, $param) = @_;
+    print "before is $$param, ";
+    $$param =~ s/[0-9]+//g;
+    print "after is $$param";
+}</code></pre>
+<pre><code># 程序 B
+my $foo = Foo->new;
+$foo->add_trigger(validate => \&sub1); # 这里将不被继承
+$foo->foo("aa11"); # before is aa11, after is 11
+
+sub sub1 {
+    my ($self, $param) = @_;
+    $$param =~ s/[a-z]+//g;
+}</code></pre>
+关于 Class::Trigger 的继承我简单的写一下，更多的参考 perldoc <a href='http://search.cpan.org/perldoc?Class::Trigger'>Class::Trigger</a> 和 perldoc <a href='http://search.cpan.org/perldoc?Class::DBI'>Class::DBI</a><p>
+
+Enjoy!

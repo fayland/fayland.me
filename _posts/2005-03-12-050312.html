@@ -1,0 +1,37 @@
+---
+category: perl
+layout: post
+tags: []
+title: 给 eclipse 安装 EPIC plug-in
+---
+{% include JB/setup %}
+
+听 Autrijus Tang 对 eclipse 赞不绝口，不免想试试这东西。<br>
+去 <a href='http://www.eclipse.org/downloads/index.php'>http://www.eclipse.org/downloads/index.php</a> 下了 Eclipse Platform SDK 3.0.1, Windows.<br>
+下完了解压缩到随便某目录下就能运行。<p>
+
+没装过 plug-in 的 eclipse 对 Perl 可以说是一点也不支持。网上的介绍文章都是关于 eclipse 和 java 的，最多还有个 C++. 我 Google 了一下 'eclipse perl', 搜索到 EPIC 插件。<br>
+网址：<a href='http://e-p-i-c.sourceforge.net/'>http://e-p-i-c.sourceforge.net/</a><p>
+
+说出来不怕您笑话。：），下了 <a href='http://e-p-i-c.sourceforge.net/downloads/org.epic.updatesite_0.3.0_20040711.zip'>http://e-p-i-c.sourceforge.net/downloads/org.epic.updatesite_0.3.0_20040711.zip</a> 却不会安装。<br>
+压缩包里没有 README 或 INSTALL 啥的，啥可读文件都没有。解压缩到 eclipse 目录里也不管用。<br>
+后来在 <a href='http://e-p-i-c.sourceforge.net/faq.html#Installation'>http://e-p-i-c.sourceforge.net/faq.html#Installation</a> 找到个另外的方法。用 eclipse 的 update 功能。可丫的学校网络实在糟糕，安装那插件时每到 org.epic.debug_0.2.0.jar 总是出错要你重试。试了四五次都不行。真丫折腾人。<p>
+
+后来想着既然 update 到网站 <a href='http://e-p-i-c.sourceforge.net/updates'>http://e-p-i-c.sourceforge.net/updates</a> ，我干脆让它到 http://localhost 好了。<br>
+将下来的 org.epic.updatesite_0.3.0_20040711.zip 解压缩到 htdocs 里。然后设置 eclipse <b>Help > Software and Updates > Find and Install... </b>, Search for new features to install, Add Update Site... , 在 URL 里填入 http://localhost/org.epic.updatesite .然后安装就及其顺利了。<p>
+
+在写这份纪录的时候，还发现了在 Add Update Site... 下面还有个 Add Local Site... 可以直接到本地文件夹。<p>
+
+总得来说 eclispe 还是不错的。首先它是免费的开源软件，网上有很多丰富的插件/plug-in. 其次安装完 EPIC 后的 eclispe 有点类似于 Kodomo. 功能还是挺多的，有
+<ol>
+<li>语法加亮 / Syntax Highlighting
+<li>闲时语法检查（带有注释旋停） / On the fly syntax check (with annotation hover) 
+<li>内容加速器（帮助，类似自动补充函数名等关键字） / Content assist
+<li>快速参考（对某内建函数或模块） / Quick reference feature
+<li>显示已用模块和子程序 / Outline view with used modules and subroutines
+<li>Perl Debug
+<li>更多的参见 <a href='http://e-p-i-c.sourceforge.net/main.html#Features'>http://e-p-i-c.sourceforge.net/main.html#Features</a>
+</ol>
+决定以后抛弃 UE32, 转向 eclispe.<p>
+
+:) May all good luck.

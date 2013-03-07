@@ -1,0 +1,66 @@
+---
+category: perl
+layout: post
+tags: []
+title: Gallery缩略图制作
+---
+{% include JB/setup %}
+
+<h2>描述</h2>
+此文档用以生成某目录下所有图片的缩略图，并可生成索引/index<br>
+
+<h2>先决条件</h2>
+use <a href="http://www.imagemagick.com">Image::Magick</a>;
+
+<h2>Script</h2>
+<pre><code>
+#!/usr/bin/perl -w
+use strict;
+use CGI qw/:standard/;
+use CGI::Carp qw(fatalsToBrowser);
+use Image::Magick;
+
+#settings
+my $thumbs_width = 100; #thumbs's width
+my $thumbs_height = 100; #thumbs's height
+my $dir = 'E:/Fayland/Gallery'; #the to-do dir
+my $url = 'http://localhost/Gallery'; #the relevant url
+my $need_index = 1; # 1 - produce the index.html, 0 - ingore
+
+my $query = new CGI;
+print $query->header;
+
+my @gallery;
+(-d "$dir") or die "Cann't find $dir";
+opendir(DIR,"$dir");
+@gallery = readdir(DIR);
+closedir(DIR);
+@gallery = grep(/(gif|jpe?g|png)$/, @gallery);
+
+my $i;
+open(FH, ">$dir/index.html") if ($need_index);
+foreach (@gallery) {
+    $_ =~ m/(.*).(.*)/;
+    my $thumbsfile = "$1.png";
+    unless (-e "$dir/thumbs/$thumbsfile") {
+        my $image=Image::Magick->new;
+        my $x = $image->Read("$dir/$_");
+        warn "$x" if "$x";
+        $x = $image->Resize(width=>$thumbs_width, height=>$thumbs_height);
+        $x = $image->Write("$dir/thumbs/$thumbsfile");
+    }
+    print "&lt;a href='$url/$_'>&lt;img src='$url/thumbs/$thumbsfile' width='100' height='100' border='0' alt='$_' />&lt;/a>";
+    print FH "&lt;a href='$_'>&lt;img src='thumbs/$thumbsfile' width='100' height='100' border='0' alt='$_' />&lt;/a>" if ($need_index);
+    $i++;
+    if ($i % 5 == 0) {
+        print "&lt;br>";
+        print FH "&lt;br>" if ($need_index);
+    }
+}
+close(FH) if ($need_index);
+
+print "&lt;p>Visit the &lt;a href='$url/index.html'>IndexPage&lt;/a>&lt;/p>" if ($need_index);
+</code></pre>
+
+<h2>License</h2>
+The same as Perl.

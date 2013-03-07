@@ -1,0 +1,36 @@
+---
+category: perl
+layout: post
+tags: []
+title: PerlTidy
+---
+{% include JB/setup %}
+
+Perltidy is a tool to indent and reformat perl scripts. It can also write scripts in html format.<br>
+Homepage:<a href="http://perltidy.sourceforge.net" target="_blank">http://perltidy.sourceforge.net</a>
+<h2>Install</h2>
+download PerlTidy-<font class="digit">20031021</font>, 
+<pre>
+perl Makefile.PL
+(n)make test
+(n)make install
+</pre>
+如果(n)make不成功的话，可以如下：
+<ul>
+<li>将lib目录中的Perl/Tidy.pm copy to $Perl/site/lib, 将bin目录下的perltidy copy to $Perl/lib. run
+<pre>
+$Perl\bin>perl perltidy testfile.pl
+</pre></li>
+<li>查看 pm2pl 文件，发现此程序将Tidy.pm与perltidy合并为一个新的 perltidy - Perl 文件
+<pre>
+>perl pm2pl testfile.pl
+</pre>
+</ul>
+down来的包里有个目录为examples, 里面有些Script是值得一看的。
+<h2>Usage</h2>
+<pre>
+perltidy -html testfile.pl
+</pre>
+此命令可生成已着色的HTML文件。<br>
+虽然颜色可能不是很让人满意，但可以改其中的CSS style或通过增加-css=mystyle.css选项来添加自己的css.<br>
+还有很多不错的选项如-nnn, 查阅perldoc <a href="http://search.cpan.org/perldoc?Perl::Tidy">Perl::Tidy</a>获得更多帮助。

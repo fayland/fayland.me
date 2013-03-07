@@ -1,0 +1,58 @@
+---
+category: perl
+layout: post
+tags: []
+title: "let @Examples[8] = 'Perl6';"
+---
+{% include JB/setup %}
+
+<h3>let's go</h3>
+my 是在当前词汇作用域里声明一个变量。
+
+<h3>state</h3>
+state 与 my 有点相似，它也是声明一个词汇作用域变量。所不同的是：my 对每次运行子程序块时都初始化变量，而 state 只在第一次运行时初始化。
+<pre>sub count {
+    state $x = 2;
+    $x++;
+    return $x
+}
+say &count(); # 3
+say &count(); # 4
+say &count(); # 5
+</pre>
+你可以理解为它能记住上一次运行后的结果。
+
+<h3>let && temp</h3>
+temp 和 let 都不是声明符，它们是运行时的命令。temp 与 let 不同的是：temp 当退出当前词法作用域时恢复变量的值，而 let 只在当前作用域返回一个错误时（比如 undef, 空列表，或者异常等），才恢复变量的值。
+<pre>my $a = 42;
+my $get_a = { $a };
+{
+    temp $a = 23;
+    say $a; # 23
+    say $get_a(); # 23
+}
+say $a; # 42
+say $get_a(); # 42</pre>
+<pre>my $a = 42;
+my $get_a = { $a };
+{
+    let $a = 23;
+    say $a; # 23
+    say $get_a(); # 23
+    1;
+}
+say $a; # 23
+say $get_a(); # 23</pre>
+<pre>my $a = 42;
+my $get_a = { $a };
+{
+    let $a = 23;
+    say $a; # 23
+    say $get_a(); # 23
+    0;
+}
+say $a; # 42
+say $get_a(); # 42</pre>
+
+<h3>It's easy but powerful</h3>
+God bless us.

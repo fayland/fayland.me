@@ -1,0 +1,9 @@
+---
+category: note
+layout: post
+tags: []
+title: 自动代理配置
+---
+{% include JB/setup %}
+
+因为中国 block 了好几个我经常访问的地址，比如 blogspot.com 中英文维基等。所以要使用到代理。<br />而一般的代理设置都是不管什么网址，要么都使用代理要么都不使用。<br />不过浏览器也提供了自动代理配置，不管是 <a href='http://www.mozilla.org/projects/firefox/'>Mozilla Firefox</a> 还是 IE.<p />Mozilla Firefox 的配置在 Tools-> Options... -> General -> Connection Settings... -> automatic configuration proxy URL<br />（抱歉我使用英文版，不清楚中文该是如何，大致的翻译可能为：工具 -> 选项 -> 常规 -> 连接设置 -> 自动代理配置地址）<p />而 IE 的配置选项在 工具 -> Internet 选项 -> 连接 -> 局域网设置 -> 使用自动配置脚本<p />而这脚本怎么写，这里有详细介绍：<a href="http://wp.netscape.com/eng/mozilla/2.0/relnotes/demo/proxy-live.html">http://wp.netscape.com/eng/mozilla/2.0/relnotes/demo/proxy-live.html</a><br />我的脚本（是个 javascript 脚本）为（注意得保存为 pac 后缀）：<br /><pre>function FindProxyForURL(url, host) {<br /> &nbsp; &nbsp;var proxy_yes = "PROXY 209.253.4.131:80; PROXY 203.199.178.78:80";<br /> &nbsp; &nbsp;var proxy_no = "DIRECT";<br /> &nbsp; &nbsp;if (shExpMatch(url, "*.blogspot.com*")) { return proxy_yes; }<br /> &nbsp; &nbsp;if (shExpMatch(url, "*.wikipedia.org*")) { return proxy_yes; }<br /> &nbsp; &nbsp;<br /> &nbsp; &nbsp;if (isResolvable(host))<br /> &nbsp; &nbsp; &nbsp; &nbsp;return proxy_no;<br /> &nbsp; &nbsp;else<br /> &nbsp; &nbsp; &nbsp; &nbsp;return proxy_yes;<br />}</pre>Mozilla Firefox 比较复杂，要 URL 地址，还好的 Apache 常开着，就填了 http://localhost/proxy.pac<br />而 IE 的话可以是本地地址，可以填写 file://E:/Fayland/proxy.pac<p />这样你就能用代理访问类如 <a href="http://adsensemaster.blogspot.com/">http://adsensemaster.blogspot.com/</a> 这样的网站了。<br />而直接访问你本来可以访问的地址，不能访问的交给代理。很完美的组合。:)<br />Thanks, enjoy!

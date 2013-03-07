@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: 'Graph::Easy'
+---
+{% include JB/setup %}
+
+最初认识这模块是 <a href="http://www.livejournal.com/users/joe_jiang/">joe jiang</a> 用的时候。他用这个模块做了一些很有用的图。<br />后来在 use.perl 上也看到几个人用这个做 <a href="http://search.cpan.org/perldoc?DBIx::Class">DBIx::Class</a> 的关系图。觉得挺不错的。<br />今天拿来做做 svk 的关系图。发现做一个简单的图很简单。复杂的图应该也比较简单，不过还没试验过。<br />因为在 Win32 下跑，所以也没安装 'gpg'. <p />因为很简单，所以代码也很简单：<br /><pre>#!/usr/bin/perl<br />use strict;<br />use warnings;<br />use CGI::Carp qw(fatalsToBrowser);<br />use CGI qw/:cgi/;<p />my $query = new CGI;<br />print $query->header(-type=>'text/html');<p />use Graph::Easy;<p />my $graph = Graph::Easy->new();<p />my $remote = $graph->add_node("Remote\n(SVN server)");<br />my $mirror = $graph->add_node("Mirror\n(Local Machine)");<br />my $local  = $graph->add_node('Local Machine');<p /># sync<br />my $edge = Graph::Easy::Edge->new( label => 'sync' );<br />$graph->add_edge ($remote, $mirror, $edge);<br /># checkout, up, ci<br />$edge = Graph::Easy::Edge->new( label => 'co' );<br />$graph->add_edge ($mirror, $local, $edge);<br />$edge = Graph::Easy::Edge->new( label => 'up' );<br />$graph->add_edge ($mirror, $local, $edge);<br />$edge = Graph::Easy::Edge->new( label => 'ci' );<br />$graph->add_edge ($mirror, $local, $edge);<br /># log, diff<br />$edge = Graph::Easy::Edge->new( label => 'log' );<br />$graph->add_edge ($mirror, $local, $edge);<br />$edge = Graph::Easy::Edge->new( label => 'diff' );<br />$graph->add_edge ($mirror, $local, $edge);<p /># raw HTML section<br />#print $graph->as_html_file( );<br />#my $graphviz = $graph->as_graphviz();</pre>用 Graphviz 弄出来的结果大致是这样子的：<br /><img src='img/graph_easy.png' alt='graph easy' /><h4>Update</h4>Win32 下的 Graphviz 在 <a href="http://www.graphviz.org/Download_windows.php">http://www.graphviz.org/Download_windows.php</a> 可以下。

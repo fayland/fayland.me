@@ -1,0 +1,75 @@
+---
+category: perl
+layout: post
+tags: []
+title: Tar
+---
+{% include JB/setup %}
+
+<h2>用Tar压缩文件</h2>
+<ol>
+<li>一个简单的Archive::Tar例子：<br>
+<pre>
+my $tar = Archive::Tar->new();
+my @file = ("1.cgi", "2.txt");
+$tar->add_files(@file);
+$tar->write("$dir/$name.tar");<span class="comment"># $dir 为要保存的目录路径，$name 为文件名</span>
+</pre>
+<li>如果1.cgi,2.txt不在程序目录下那必须增加如下代码与$tar->add_files前
+<pre>
+chdir "$targetdir";<span class="comment">#转到文件所在目录，在此之前须在程序最前面增加 use Cwd;</span>
+</pre>
+<li>关于<font color="red">@file</font><br>
+如果@file中的元素包含了路径，那生成的$name.tar文件解压缩后根据路径生成文件夹来包含该元素的文件。<p>
+<li>我写的获得某一目录下所有文件，和子目录加文件
+<pre>
+sub GetDir {
+	my ($dir, $file_ref, $subdir) = @_;
+	if (($subdir ne "") && ($subdir !~ /\/$/)) { $subdir = "$subdir/"; }
+	opendir (DIRS, "$dir");
+	my @dirdata = readdir(DIRS);
+	closedir (DIRS);
+	foreach (@dirdata) {
+		next if (/^\.+$/);
+		if (-d "$dir/$_") {
+			&GetDir("$dir/$_", $file_ref, "$subdir$_");
+		} else {
+			push (@$file_ref, "$subdir$_");
+		}
+	}
+}
+</pre>
+<li>一个完整例子
+<pre>
+#!/usr/bin/perl
+<span class="comment"># By 非四(Fayland) @ http://www.1313s.com/</span>
+use CGI::Carp qw(fatalsToBrowser);
+use Archive::Tar;
+use Cwd;
+$|++;
+<span class="comment">#两个参数，第一个为打包的目录绝对路径，第二为tar文件的保存绝对路径</span>
+my $tar = Archive::Tar->new();
+my ($target, $savefile) =@_;
+my @file;
+GetDir("$target", \@file);
+chdir "$target";
+$tar->add_files(@file);
+$tar->write("$savefile");
+</pre>
+</ol>
+<h2>用Tar解压缩</h2>
+<pre>
+use Archive::Tar;
+use Cwd;
+my $tar = Archive::Tar->new();
+$tar->read("$from_dir/$target.tar"); # tar 文件的绝对路径地址
+my @files = $tar->list_files();
+#&createdir("$to_dir"); # 如果目标文件夹不存在，则创建
+chdir $to_dir;
+$tar->extract(@files, $to_dir);
+</pre>
+<h2>个人经历</h2>
+因为是虚拟空间，所以经常要搬来搬去的。如果一个个文件弄回本地机子再传上去感觉速度很慢。<br>
+就我目前的空间就占用了大概700多M，万把个文件。而且Linux虚拟主机传上去还要chmod为666才能被程序修改。<br>
+没办法，唯一的好选择就是用Tar然后unTar。速度很快而且不用chmod。<br>
+更详细的应用代码可以在<a href='NiBoard.html'>NiBoard</a>的cgi-bin/admin/tar.pl和untar.pl里找到。<br>

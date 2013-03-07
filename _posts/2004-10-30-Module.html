@@ -1,0 +1,61 @@
+---
+category: perl
+layout: post
+tags: []
+title: Module
+---
+{% include JB/setup %}
+
+<h2>qw的解释</h2>
+use Module qw(argu param);中<font color="red">qw</font>的解释<br>
+qw中的内容在本语句执行后，便成为Module里的import函数的参数。例解如下：
+<pre>#TEst.pm
+package TEst;
+
+sub import {
+  print "@_";
+}
+
+1;
+
+#test.pl
+#!/usr/bin/perl
+use TEst qw(argu param);
+
+__OUTPUT__
+TEst argu param
+</pre>
+
+参考：<a href="http://www.stonehenge.com/merlyn/PerlJournal/col13.html" target="_blank">Randal L. Schwartz's Hey, 'use' guys! Import this!</a>
+<h2>查找已安装模块</h2>
+<pre>
+use ExtUtils::Installed;
+
+my $inst = ExtUtils::Installed->new();
+print join "\n", $inst->modules();
+</pre>
+<h2>检查批量模块是否已安装</h2>
+<pre><code>
+#!/usr/bin/perl
+# Check the needed modules are installed in currect system
+print "Content-Type: text/html\r\n\r\n";
+
+while (&lt;DATA>) {
+ &nbsp; &nbsp;s/[^\w\:]*//g;
+ &nbsp; &nbsp;next unless ($_);
+ &nbsp; &nbsp;eval("use $_;");
+ &nbsp; &nbsp;if ($@) {
+ &nbsp; &nbsp; &nbsp; &nbsp;print "&lt;font color=red>$_&lt;/font> failed to locate.&lt;br>";
+ &nbsp; &nbsp;} else {
+ &nbsp; &nbsp; &nbsp; &nbsp;print "&lt;font color=blue>$_&lt;/font> locate success!&lt;br>";
+ &nbsp; &nbsp;}
+}
+
+# add the module name you want to check
+__DATA__
+strict
+CGI::Carp
+CGI
+Net::SMTP
+TEM_P
+</code></pre>

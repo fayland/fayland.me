@@ -1,0 +1,27 @@
+---
+category: perl
+layout: post
+tags: []
+title: SVK 安装
+---
+{% include JB/setup %}
+
+<p><a href='http://svk.elixus.org.nyud.net:8090/?SVKWin32'>http://svk.elixus.org.nyud.net:8090/?SVKWin32</a></p>
+
+可以由上述地址下载二进制包，也可以跟我一样按照步骤一步步安装。<br />
+<ol>
+<li>首先得确定你安装了 <a href='http://www.activestate.com/Products/ActivePerl/'>Perl</a> 和 <a href='http://subversion.tigris.org'>Subversion 1.13</a></li>
+<li>下载 <a href='http://subversion.tigris.org'>http://subversion.tigris.org</a> 里的 Subversion 的 perl 开发包。（目前为 svn-win32-1.1.3_pl.zip，地址在 <a href='http://subversion.tigris.org/files/documents/15/19982/svn-win32-1.1.3_pl.zip'>http://subversion.tigris.org/files/documents/15/19982/svn-win32-1.1.3_pl.zip</a>）<br />
+<ul>
+<li>将压缩包里的 libsvn_swig_perl-1.dll 拷贝到你 Subversion 的安装目录下的 bin 目录里。(eg: C:\Program Files\Subversion\bin\)
+<li>将 swigpl.dll 拷贝到你 perl 安装目录的 bin 目录下。(eg: C:\usr\bin)
+<li>在 $Perl\site\lib 目录下建立一个 SVN 目录，将压缩包里的 *.pm 拷贝过去。
+<li>在 $Perl\site\lib\auto 目录下建立新目录 SVN，对应压缩包的所有 _(*).dll 分别对应到 $1 目录下。比如 _Client.dll 到 $Perl\site\lib\auto\SVN\_Client 目录下， _Core.dll 拷贝到 _Core 目录，等等。
+</ul>
+有位好人提供了 SVK 所需的 SVN 和其他模块的压缩包。你可以不用做上面这些步骤了。<br />
+<a href='http://www.systemex.net/files/svk/svk-0.30-win32-bin.zip'>http://www.systemex.net/files/svk/svk-0.30-win32-bin.zip</a>
+<li>最后一步 cpan SVK<br />
+安装了一系列模块后就成功了。
+</ol>
+<p>svk 的使用以后再介绍。等不及可以到 <a href='http://svk.elixus.org.nyud.net:8090/'>http://svk.elixus.org.nyud.net:8090/</a> 找 Tutorial.<br />
+have fun!</p>

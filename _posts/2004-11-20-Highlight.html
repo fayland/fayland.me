@@ -1,0 +1,105 @@
+---
+category: perl
+layout: post
+tags: []
+title: 如何将Perl代码着色
+---
+{% include JB/setup %}
+
+<h2>先决条件</h2>
+cpan Syntax::Highlight::Perl
+
+<h2>代码解释</h2>
+perldoc <a href='http://search.cpan.org/perldoc?Syntax::Highlight::Perl'>Syntax::Highlight::Perl</a><br>
+perldoc里或许解释清楚了，但是蛮长了，我没耐心看。使用里面的代码一点反应都没有。
+<pre>
+use Syntax::Highlight::Perl;
+
+my $formatter = new Syntax::Highlight::Perl;
+print $formatter->format_string($my_string);
+</pre>
+不想仔细看完全文，最主要是我懒，看英文头痛得很。<br>
+还好可以Search, 找到了<a href="http://sedition.com/perl/perl-colorizer.html">Coloring perl code in HTML</a>。<br>
+对着那代码，改写了些许颜色。将它span里改写成使用class而不是style.这样比较容易知道哪些词是属于哪一部分。<br>
+完成后的代码如下。现炒现卖，直接将它着色。<br>
+打算迟些时候将它做为<a href="Epanlet.html">Eplanet</a>的新功能。<p>
+<link rel="stylesheet" href="highlightperl.css" type="text/css" />
+highlightperl.css - 此CSS文档可随意更改。
+<pre>
+.vs { color:#080; }
+.va { color:#f70; }
+.vh { color:#80f; }
+.vt { color:#f03; }
+.sub { color:#980; }
+.qr { color:#ff8000; }
+.str { color:#000; }
+.cm { color:#008080;font-style:italic; }
+.cmp { color:#014;font-family: garamond,serif;font-size:11pt; }
+.bw { color:#3A3; }
+.pk { color:#900; }
+.nb { color:#f0f; }
+.op { color:#000; }
+.sym { color:#000; }
+.kw { color:#00f; }
+.bo { color:#f00; }
+.bf { color:#001; }
+.char { color:#800; }
+.dr { color:#399;font-style:italic; }
+.lb { color:#939;font-style:italic; }
+.ln { color:#000; }
+</pre>
+highlight.pl
+<pre>
+<span class="dr">#!/usr/bin/perl -T</span>
+<span class="kw">use</span> <span class="pk">strict</span><span class="sym">;</span>
+<span class="kw">use</span> <span class="pk">warnings</span><span class="sym">;</span>
+<span class="kw">use</span> <span class="pk">CGI::Carp</span> <span class="qr">qw(</span><span class="str">fatalsToBrowser</span><span class="qr">)</span><span class="sym">;</span>
+<span class="kw">use</span> <span class="pk">CGI</span> <span class="qr">qw/</span><span class="str">:standard</span><span class="qr">/</span><span class="sym">;</span>
+
+<span class="kw">my</span> <span class="vs">$cgi</span> <span class="op">=</span> <span class="bw">new</span> <span class="bw">CGI</span><span class="sym">;</span>
+<span class="bo">print</span> <span class="vs">$cgi</span><span class="op">-></span><span class="sub">header</span><span class="sym">;</span>
+
+<span class="kw">use</span> <span class="pk">Syntax::Highlight::Perl</span><span class="sym">;</span>
+
+<span class="kw">my</span> <span class="vs">$color_table</span> <span class="op">=</span> <span class="sym">{</span>
+    <span class="qr">'</span><span class="str">Variable_Scalar</span><span class="qr">'</span>   <span class="op">=></span> <span class="qr">'</span><span class="str">vs</span><span class="qr">'</span><span class="op">,</span>
+    <span class="qr">'</span><span class="str">Variable_Array</span><span class="qr">'</span>    <span class="op">=></span> <span class="qr">'</span><span class="str">va</span><span class="qr">'</span><span class="op">,</span>
+    <span class="qr">'</span><span class="str">Variable_Hash</span><span class="qr">'</span>     <span class="op">=></span> <span class="qr">'</span><span class="str">vh</span><span class="qr">'</span><span class="op">,</span>
+    <span class="qr">'</span><span class="str">Variable_Typeglob</span><span class="qr">'</span> <span class="op">=></span> <span class="qr">'</span><span class="str">vt</span><span class="qr">'</span><span class="op">,</span>
+    <span class="qr">'</span><span class="str">Subroutine</span><span class="qr">'</span>        <span class="op">=></span> <span class="qr">'</span><span class="str">sub</span><span class="qr">'</span><span class="op">,</span>
+    <span class="qr">'</span><span class="str">Quote</span><span class="qr">'</span>             <span class="op">=></span> <span class="qr">'</span><span class="str">qr</span><span class="qr">'</span><span class="op">,</span>
+    <span class="qr">'</span><span class="str">String</span><span class="qr">'</span>            <span class="op">=></span> <span class="qr">'</span><span class="str">str</span><span class="qr">'</span><span class="op">,</span>
+    <span class="qr">'</span><span class="str">Comment_Normal</span><span class="qr">'</span>    <span class="op">=></span> <span class="qr">'</span><span class="str">cm</span><span class="qr">'</span><span class="op">,</span>
+    <span class="qr">'</span><span class="str">Comment_POD</span><span class="qr">'</span>       <span class="op">=></span> <span class="qr">'</span><span class="str">cmp</span><span class="qr">'</span><span class="op">,</span>
+    <span class="qr">'</span><span class="str">Bareword</span><span class="qr">'</span>          <span class="op">=></span> <span class="qr">'</span><span class="str">bw</span><span class="qr">'</span><span class="op">,</span>
+    <span class="qr">'</span><span class="str">Package</span><span class="qr">'</span>           <span class="op">=></span> <span class="qr">'</span><span class="str">pk</span><span class="qr">'</span><span class="op">,</span>
+    <span class="qr">'</span><span class="str">Number</span><span class="qr">'</span>            <span class="op">=></span> <span class="qr">'</span><span class="str">nb</span><span class="qr">'</span><span class="op">,</span>
+    <span class="qr">'</span><span class="str">Operator</span><span class="qr">'</span>          <span class="op">=></span> <span class="qr">'</span><span class="str">op</span><span class="qr">'</span><span class="op">,</span>
+    <span class="qr">'</span><span class="str">Symbol</span><span class="qr">'</span>            <span class="op">=></span> <span class="qr">'</span><span class="str">sym</span><span class="qr">'</span><span class="op">,</span>
+    <span class="qr">'</span><span class="str">Keyword</span><span class="qr">'</span>           <span class="op">=></span> <span class="qr">'</span><span class="str">kw</span><span class="qr">'</span><span class="op">,</span>
+    <span class="qr">'</span><span class="str">Builtin_Operator</span><span class="qr">'</span>  <span class="op">=></span> <span class="qr">'</span><span class="str">bo</span><span class="qr">'</span><span class="op">,</span>
+    <span class="qr">'</span><span class="str">Builtin_Function</span><span class="qr">'</span>  <span class="op">=></span> <span class="qr">'</span><span class="str">bf</span><span class="qr">'</span><span class="op">,</span>
+    <span class="qr">'</span><span class="str">Character</span><span class="qr">'</span>         <span class="op">=></span> <span class="qr">'</span><span class="str">char</span><span class="qr">'</span><span class="op">,</span>
+    <span class="qr">'</span><span class="str">Directive</span><span class="qr">'</span>         <span class="op">=></span> <span class="qr">'</span><span class="str">dr</span><span class="qr">'</span><span class="op">,</span>
+    <span class="qr">'</span><span class="str">Label</span><span class="qr">'</span>             <span class="op">=></span> <span class="qr">'</span><span class="str">lb</span><span class="qr">'</span><span class="op">,</span>
+    <span class="qr">'</span><span class="str">Line</span><span class="qr">'</span>              <span class="op">=></span> <span class="qr">'</span><span class="str">ln</span><span class="qr">'</span><span class="op">,</span>
+<span class="sym">}</span><span class="sym">;</span>
+
+<span class="kw">my</span> <span class="vs">$formatter</span> <span class="op">=</span> <span class="bw">Syntax::Highlight::Perl</span><span class="op">-></span><span class="sub">new</span><span class="sym">(</span><span class="sym">)</span><span class="sym">;</span>
+
+<span class="vs">$formatter</span><span class="op">-></span><span class="sub">define_substitution</span><span class="sym">(</span><span class="qr">'</span><span class="str"><</span><span class="qr">'</span> <span class="op">=></span> <span class="qr">'</span><span class="str"><code>&lt;</code></span><span class="qr">'</span><span class="op">,</span> 
+                                <span class="qr">'</span><span class="str">></span><span class="qr">'</span> <span class="op">=></span> <span class="qr">'</span><span class="str"><code>></code></span><span class="qr">'</span><span class="op">,</span> 
+                                <span class="qr">'</span><span class="str">&</span><span class="qr">'</span> <span class="op">=></span> <span class="qr">'</span><span class="str"><code>&</code></span><span class="qr">'</span><span class="sym">)</span><span class="sym">;</span> <span class="cm"># HTML escapes.</span>
+
+<span class="cm"># install the formats set up above</span>
+<span class="kw">while</span> <span class="sym">(</span> <span class="kw">my</span> <span class="sym">(</span> <span class="vs">$type</span><span class="op">,</span> <span class="vs">$class</span> <span class="sym">)</span> <span class="op">=</span> <span class="bo">each</span> <span class="vh">%</span><span class="sym">{</span><span class="vs">$color_table</span><span class="sym">}</span> <span class="sym">)</span> <span class="sym">{</span>
+	<span class="vs">$formatter</span><span class="op">-></span><span class="sub">set_format</span><span class="sym">(</span><span class="vs">$type</span><span class="op">,</span> <span class="sym">[</span> <span class="qr">qq~</span><span class="str"><code>&lt;span class=\"$class\"></code></span><span class="qr">~</span><span class="op">,</span> <span class="qr">'</span><span class="str"><code>&lt;/span></code></span><span class="qr">'</span> <span class="sym">]</span> <span class="sym">)</span><span class="sym">;</span>
+<span class="sym">}</span>
+
+<span class="bo">print</span> <span class="qr">qq~</span><span class="str"><code>&lt;link rel="stylesheet" href="highlightperl.css" type="text/css" /></code></span><span class="qr">~</span><span class="sym">;</span>
+<span class="bo">print</span> <span class="qr">'</span><span class="str"><code>&lt;pre></code></span><span class="qr">'</span><span class="sym">;</span>
+<span class="kw">while</span> <span class="sym">(</span><span class="op"><</span><span class="bw">DATA</span><span class="op">></span><span class="sym">)</span> <span class="sym">{</span>
+    <span class="bo">print</span> <span class="vs">$formatter</span><span class="op">-></span><span class="sub">format_string</span><span class="sym">;</span>
+<span class="sym">}</span>
+<span class="bo">print</span> <span class="qr">"</span><span class="str"><code>&lt;/pre></code></span><span class="qr">"</span><span class="sym">;</span>
+</pre>

@@ -1,0 +1,47 @@
+---
+category: perl
+layout: post
+tags: []
+title: 'Tips from Perl Best Practices, Part 2'
+---
+{% include JB/setup %}
+
+<p>没时间看 Perl Best Practices 或不喜欢看英文的可以看看本文。<br />
+我还是推荐看原版书的。因为所有的 practices, Damain Conway 都解释了为什么。而我只是把它们摘录一些出来。</p>
+
+<ul>
+<li>Don't use bareword filehandles, Use indirect filehandles.<br />
+不要使用裸字句柄，而使用间接句柄。
+
+<pre><s>open FILE, '<', $filename
+    or croak "Can't open '$filename': $OS_ERROR";</s>
+open my $FILE, '<', $filename
+    or croak "Can't open '$filename': $OS_ERROR";
+$next_line = <$FILE>;</pre>
+二者的区别在于裸字句柄纪录在符号表中，而间接句柄只定义了一个词法作用域变量。<br />
+裸字句柄你无法知晓是否会构成冲突，而间接句柄却很明显，一旦打开了 warnings ,重复定义就会引发警告：
+<pre>"my" variable $FILE masks earlier declaration in same scope</pre>
+
+<li>Always put filehandles in braces within any print statement.<br />
+在任何 print 语句中用大括号将句柄括起来。
+
+<pre><s>print $file $name, $rank, $serial_num, "\n";</s>
+print {$file} $name, $rank, $serial_num, "\n";</pre>
+<li>关于测试/test<br />
+<ol>
+<li>写长代码之前先写短测试
+<li>使用 Test::Simple 或 Test::More 来写测试 *.t 文件
+<li>使用 Test::Harness/prove 来运行目录下所有 *.t 文件
+</ol>
+这就是一个简单的测试流程。当你添加或修改一个测试文件后，简单的再次运行 prove -r 就可以了。（prove 是使用 Test::Harness 的一个程序，在 bin 目录下）<br />
+它会自动搜索目录和子目录下的 *.t 文件，然后输出测试结果。
+</ul>
+
+<h3>LAST</h3>
+<p>抱歉，实在摘不了什么东西了。其他太复杂，我也是半懂不懂，所以就免摘了。<br />
+Perl Best Practices 我也大致看完了一遍（当然是跳着看的）。<br />
+怎么讲呢，这么多 practices 中让我觉得有可以采纳的地方又有不以为然的地方。<br />
+比如他讲类的时候花了很多篇幅讲他写一个模块 Class::Std, 虽然这模块真的非常棒，但我总感觉使不上力。<br />
+这本书用我的话讲就是不是标准配备书（必备书），更适合于扩展自己对 Perl 某些地方或细节的理解。<br />
+我个人比较敬佩 Damian Conway 先生，如果此书出中文版，我还是很乐意掏钱买一本的。
+</p>

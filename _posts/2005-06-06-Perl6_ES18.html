@@ -1,0 +1,58 @@
+---
+category: perl
+layout: post
+tags: []
+title: 'my $queen; rule me {Perl6|Examples18}'
+---
+{% include JB/setup %}
+
+<h3>preface</h3>
+终于将 <a href='050604.html'>embed parrot in pugs</a>, 现在可以试试 Perl6 的 Rule 了。<br />
+Thank God. 
+<p>我们已经有一些中文文章介绍或详细描述了 Rule. 里面的一些基本东西我就不赘述了，我只写点我自己需要理解的东西。</p>
+<ul>
+<li><a href='http://www.fayland.org/Perl6/Synopsis/zh_cn/S05.pod'>纲要五：Rules</a>
+<li><a href='http://www-106.ibm.com/developerworks/cn/linux/l-cpregex.html'>功能丰富的 Perl: Perl 6 语法和正则表达式</a>
+</ul>
+
+<h3>Immediate Match</h3>
+立即匹配，这是一种最简单最常用的匹配方式。由操作符 m// 或 s/// 定义的规则都是属于立即匹配的。<br />
+<pre>if ($string ~~ m/\w+/)      { . . . }
+if ($string ~~ s/\w+/word/) { . . . }</pre>
+// 操作符在智能匹配操作符下属于立即匹配，或在空，布尔，字符或数字上下文下属于立即匹配。
+<pre>if ($string ~~ /\w+/)       { . . . } # ~~ 定义了立即匹配
+$truth  = ?/\d+/;       # 布尔上下文，立即匹配 $_ 并返回真假
+$count  = +/(\d+\s+)*/; # 数字上下文，立即匹配 $_ 并返回个数 
+$string = ~/^\w+/;      # 字符串上下文，理解匹配 $_ 并返回字符串</pre>
+</pre>
+
+<h3>Deferred Matche</h3>
+延后匹配，定义一种匿名规则，以后匹配的时候可以调用该规则（复用）。一般这么定义：
+<pre>$digits = rx/\d+/;</pre>
+// 操作符除上面的立即匹配环境外，其余都属于延后匹配：
+<pre>$digits = /\d+/; # store rule</pre>
+除了上面这两种定义外，还可以使用 rule 关键字定义：
+<pre>$digits = rule {\d+};</pre>
+上面其实是定义了一个匿名规则。我们可以用 rule 定义带名字的规则：
+<pre>rule digits {\d+}</pre>
+我们可以在迟些时候调用这些规则：
+<pre>if ($string ~~ $digits) {...}
+if ($string ~~ /<$digits>/) {...} # 这种也应当是可用的，但目前 pugs 还没实现</pre>
+如果是带名规则 rule digits, 我们可以怎么用：
+<pre><code>$string ~~ /&lt;digits>/;</code></pre>
+
+<h3>Grammar</h3>
+一个语法规则/grammar 是许多个规则/rule 的集合。事实上一个 grammar 就是一个类，只不过继承了基类 Rule. 而 rule 我们就可以把它看作类 grammar 的方法。<br />
+这也意味着 grammar 可以继承其他 grammar，且它们给了 rule 一个命名空间。
+<pre>grammar Hitchhikers {
+    rule name {Zaphod|Ford|Arthur} 
+    rule id   {\d+} 
+    . . .  
+}</pre>
+如果在该语法规则属于当前包，我们可以像前面一样直接调用 <id> 等，而如果该语法规则不属于当前包（外面的），那我们调用的时候就得加命名空间：
+<pre><code>if $my_id ~~ /&lt;id>/ { ... } # grammar Hitchhikers 在当前包
+f $my_id ~~ /&lt;Hitchhikers.id>/ { ... } # 不属于当前包</code></pre>
+语法对于解析复杂的数据结构非常有用。
+
+<h3>see u later</h3>
+learning never stops.

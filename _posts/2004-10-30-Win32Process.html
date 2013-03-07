@@ -1,0 +1,31 @@
+---
+category: perl
+layout: post
+tags: []
+title: Win32下的进程模块
+---
+{% include JB/setup %}
+
+我的任务很简单，启动一个程序(c:\a.exe)，然后过1分种终止进程，然后再启动，如此循环/loop.<p />
+
+Win32::Process我没用过，也是第一次用，其中什么子进程之类的也不太懂。详细的请查阅perldoc Win32::Process.<br />
+如下是我的代码，给需要完成相似任务的朋友做参考：<br />
+<pre>
+use Win32::Process;
+
+while (1) {
+    my ($ProcessObj, $exitcode);
+    Win32::Process::Create($ProcessObj,
+        "c:\\a.exe",
+        "",
+        0,
+        NORMAL_PRIORITY_CLASS,
+        ".")|| die ErrorReport();
+
+    $ProcessObj->GetExitCode( $exitcode );
+    sleep 60;
+    my $pid = $ProcessObj->GetProcessID();
+    Win32::Process::KillProcess($pid, $exitcode);
+    sleep 1;
+}
+</pre>

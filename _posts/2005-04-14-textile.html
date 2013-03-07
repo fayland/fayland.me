@@ -1,0 +1,41 @@
+---
+category: perl
+layout: post
+tags: []
+title: Text::Textile
+---
+{% include JB/setup %}
+
+<p><strong>Textile</strong> 是种 wiki 常用的格式，写起来比较方便。 <a href="http://wiki.perlchina.org">perlchina wiki</a> 用的就是这个格式。</p>
+
+<p><a href="http://search.cpan.org"><span class="caps">CPAN</span></a> 上有个模块为 <a href='http://search.cpan.org/perldoc?Text::Textile'>Text::Textile</a> 可以实现这个功能。于是想着给 Eplanet 增加这功能。</p>
+
+<p>代码还是很简单：</p>
+
+
+
+<pre>
+use Text::Textile;
+my $textile = Text::Textile-&gt;new();
+$textile-&gt;charset('utf-8');
+
+$c-&gt;stash-&gt;{cms_text} = $textile-&gt;process( $c-&gt;stash-&gt;{cms_text} );
+</pre>
+
+
+
+<p>唯一值得一写的是如果是 utf-8 格式数据的话就得多一句</p>
+
+
+
+<pre>$textile-&gt;charset('utf-8');</pre>
+
+
+
+<p>Have fun. Enjoy!</p>
+
+<h2>Refer</h2>
+
+<ul>
+<li><a href="http://hobix.com/textile">A Textile Reference</a></li>
+</ul>

@@ -1,0 +1,9 @@
+---
+category: perl
+layout: post
+tags: []
+title: 汉字比划模块
+---
+{% include JB/setup %}
+
+从新写了下比划模块，原始数据从 Unihan 解析出来。支持两万多个汉字。:)<br />是 Unihan 里的 kTotalStrokes 字段。<p />代码：<br /><pre>use Lingua::Han::Stroke;<br />my $stroke = Lingua::Han::Stroke->new();<br />    <br />print $stroke->("我"); # 7<br />print $stroke->("一"); # 1</pre>guys, enjoy!<p />

@@ -1,0 +1,70 @@
+---
+category: perl
+layout: post
+tags: []
+title: 'Day [05.4.23] stay with me'
+---
+{% include JB/setup %}
+
+<p>早上去上考研数学微积分，下午闲着无事改代码。</p>
+
+<p>先改改了留言本 FayGuestBook，因为 $q-&gt;param('name1') 不能变量内插，所以就用了 $q-&gt;Vars</p>
+
+
+<pre>my %input = $q-&gt;Vars;</pre>
+
+
+<p>变量少的时候可以用 my $name1 = $q-&gt;param('name1');，可变量一多写起来就麻烦了。不过可以试试下面的代码</p>
+
+
+<pre>
+my ($name1, $name2, $name3, $name4, $name5, $name6);
+foreach (qw/name1 name2 name3 name4 name5 name6/) {
+    no strict 'refs';
+    ${$_} = $q-&gt;param($_);
+}
+</pre>
+
+
+<p>这样也不是非常好。不过暂时也想不出什么好办法来。<br />
+留言本实在不想大改，没啥意思。将它移植到 <a href="http://www.fayland.org/guestbook/">fayland.org GuestBook</a> 就不想管了。</p>
+
+<p>接着去看 Eplanet 的代码。<br />
+Eplanet 有个功能(build_alltopics)是将数据库里的数据转为 <span class="caps">HTML </span>文档。</p>
+
+
+<pre>
+my @cms = Eplanet::M::CDBI::Cms-&gt;retrieve_all;
+	
+foreach (0 .. $#cms) {
+    $c-&gt;stash-&gt;{topic} = $cms[$_];
+    $c-&gt;stash-&gt;{prev_topic} = $cms[$_-1] unless ($_ == 0);
+    $c-&gt;stash-&gt;{next_topic} = $cms[$_+1] unless ($_ == $#cms);
+    $c-&gt;stash-&gt;{build_filename} = $cms[$_]-&gt;get('cms_file');
+
+    $c-&gt;req-&gt;action(undef);$c-&gt;res-&gt;output(undef);
+
+    $c-&gt;req-&gt;path('view/'. $cms[$_]-&gt;{'cms_id'} .'/build');
+    $c-&gt;prepare_action();
+    $c-&gt;dispatch();
+}
+</pre>
+
+
+<p>用 path, prepare_action, dispatch 来执行多次 view，这功能改自 Catalyst::Plugin::SubRequest<br />
+多次执行 view 的速度实在让人不太能忍受。于是想着在 mod_perl 下运行。<br />
+运行不成功，倒是找到了个 bug，给 Catalyst Maillist 组发了 mail:<br />
+<a href="http://lists.rawmode.org/pipermail/catalyst/2005-April/000285.html" lang="bug">$req-&gt;base 's trailing slash in Catalyst::Engine::CGI</a></p>
+
+<p>运行不成功的提示是</p>
+
+
+<pre>Caught exception &quot;DBD::mysql::db FETCH failed: handle 2 is owned by thread 138b014 not current thread 2d1b40c (handles can't be shared between threads and your driver may need a CLONE method added) at C:/usr/site/lib/Ima/DBI.pm line 316.&quot;</pre>
+
+
+<p>可能需要重新启动机子或者其他的吧。这个容后再考虑。</p>
+
+<p>晚上再看会代码，然后去喝点酒。</p>
+
+<h2>22:00</h2>
+搞不定那个多线程错误，只好转向运行 catalyst 生成的一个 http 服务器（用 catalyst Eplanet 命令后，在script目录下有一个eplanet_server.pl）。发现速度很让人惊讶。将它转为 bat 文件（改下use lib）后放到 path 目录下。OK.

@@ -1,0 +1,102 @@
+---
+category: perl
+layout: post
+tags: []
+title: 从细节处提升Perl性能
+---
+{% include JB/setup %}
+
+<h2>Description</h2>
+下面所写的各点都是我从其他地方找过来了。整理一下希望对各位有所帮助。<br>
+
+<h2>Details</h2>
+
+<h3>变量和常量</h3>
+1, 尽量减少数学表达式的计算，如
+<pre>
+$day = 24*60*60; # 不好
+$day = 86400; # better
+</pre>
+2, 使用vec函数而不是变量来存放非常小的数字。
+
+<h3>print</h3>
+1, 如果输出里没有变量需要内插，使用单引号'而不是双引号".因为双引号会强制 Perl 检查可能插入的信息<br>
+2, 多段输出时用,而不是.。因为连接操作符.会首先将字符串连接在一起，然后将其作为一个参数打印<br>
+
+<h3>避免没必要的引号</h3>
+摘自 FAQ 3.16: How can I make my Perl program take less memory?<br>
+没有绝对必要不要使用引号：
+<pre>my $copy = "$large_string";</pre>
+上述会$large_string做两次拷贝（一是拷贝到 $copy 另一次是引号内插），反之
+<pre>my $copy = $large_string;</pre>
+只做一次拷贝。<p>
+
+<h3>数组字符串化</h3>
+同样摘自 FAQ 3.16<br>
+对于大数组字符串化：
+<pre>{
+    local $, = "\n";
+    print @big_array;
+}</pre>
+比下面两样都更节省内存
+<pre>print join "\n", @big_array;
+
+#or
+
+{
+    local $" = "\n";
+    print "@big_array";
+}</pre>
+
+<h3>引用\</h3>
+如果使用大型数组或 hash 表，并使用它们作为函数的参数，那么应该使用它们的一个引用，而不应该直接使用它们。通过使用引用，可以告诉函数指向信息的指针。如果不使用引用，就需要将整个数组或 hash 表复制到该函数的调用栈中，然后在函数中再次对其进行复制。引用还可以节省内存（这可以减少足迹和管理的负载），并简化您的编程。
+
+<h3>循环</h3>
+尽早在循环内放置条件语句，以使Perl不执行无用的语句。如
+<pre>
+while (<DATA>) {
+    chomp;
+    next if /^#/;
+</pre>
+next可以放在chomp上面。
+
+<h3>有选择性地使用 map 和 grep</h3>
+摘自 FAQ 3.16: How can I make my Perl program take less memory?<br>
+因为 map 和 grep 是使用 LIST 列表参数，所以这么做
+<pre>@wanted = grep {/pattern/} <FILE>;</pre>
+会一次性读入整个文件。对于大文件来说，使用循环会更好一点：
+<pre>while (<FILE>) {
+    push(@wanted, $_) if /pattern/;
+}</pre>
+
+<h3>正则表达式</h3>
+<ol>
+<li>pack/unpack > regexp > substr
+<li>删除字符串中的字符时用tr///d来代替s///g
+<li>在正则表达式的外面使用“or”或“||”操作。
+<pre>
+$found = if /one/ || /two/; # better
+$found = if /one|two/; # use above to replace
+</pre>
+<li>如果字符串很长，正则表达式很复杂，可以使用study来加快速度
+</ol>
+
+<h3>数据结构</h3>
+<a href='http://search.cpan.org/perldoc?Tie::SubstrHash'>Tie::SubstrHash</a> 对于某些类型的数据结构会有所帮助
+
+<h3>=pod</h3>
+如果您用了一大块 pod 来描述你的代码，那么请尽量不要将其放在文件的上面或中间部分。虽然 perl 分析器能很快的跳过 pod ，但是这不是魔法，它还是需要一点时间的。它还是需要从磁盘中读入它，并且读入的目的仅仅是忽略它。将所有的pod放到__END__后面，那样 Perl 编译器就不会去注意它。<br>
+但是将pod与相关代码放在一起或许是种好习惯。
+
+<h3>warnings/strict</h3>
+强烈建议编程和调试时开启，而在代码发布时去掉它们。
+
+<h2>Final</h2>
+最后强烈建议各位阅读参考里的“When perl is not quite fast enough”。
+
+<h2>参考/Refer</h2>
+<ul>
+<li><a href="http://www-900.ibm.com/developerworks/cn/linux/l-optperl.shtml">http://www-900.ibm.com/developerworks/cn/linux/l-optperl.shtml</a>
+<li><a href="Faster.html">When perl is not quite fast enough</a>
+<li>人民邮电出版社出版的Martin C. Brown写的《Perl参考大全》，21.4 优化代码
+</ul>

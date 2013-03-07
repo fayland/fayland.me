@@ -1,0 +1,29 @@
+---
+category: perl
+layout: post
+tags: []
+title: 如何向CPAN上传模块
+---
+{% include JB/setup %}
+
+<ol>
+<li>First Step, register. <a href='https://pause.perl.org/pause/authenquery?ACTION=request_id'>https://pause.perl.org/pause/authenquery?ACTION=request_id</a><br>
+注册后你需要等待PAUSE(The Perl Authors Upload Server)小组的审核。<br>
+我是差不多一天就收到Email,邮件里有你账号的密码。按照04pause.html文档，最迟需要三周时间。
+<li>有密码后登陆<a href='https://pause.perl.org'>PAUSE</a>, 登陆后如果需要上传模块，点击左侧列表的“Upload a file to CPAN”。上传一般为tar.gz模块包，它会自动解压缩的。<br>
+<li>上传模块有好几种方式，PAUSE介绍得很清楚。其他的功能也都有介绍。不需要我的赘言吧。
+</ol>
+如果不知道如果制作tar.gz模块包，请参考我的文章“<a href='Module_Build.html'>Module::Build</a>”与“<a href='h2xs.html'>使用h2xs打包tarball</a>”。<br>
+我上传了Lingua::Han2PinYin, <a href='http://search.cpan.org/~fayland/'>我的CPAN目录</a><br>
+暂时好像没什么好写的。先就此打住。以后有情况再补充。<br>
+
+<h2>名词用途解释</h2>
+Register Namespace/命名空间：<br>
+当你上传模块后，该模块只会放在你的目录下，不会放到CPAN的分类目录下。这时候通过命令行（perl -MCPAN -e "install XX;"）是无法获取安装你的模块的。<br>
+这时候你就需要去申请注册“Register Namespace/命名空间”来防止模块名称和别人冲突，并把你自己的模块归类到CPAN的某一category/分类下。<br>
+成功后，你的页面http://search.cpan.org/~yourname下就有两块，一块是Distribution，你上传的模块；另一块是Registered Module，已注册成功的模块。
+
+<h2>Refer/参考</h2>
+<ul>
+<li><a href='http://www.cpan.org/modules/04pause.html'>CPAN/modules/04pause.html</a>
+</ul>

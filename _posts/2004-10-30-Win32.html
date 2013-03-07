@@ -1,0 +1,51 @@
+---
+category: perl
+layout: post
+tags: []
+title: Perl in Win32
+---
+{% include JB/setup %}
+
+<h2>描述</h2>
+此文描述了Perl在Win32下的特殊点，包括
+<ul>
+<li>最简安装Perl方案
+<li>Q1: 执行 C:\>perl 出现“'perl'不是内部或外部命令，也不是可运行的程序或批处理文件”错误？
+<li>在 C:\> 中使用perl写小程序？
+<li>Nmake
+<li>在Win32下安装Unix常用工具tar,gzip,make？
+<li>我在 cpan Clone 时提示“cl 不是内部或外部程序”？
+</ul>
+
+<h3>最简安装Perl方案</h3>
+进<a href="http://www.apache.org/dyn/closer.cgi/perl/win32-bin/Perl-5.8-win32-bin/">http://www.apache.org/dyn/closer.cgi/perl/win32-bin/Perl-5.8-win32-bin/</a>，下载Perl-5.8-win32-bin.exe即可。<br>
+此二进制文件包含最新Apache,Perl和最合适的mod_perl,mod_ssl / OpenSSL，并且有php。<br>
+如2004/7月的为：Apache/2.0.50 (Win32) mod_perl/1.99_15-dev Perl/v5.8.4 mod_ssl/2.0.50 OpenSSL/0.9.7d PHP/4.3.7
+
+<h3>Q1: 执行 C:\>perl 出现“'perl'不是内部或外部命令，也不是可运行的程序或批处理文件”错误？</h3>
+A1: 假设您的Perl安装目录为C:\usr，您的win为2000（其他版本的大致操作一样）。您需要在环境变量的Path中加入";C:\usr\bin"后方能正常使用。<br>步骤如下：在“我的电脑”点右键选取“属性”，在“高级”项中点击“环境变量(E)...”，在弹出的窗口下方“系统变量”中的Path上编辑，在变量值里加入";C:\usr\bin"。
+
+<h3>在 C:\> 中使用perl写小程序？</h3>
+<pre>
+C:\>perl
+print "hello world";
+^Z
+hello world
+C:\>
+</pre>
+其中^Z为按下Ctrl+Z，此为结束代码。
+<h3>Nmake</h3>
+Nmake在Win32中的作用类似于(L)Unix下的make。许多Perl Script安装的时候都用得着。<br>
+Perl安装目录中下的bin目录中，有一文件为get_nmake.bat，此文件通过LWP获得Nmake15.exe<br>
+文件的位置于 <a href="http://download.microsoft.com/download/vc15/Patch/1.52/W95/EN-US/Nmake15.exe">http://download.microsoft.com/download/vc15/Patch/1.52/W95/EN-US/Nmake15.exe</a>
+<h3>在Win32下安装Unix常用工具tar,gzip,make？</h3>
+大概是由于Perl是Unix下的产物有关，所以有关Perl的东西会经常用到Unix下的常用工具如tar/gzip/make等。<br>
+最近因为想发布个模块<a href='Han2PinYin.html'>Lingua::Han2PinYin</a>, 上传模块到<a href='http://www.cpan.org'>CPAN</a>前要tar/gzip模块。而Win32下是没有这两个工具的。<p>
+
+解决方案为<a href='http://www.cygwin.com'>CygWin</a><br>, Cygwin是在Win32上运行的仿Linux环境的一个软件。
+Cygwin的安装是非常简单的，首先去cgywin主页去下载<a href='http://www.cygwin.com/setup.exe'>setup.exe</a>文件。下载完成后打开，按照操作下一步进行安装。因为只需要用到tar/gzip所以选择东西时，先将所有去掉（在All那点几下）再安装Base部分（里面有tar/gzip）和部分Devel（里面有make）。<br>
+我是不太推荐安装X11的，图形界面在我的机子上运行起来比在VMware下还要慢。另外的东西各位可以自己看看选择安装。<br>
+如果安装出现问题，可以<a href='http://www.baidu.com'>Baidu</a>或<a href='http://www.google.com'>Google</a>下。有很多安装文档可以参考。
+
+<h3>我在 cpan Clone 时提示“cl 不是内部或外部程序”？</h3>
+请安装 Microsoft Visual C++ 6.0.

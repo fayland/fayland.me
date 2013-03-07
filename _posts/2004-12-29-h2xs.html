@@ -1,0 +1,62 @@
+---
+category: perl
+layout: post
+tags: []
+title: 使用h2xs打包模块
+---
+{% include JB/setup %}
+
+<h2>描述</h2>
+闲着无聊就看看了perlnewmod, 发现一种与“<a href='Module_Build.html'>Module::Build</a>”不一样的打包方式。<br>
+试了下，个人发现比Module::Build好一点。Module::Build打包出来的模块安装时必须要先安装Module::Build，而且h2xs还生成了简单的t(test)文件。而且我发现目前<a href='http://search.cpan.org'>CPAN</a>上的模块大多是用h2xs制作的。
+
+<h2>h2xs 参数简介</h2>
+<ul>OPTION/选项：（不完整版，详细的请参考perldoc h2xs或h2xs -h）
+<li>-A, --omit-autoload 忽略autoload里的文件（-c里默认包含）
+<li>-B, --beta-version 使用alpha/beta型的版本号（如0.00_01），如果存在-v则忽略次参数
+<li>-C, --omit-changes 不创建CHANGES文件，而在POD模版中增加HISTORY段
+<li>-O, --overwrite-ok 允许覆盖已存在的扩展目录
+<li>-X, --omit-XS 忽略XS部分（-c和-f里默认包含）
+<li>-b, --compat-version 指定一个perl版本号用于向后兼容
+<li>-d, --debugging 显示调试信息
+<li>-n, --name 指定扩展的名字
+</ul>
+
+<h2>过程</h2>
+假设打包的是我的模块，<a href='Han2PinYin.html'>Lingua::Han2PinYin</a><br>
+首先进入控制台(console)
+<pre>
+>h2xs -AX -n Lingua::Han2PinYin
+</pre>
+此命令的作用仅仅限于生成tar所需要的目录和一些文件。<br>
+<pre>
+lib/Lingua/Han2PinYin.pm
+t/Lingua-Han2PinYin.t
+Makefile.PL
+README
+Changes
+MANIFEST
+</pre>
+<b>上面所生成的所有文件都是需要修改的。</b><br>
+<ol>
+<li>将自己写的Han2PinYin.pm覆盖生成的Han2PinYin<br>
+<li>Makefile.PL里首先需要去掉"use 5.008004;"或者改为你所需要的版本号。其次要修改AUTHOR
+<li>t下面的测试文件，如果需要增加新的测试则自行增加，不需要的话略过。
+<li>README Changes 文件请自行修改
+<li>MANIFEST则不需要修改
+</ol>
+弄完后：
+<pre>
+>cd Lingua-Han2PinYin
+>perl Makefile.PL
+>(n)make test
+>(n)make dist
+</pre>
+在Linux/Unix系统下用make，Win32系统下用nmake<br>
+至此差不多结束。会生成Lingua-Han2PinYin-0.04.tar.gz
+
+<h2>Refer</h2>
+<ul>
+<li><a href='http://www.cpan.org/modules/04pause.html'>CPAN/modules/04pause.html</a>
+<li>perldoc <a href='http://search.cpan.org/perldoc?perlnewmod'>perlnewmod</a>
+</ul>

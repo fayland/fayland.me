@@ -1,0 +1,76 @@
+---
+category: perl
+layout: post
+tags: []
+title: 检查坏死链接
+---
+{% include JB/setup %}
+
+特殊说明：此文档只为检查本地文档，用于某人在本机内某目录内的相互链接。目前只支持HTML文档。<br>
+如果需要检查整个网站的Broken Link,推荐使用软件<a href="http://home.snafu.de/tilman/xenulink.html" target="_blank">XENU</a><br>
+如果需要一个Perl文件来检查整个网站的Broken Link，请参考Steven McDougall's <a href="http://world.std.com/~swmcd/steven/perl/pm/lc/linkcheck.html">Checking links with LinkCheck</a>
+
+<pre>
+#!/usr/bin/perl
+<span class="comment"># cbl.pl for Check Bad Links.</span>
+use strict;
+
+@ARGV or die "Usage:perl cbl.pl [E:\directory|/usr/html]";
+
+my $dir = $ARGV[0];
+(-e "$dir" && -d "$dir") or die "$dir doesn't exist or not a directory!";
+$dir .= "/" if ($dir !~ /(\/|\\)$/);
+
+<span class="comment">#define</span>
+my @file;
+my %Err;
+
+&GetDir("$dir", \@file);
+
+foreach (@file) {
+    &cbl("$dir$_");
+}
+if (keys %Err) {
+    print "Errors are\n";
+    foreach (keys %Err) {
+        print "$_ has\n\t$Err{$_}\n";
+    }
+} else {
+    print "All is OK!"
+}
+
+sub cbl {
+    my ($file) = @_;
+    return if ($file !~ /\.html?$/);
+    my $dir = $file;
+    $dir =~ s/([^(\/|\\)]*)$//;
+    local $/;
+    open(FH,"$file");
+    my $html = <FH>;
+    close(FH);
+    while ($html =~ s/href\=(\S+?)(\>|\s)//i) {
+        my $tmp = $1;
+        $tmp =~ s/(\"|\')?(\S+?)(\"|\')?/$2/;
+        next if ($tmp =~ /^(https?\:\/\/|mailto\:|\#)/);
+        unless (-e "$dir$tmp") {
+            $Err{"$file"} .= "$tmp\n\t";
+        }
+    }
+}
+
+sub GetDir {
+    my ($dir, $file_ref, $subdir) = @_;
+    if (($subdir ne "") && ($subdir !~ /\/$/)) { $subdir = "$subdir/"; }
+    opendir(DIRS, "$dir");
+    my @dirdata = readdir(DIRS);
+    closedir(DIRS);
+    foreach (@dirdata) {
+        next if (/^\.+$/);
+        if (-d "$dir/$_") {
+            &GetDir("$dir/$_", $file_ref, "$subdir$_");
+        } else {
+            push (@$file_ref, "$subdir$_");
+        }
+    }
+}
+</pre></div>

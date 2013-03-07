@@ -1,0 +1,93 @@
+---
+category: perl
+layout: post
+tags: []
+title: 如何创建 Atom
+---
+{% include JB/setup %}
+
+<h2>简介</h2>
+Atom 的作用请自行搜索。<br>
+RSS 的创建请参阅<a href='RSS.html'>给网页增加RSS</a>.<p>
+
+<h2>描述</h2>
+这里我使用 <a href='http://search.cpan.org/perldoc?XML::Atom::SimpleFeed'>XML::Atom::SimpleFeed</a> 来创建 Atom<p>
+
+XML::Atom::SimpleFeed 有些许瑕疵，如不能设置编码和多了个默认的 xml:lang="en"<p>
+我略微修改了下使之符合我的要求。
+<ol>
+<li>删除两处 xml:lang="en"
+<li>改 encoding="iso-8859-1" 为 encoding="UTF-8"
+</ol>
+
+<h2>代码</h2>
+<p>如下代码来自我基于 Catalyst 的 Eplanet</p>
+<pre><code>
+use lib "E:/t/Eplanet/hackedlib"; # add the hack file's address
+use XML::Atom::SimpleFeed;
+
+my $Atom_file = $c->config->{build_root} . "/atom.xml";
+my $title = 'Fayland\'s';
+my $link = 'http://www.fayland.org/';
+my $description = 'What Fayland says';
+	
+my $atom = XML::Atom::SimpleFeed->new(
+	title    => $title,
+	link     => $link,
+	tagline  => $description,
+	author => { name => 'Fayland Lam' },
+)
+or die;
+
+my @cats = Eplanet::M::CDBI::Cms->retrieve_from_sql(qq{
+	1=1 ORDER BY cms_id DESC LIMIT 0, 20
+});
+
+foreach my $cat (@cats) {
+	my $_title = $cat->get('cms_title');
+	my $_link = "http://www.fayland.org/journal/$cat->{'cms_file'}.html";
+	my $_description = $cat->{'cms_describe'};
+	my $_create_data = $cat->{'cms_cre_data'};
+	# convert to the standard w3cdtf
+	$_create_data = date2w3cdtf($_create_data);
+	# got the modified data
+	my $_modified_data = $cat->{'cms_mod_data'};
+	# if not exists, use create data instead
+	if ($_modified_data) {
+		$_modified_data = date2w3cdtf($_modified_data);
+	} else {
+		$_modified_data = $_create_data;
+	}
+		
+	$atom->add_entry(
+		title    => $_title,
+		link     => $_link,
+		author   => { name => "Fayland Lam" },
+		issued   => $_create_data,
+		created  => $_create_data,
+		modified => $_modified_data,
+		content  => $_description,
+	)
+	or die;
+}
+
+$atom->save_file($Atom_file);
+
+sub date2w3cdtf {
+	my $data = shift;
+	# the original data foramt like 2005-03-29 23:02:14 & it's a localtime
+	# so we convert localtime to $time and got the gmtime
+
+	my ($year, $mon, $mday, $hour, $min, $sec) = ($data =~ /^(\d+)-(\d+)-(\d+)\s(\d+):(\d+):(\d+)$/);
+	$mon--;
+	use Time::Local;
+	my $time = timelocal($sec,$min,$hour,$mday,$mon,$year);
+	( $sec, $min, $hour, $mday, $mon, $year) = gmtime($time);
+	$year += 1900; $mon++;
+
+	# at last we return the w3c dtf
+	my $timestring = sprintf( "%4d-%02d-%02dT%02d:%02d:%02dZ",
+        $year, $mon, $mday, $hour, $min, $sec );
+ 	return ($timestring);
+}
+</code></pre>

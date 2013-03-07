@@ -1,0 +1,36 @@
+---
+category: perl
+layout: post
+tags: []
+title: 如何寻找用户真实IP
+---
+{% include JB/setup %}
+
+<h2>Generally</h2>
+一般程序代码所书写的都是这样（如 <a href='http://www.ikonboard.com'>ikonboard</a>, <a href='http://www.infopop.com'>UBB</a>, UltraThreads etc.）：
+<pre>
+$IP_ADDRESS = $ENV{'HTTP_X_FORWARDED_FOR'} || $ENV{'REMOTE_ADDR'};
+</pre>
+<ul>这里有三种情况：
+<li>通过<b>透明</b>代理服务器，那$ENV{'HTTP_X_FORWARDED_FOR'}为此代理服务器地址，而$ENV{'REMOTE_ADDR'}为你的地址。</li>
+<li>通过<b>匿名</b>代理服务器，同样$ENV{'HTTP_X_FORWARDED_FOR'}为此代理服务器地址，而$ENV{'REMOTE_ADDR'}为此代理服务器连接网页的地址（可与代理服务器地址不同）。 </li>
+<li>没有使用代理服务器，那$ENV{'HTTP_X_FORWARDED_FOR'}为空，而$ENV{'REMOTE_ADDR'}为用户真实ip</li>
+</ul>
+举个例子会清晰点：
+<pre>
+#proxy(anonymous) is 80.59.189.28,then got
+$ENV{'REMOTE_ADDR'} = '80.58.3.235';
+$ENV{'HTTP_X_FORWARDED_FOR'} = '80.59.189.28';
+#no proxy
+$ENV{'REMOTE_ADDR'} = '211.90.227.119';#my temp true ip
+$ENV{'HTTP_X_FORWARDED_FOR'} = '';
+</pre>
+<h2>Advance</h2>
+其实另外还有两个ENV环境变量：'HTTP_CLIENT_IP', 'X_CLIENT_IP'。不过不太常用。如果增加此两变量，代码如下，前三者顺序可能有变（如 <a href='http://www.yabbforum.com'>YaBB</a>, <a href='http://www.codingdomain.com'>X-Forum</a> etc.）：
+<pre>
+$IP_ADDRESS = $ENV{'HTTP_X_FORWARDED_FOR'} || $ENV{'HTTP_CLIENT_IP'} || $ENV{'X_CLIENT_IP'} || $ENV{'REMOTE_ADDR'};
+</pre>
+<h2>Especial</h2>
+不适用于localhost/127.0.0.1<br>
+对于匿名/Anonymous Proxy来说，因为它不会将使用Proxy的人的ip一起发请求过来，所以获得使用Proxy人的ip是impossible mission.<br>
+获得Proxy相关信息的环境变量是$ENV{'HTTP_VIA'}.<p>

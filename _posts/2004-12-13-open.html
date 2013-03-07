@@ -1,0 +1,67 @@
+---
+category: perl
+layout: post
+tags: []
+title: 关于open的"+&lt;"模式
+---
+{% include JB/setup %}
+
+<h2>描述</h2>
+很多人知道open除了<, >, >>模式外还有其他模式如"+<", 但有些人不太会用，或者说错误的用了"+<"模式。<br>
+一般我们更新文件（需要读取原内容文件）时，都先open<读取再对内容进行变化，最后open>写入。<br>
+而用+<加seek可以实现文件的读写更新，不用两次open，从而提高效率。<br>
+但值得注意的是：如果不用truncate，文件会出现你所不想要的后果。而另人遗憾的是书中说truncate不是所有平台都支持的。不过就我测试而言，Win2000/XP+Linux下都是可以的。<br>
+一切用实验来说话。具体原理可以参考perldoc或书籍。
+<h2>实验</h2>
+实验材料：程序目录下有一文本文件1.txt, 里面的内容为简单的“123456789”。
+<h3>实验一：简单的计数器增加</h3>
+原代码：
+<pre><code>open(FH,"1.txt");
+flock(FH, 1);
+my $count = &lt;FH>;
+close(FH);
+$count++;
+open(FH,">1.txt");
+flock(FH, 2);
+print FH $count;
+close(FH);
+</code></pre>
+改写后的代码：
+<pre><code>open(FH,"+&lt;1.txt");
+flock(FH, 2);
+my $count = &lt;FH>;
+seek(FH,0,0);
+print FH ++$count;
+close(FH);
+</code></pre>
+简单的从两次open转化为"+<"模式就是这个样子。
+<h3>实验二：不用truncate的不可意料错误。</h3>
+这种错误发生在后来写入的长度小于原文件的长度。<br>
+比如我们的任务是去掉1.txt中所有的1。如下代码是错误的，出现的结果不是我们想要的。
+<pre><code>open(FH,"+&lt;1.txt");
+flock(FH, 2);
+my $count = &lt;FH>;
+$count =~ s/1//sg;
+seek(FH,0,0);
+print FH $count;
+close(FH);
+</code></pre>
+我们所要的结果是23456789，而实际运行后的结果为234567899。后面多了一个9。<br>
+"+<"模式是覆盖模式，你后来输入的长度只覆盖那么长，如果原来文件的长度比输入的长度长，后面将会保留。<br>
+正确的代码为：
+<pre><code>open(FH,"+&lt;1.txt");
+flock(FH, 2);
+my $count = &lt;FH>;
+$count =~ s/1//sg;
+seek(FH,0,0);
+truncate(FH, 0);
+print FH $count;
+close(FH);
+</code></pre>
+seek到文件头后将文件清空，再输入改变后的值。<br>
+当然有时候是不需要truncate的，看具体的要求具体分析。比如我们就要覆盖那么长后面的就要保留。<br>
+比如最上面的$count就不需要，因为加后的count不会小于原来的长度。<br>
+<h2>题外话</h2>
+在写本文之前，我在看LeoBBSx的最新版本代码。LeoBBSx有用了+<模式（虽然不是很彻底，只部分采用），但遗憾的是没有truncate。<br>
+我没在本地做测试看它会不会出错，但我总觉得奇怪，它用这个模式的时候难道改变后的值都长于原来的值？<br>
+或许不用truncate是采用这模式不彻底的原因。

@@ -1,0 +1,98 @@
+---
+category: perl
+layout: post
+tags: []
+title: XML-PRC Client 客户端编写
+---
+{% include JB/setup %}
+
+暑假里看了些XML的书，<a href='http://fund.perlchina.org'>fund.perlchina</a> 又出了个 xml-rpc 接口，便想着用 perl 做个客户端试试。<br>
+客户端完成后，过几天试着用这几个模块做个服务端/Server.<p>
+
+<h2>xml-rpc Server 结构介绍</h2>
+因为 hoowa 在忙着编写 fund.perl 的 xml-rpc 的第二版, 而当我连接 <a href='http://fund.perlchina.org/archive/poda.php'>http://fund.perlchina.org/archive/poda.php</a> 并调用 archive.index 时总返回“404 Not Found”。想着当 hoowa 完成时再写连接 fund.perl 的代码。<p>
+
+在 <a href='http://www.xml-rpc.com'>http://www.xml-rpc.com</a> 找了个 XML-RPC interface. 地址为：<a href='http://xmlrpc.scripting.com/discuss/msgReader$2014'>http://xmlrpc.scripting.com/discuss/msgReader$2014</a><p>
+
+是 Weblogs.Com 的 XML-RPC 接口。大致的结构如下：
+<pre>url: http://rpc.weblogs.com/RPC2
+method: weblogUpdates.ping (weblogname, weblogurl, changesurl=weblogurl, categoryname="none") returns struct</pre>
+我们的例子为调用 weblogUpdates.ping, 'Scripting News', 'http://www.scripting.com/'<br>
+返回值取其中的 message = 'Thanks for the ping.' or 'Thanks for the ping, however we can only accept one ping every half-hour.'
+
+<h2>Frontier::RPC</h2>
+<pre><code>
+use Frontier::Client;
+
+my $url = 'http://rpc.weblogs.com/RPC2';
+
+my $client = Frontier::Client->new(
+ &nbsp; &nbsp;url => $url,
+ &nbsp; &nbsp;debug => 1,
+);
+# Call the remote server and get our result.
+my $result = $client->call('weblogUpdates.ping', 'Scripting News', 'http://www.scripting.com/');
+
+print $result->{'message'};
+</code></pre>
+Refrence:<br>
+<a href='http://www-900.ibm.com/developerWorks/cn/webservices/ws-xpc1/index.shtml'>http://www-900.ibm.com/developerWorks/cn/webservices/ws-xpc1/index.shtml</a> （中文）<br>
+<a href='http://search.cpan.org/perldoc?Frontier::Client'>perldoc Frontier::Client</a>
+
+<h2>XML::RPC</h2>
+<pre><code>
+my $cli = RPC::XML::Client->new('http://rpc.weblogs.com/RPC2');
+
+my $request = RPC::XML::request->new('weblogUpdates.ping', 'Scripting News', 'http://www.scripting.com/');
+
+my $response = $cli->simple_request($request);
+
+if (!$response) {
+    print "$RPC::XML::ERROR \n"; # No response
+}
+else {
+    print $response->{'message'};
+}
+</code></pre>
+Refrence:<br>
+<a href='http://www.perlmonks.org/index.pl?node_id=340799'>http://www.perlmonks.org/index.pl?node_id=340799</a><br>
+<a href='http://search.cpan.org/dist/RPC-XML/lib/RPC/XML.pm'>http://search.cpan.org/dist/RPC-XML/lib/RPC/XML.pm</a>
+
+<h2>XMLRPC::Lite</h2>
+<pre><code>
+use XMLRPC::Lite;
+
+my $result =  XMLRPC::Lite
+      -> proxy('http://rpc.weblogs.com/RPC2')
+      -> call('weblogUpdates.ping', 'Scripting News', 'http://www.scripting.com/')
+      -> result;
+
+print $result->{'message'};
+</code></pre>
+Refrence:<br>
+<a href='http://search.cpan.org/perldoc?XMLPRC::Lite'>perldoc XMLPRC::Lite</a>
+
+<h2>Further References</h2>
+<ul>
+<li><a href='http://xmlrpc-c.sourceforge.net/xmlrpc-howto/xmlrpc-howto.html'>http://xmlrpc-c.sourceforge.net/xmlrpc-howto/xmlrpc-howto.html</a>
+<li><a href='http://www.infocopter.com/perl/xml-rpc-samples.htm'>XML RPC Samples</a>
+<li><a href='http://www.blackperl.com/RPC::XML/'>http://www.blackperl.com/RPC::XML/</a>
+<li><a href='http://www.xmlrpc.com/spec/'>XML-RPC Specification</a>
+</ul>
+
+<h2>Add @ 2005/3/3</h2>
+问了问 hoowa fund.perlchina 的 xml-rpc 接口，他给了我一段样例。原来是地址错了，挂不得总是回 404 Not Found.
+<pre>
+use XMLRPC::Lite;
+
+my $rpc = 'http://fund.perlchina.org/archive/poa.php';
+
+my $client=XMLRPC::Lite->new();
+$client->proxy($rpc);
+my $archive= $client->call('archive.getindex'=>{order=>'1',limit=>'11'})->result;
+
+foreach (@{$archive}) {
+ &nbsp; &nbsp;my %result = %{$_};
+ &nbsp; &nbsp;print $result{'title'}, "\n";
+}
+</pre>

@@ -1,0 +1,80 @@
+---
+category: perl
+layout: post
+tags: []
+title: 给网页增加RSS
+---
+{% include JB/setup %}
+
+<h2>任务描述</h2>
+RSS 的好处和用途不用多说，简而言之就是方便有用。详细的请<a href='http://www.google.com/search?hl=zh-CN&q=Rss+perl&lr='>Google it</a>.<br>
+我的任务是给我自己的<a href='Eplanet.html'>Eplanet</a>，就是现在用的发布程序增加个RSS功能。<br>
+详细的结果见：<a href='http://www.fayland.org/recent.rdf'>http://www.fayland.org/recent.rdf</a>
+
+<h2>脚本编写</h2>
+任务有两个，第一个是创建，第二个是更新。都可以用<a href='http://perl-rss.sourceforge.net/'>XML::RSS</a>来完成。<br>
+创建需要填写Channel，而更新时不需要。对于image, textinput暂时略过。<br>
+<h3>创建</h3>
+Channel里有很多参数，如dc, syn, taxo等。很多我都不太懂。不过不懂就暂时先别加上，等懂了再加也不迟。<br>
+<pre><code>
+use XML::RSS;
+my $RSS_file = "$Cfg{'htmldir'}/index.rdf";
+my $rss = XML::RSS->new(version => '1.0');
+
+print 'Create a new RSS file&lt;br>';
+$rss->channel(
+ &nbsp; &nbsp;title        => "Fayland's",
+ &nbsp; &nbsp;link         => 'http://www.1313s.com/f/',
+ &nbsp; &nbsp;description  => 'What Fayland says',
+ &nbsp; &nbsp;language     => 'zh-cn',
+ &nbsp; &nbsp;copyright    => '(c)2005, all rights reserved',
+ &nbsp; &nbsp;syn => {
+ &nbsp; &nbsp; &nbsp; &nbsp;updatePeriod     => 'daily',
+ &nbsp; &nbsp; &nbsp; &nbsp;updateFrequency  => '1',
+ &nbsp; &nbsp; &nbsp; &nbsp;updateBase       => '2005-01-12T00:00+00:00',
+ &nbsp; &nbsp;},
+);
+# get 20 data from database, u can get more by set LIMIT
+my $sth = $dbh->prepare(
+    qq{SELECT * FROM cms ORDER BY cms_id DESC LIMIT 0, 20}
+);
+$sth->execute();
+my $cats = $sth->fetchall_arrayref({});
+$sth->finish;
+
+foreach my $cat (@$cats) {
+ &nbsp; &nbsp;$rss->add_item(
+ &nbsp; &nbsp; &nbsp; &nbsp;title       => "$cat->{'cms_title'}",
+ &nbsp; &nbsp; &nbsp; &nbsp;link        => "http://www.1313s.com/f/$cat->{'cms_file'}.html",
+ &nbsp; &nbsp; &nbsp; &nbsp;description => "$cat->{'cms_describe'}",
+ &nbsp; &nbsp;);
+ &nbsp; &nbsp;print "Add $cat->{'cms_title'}&lt;br>";
+}
+
+$rss->save($RSS_file);
+print 'all DOne!&lt;br>';
+</code></pre>
+<h3>更新</h3>
+更新比创建还简单。就要先读取，然后再add_item, 再save就OK了。<br>
+<pre><code>
+use XML::RSS;
+my $RSS_file = "$Cfg{'htmldir'}/index.rdf";
+my $rss = XML::RSS->new(version => '1.0');
+
+$rss->parsefile($RSS_file);
+
+$rss->add_item(
+ &nbsp; &nbsp;title       => "$tilte",
+ &nbsp; &nbsp;link        => "http://www.1313s.com/f/$file.html",
+ &nbsp; &nbsp;description => "$describe",
+);
+$rss->save($RSS_file);
+</code></pre>
+<h2>参考</h2>
+<ul>
+<li>请下载<a href='Eplanet.html'>Eplanet</a>后查看代码
+<li><a href='http://perl-rss.sourceforge.net/'>XML::RSS</a>
+<li><a href='http://www-106.ibm.com/developerworks/library/w-rss.html'>An introduction to RSS news feeds</a>
+<li><a href='http://www.perl.com/pub/a/2000/01/rss.html'>RSS and You</a>
+<li><a href='http://www.perl.com/pub/a/2001/11/15/creatingrss.html'>Create RSS channels from HTML news sites</a>
+</ul>
