@@ -29,8 +29,8 @@ Usage:
       	{% if page.url == node.url %}
       	<li class="active"><a href="{{ BASE_PATH }}{{node.url}}" class="active">{{node.title}}</a></li>
       	{% else %}
-      	{% assign node_url_prefix = node.url | truncate: 8 %}
-            {% if node_url_prefix != '/page...' %}
+      	    {% assign node_url_prefix = node.url | truncate: 9 %}
+            {% if node_url_prefix != '/page/...' %}
             <li><a href="{{ BASE_PATH }}{{node.url}}">{{node.title}}</a></li>
             {% endif %}
       	{% endif %}
