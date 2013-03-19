@@ -39,3 +39,27 @@ there are some tips:
         $msg =~ s/\e\[[\d;]*[a-zA-Z]//g;
     }
 
+#### Change Window Size
+
+if you use term to do bitflu> ls, you'll see full torrent name. but with the code above, you can only see few chars. here is the note to change the Window Size:
+
+    my $telnet = Net::Telnet->new();
+
+    $telnet->option_callback( sub { return; } );
+    $telnet->option_accept(Do => 31);
+
+    unless ($telnet->open( Host => $host, Port => $port, Timeout => 60 )) {
+        die "Can't connect to $host:$port\n";
+    }
+    $telnet->waitfor('/bitflu> /');
+
+    ## copied from http://blog.webdir.bg/perl-apache-realtime-output-from-script/
+    ## Many Thanks!
+    $telnet->telnetmode(0);
+    $telnet->put(pack("C9",
+                      255,                  # TELNET_IAC
+                      250,                  # TELNET_SB
+                      31, 0, 200, 0, 0,     # TELOPT_NAWS
+                      255,                  # TELNET_IAC
+                      240));                # TELNET_SE
+    $telnet->telnetmode(1);
