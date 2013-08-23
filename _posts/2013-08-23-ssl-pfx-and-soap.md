@@ -2,7 +2,7 @@
 layout: post
 title: "SSL pfx and SOAP"
 description: ""
-category: Perl
+category: perl
 tags: ['SOAP', 'Perl', 'SSL']
 ---
 {% include JB/setup %}
