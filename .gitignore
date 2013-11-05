@@ -8,3 +8,20 @@ Thumbs.db
 
 .rbenv-version
 .rvmrc
+
+_layouts/*
+_plugins/*
+assets/*
+_includes/*
+
+404.html
+History.markdown
+README.md
+Rakefile
+changelog.md
+archive.html
+categories.html
+pages.html
+sitemap.txt
+tags.html
+
