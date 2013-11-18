@@ -90,4 +90,31 @@ sub js_parseInt {
 say js_parseInt('z', 36); # 35
 say js_toString(35, 36);  # 'z'
 
+sub js_fromCharCode {
+    my $str = '';
+    my $num;
+    for (@_) {
+        # % 2**16 is buggy in perl
+        $num = $_;
+        $num = ($num < 0 ? ceil($num) : floor($num))
+            % 2**16 ;
+        $str .= chr($num == $num && $num);
+            # change nan to 0
+    }
+    return $str;
+}
+
+sub js_charCodeAt {
+    my ($str, $pos) = @_;
+
+    if (defined $pos) {
+        $pos = int($pos);
+        $pos = 0 unless $pos == $pos;
+    }
+
+    return ($pos < 0 || $pos >= length $str)
+            ? 0
+            : ord substr $str, $pos, 1;
+}
+
 {% endhighlight %}
