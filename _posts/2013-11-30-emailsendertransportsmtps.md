@@ -11,12 +11,12 @@ I just got a new CPAN module released: [Email::Sender::Transport::SMTPS](https:/
 
 it's a replacement for [Email::Sender::Transport::SMTP::TLS](https://metacpan.org/pod/Email::Sender::Transport::SMTP::TLS).
 
-the new module uses great [Net::STMPS](https://metacpan.org/pod/Net::STMPS) instead of a little messy [Net::SMTP::TLS::ButMaintained](https://metacpan.org/pod/Net::SMTP::TLS::ButMaintained)
+the new module uses great [Net::SMTPS](https://metacpan.org/pod/Net::SMTPS) instead of a little messy [Net::SMTP::TLS::ButMaintained](https://metacpan.org/pod/Net::SMTP::TLS::ButMaintained)
 
 here is few examples from the POD:
 
 {% highlight perl %}
-my $smtp  = Email::Sender::Transport::SMTPS->new({
+my $transport = Email::Sender::Transport::SMTPS->new({
   host => 'smtp.gmail.com',
   ssl  => 'starttls',
   sasl_username => 'myaccount@gmail.com',
