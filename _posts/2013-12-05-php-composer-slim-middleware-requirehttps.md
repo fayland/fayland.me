@@ -28,6 +28,6 @@ first, submit a new package is simply type a URL. and it will read all the info 
 
 since that's git (or other VCS), version is simply supported with --tags. you do git tag -a X.Y and with hook in github repos settings, the version will be shown up in the website immediately. and there is always dev-master which maps to the master source code.
 
-Packagist does not need host any files. when you go composer install/update, it fetches from the remove VCS. really smart idea.
+Packagist does not need host any files. when you go composer install/update, it fetches from the remote VCS. really smart idea.
 
 Have fun.
