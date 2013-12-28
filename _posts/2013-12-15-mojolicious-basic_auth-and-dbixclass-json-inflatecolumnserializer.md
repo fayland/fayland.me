@@ -43,3 +43,12 @@ but that's too damn weird and not looks good. so instead, I start writing a patc
 the patch is [here](https://github.com/fayland/DBIx-Class-InflateColumn-Serializer/commit/d539f2992195113821a565393bfeda6ba3e4f04b). hope that it can be merged soon.
 
 Happy Hacking.
+
+*Updated on Dec 28th*
+
+the patch is really not useful. the Author [pointed out](https://github.com/miquelruiz/DBIx-Class-InflateColumn-Serializer/pull/1#issuecomment-31262782) that we can do it like below:
+
+    __PACKAGE__->load_components('InflateColumn::Serializer');
+    __PACKAGE__->add_columns('+data', { serializer_class => 'JSON' });
+
+which is much more cleaner. Thanks
